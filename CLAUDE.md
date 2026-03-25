@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with 118 embedded markdown cheatsheets across 28 categories. Built-in calculator and subnet calculator. Better than man pages.
+Single-binary Go CLI with 181 embedded markdown cheatsheets across 31 categories. Built-in calculator and subnet calculator, fuzzy search, shell completions. Better than man pages.
 
 ## Build
 
@@ -15,17 +15,20 @@ make fmt            # gofmt -s -w .
 ## Architecture
 
 - `sheets.go` — root-level `go:embed sheets/*/*.md`
-- `internal/registry/` — Sheet struct, parsing, search, filtering
-- `internal/render/` — glamour terminal rendering, TTY detection, pager
+- `internal/registry/` — Sheet struct, parsing, search, filtering, fuzzy match (prefix → substring → Levenshtein)
+- `internal/render/` — glamour terminal rendering, TTY detection, pager, PlainOutput for piping
 - `internal/custom/` — user overlay sheets from `~/.config/cs/sheets/`
+- `internal/calc/` — expression calculator (arithmetic, hex/oct/bin, bitwise ops)
+- `internal/subnet/` — CIDR subnet calculator
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`
-- `sheets/<category>/<topic>.md` — embedded cheatsheets
+- `sheets/<category>/<topic>.md` — 181 embedded cheatsheets across 31 categories
 
 ## Adding Sheets
 
 1. Create `sheets/<category>/<topic>.md`
 2. Format: H1 = title, one-liner, H2 = sections, H3 = subsections, bash code blocks
-3. Rebuild: `make build`
+3. Include `## References` section with official docs, RFCs, man pages
+4. Rebuild: `make build`
 
 ## Conventions
 
