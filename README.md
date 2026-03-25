@@ -1,11 +1,11 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with **181 embedded cheatsheets** across 31 categories. Built-in calculator, subnet calculator, fuzzy search, shell completions. Better than man pages — real examples, clear explanations, official references, instantly searchable.
+Single-binary Go CLI with **200 embedded cheatsheets** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, shell completions. Better than man pages — real examples, clear explanations, official references, instantly searchable.
 
 ## Install
 
 ```bash
-git clone https://github.com/bellistech/cs.git
+git clone git@github.com:bellistech/cs.git
 cd cs
 make install        # builds and installs to /usr/local/bin
 
@@ -47,15 +47,16 @@ cs subnet 172.16.0.0/20   # usable hosts, wildcard, binary mask
 cs subnet help             # show full subnet calculator manual
 ```
 
-## Categories (31)
+## Categories (32)
 
 | Category | Sheets | Topics |
 |----------|--------|--------|
 | networking | 34 | bgp, ospf, is-is, rip, mpls, vxlan, ecmp, bfd, tcp, udp, quic, ipv4, ipv6, ethernet, dns, subnetting, ipsec, snmp, radius, ss, netstat, ip, iptables, nftables, tcpdump, curl, wget, dig, nslookup, mtr, nc, nmap, tshark, ethtool |
-| system | 18 | systemd, journalctl, systemd-timers, htop, iostat, vmstat, sar, strace, lsof, ps, dmesg, sysctl, find, grep, gdb, grub, chrony, valgrind |
-| security | 15 | tls, pki, ssh, openssl, gpg, vault, pam, acl, fail2ban, ufw, firewalld, selinux, apparmor, wireguard, certbot |
+| security | 26 | tls, pki, ssh, openssl, gpg, vault, pam, acl, fail2ban, ufw, firewalld, selinux, apparmor, wireguard, certbot, auditd, cryptography, container-security, hardening-linux, ids-ips, incident-response, log-analysis, network-defense, threat-hunting, forensics, vulnerability-scanning |
+| system | 19 | kernel, systemd, journalctl, systemd-timers, htop, iostat, vmstat, sar, strace, lsof, ps, dmesg, sysctl, find, grep, gdb, grub, chrony, valgrind |
 | data-formats | 10 | json, yaml, xml, toml, jq, awk, sed, regex, ascii, unicode |
 | languages | 9 | c, go, python, ruby, rust, javascript, typescript, lua, make |
+| offensive | 7 | recon, web-attacks, privilege-escalation, lateral-movement, password-attacks, metasploit, burpsuite |
 | disk | 7 | fdisk, parted, mount, fstab, df, du, ncdu |
 | package-managers | 6 | apt, dnf, brew, pip, npm, cargo |
 | databases | 5 | postgresql, mysql, redis, sqlite, sql |
@@ -68,7 +69,7 @@ cs subnet help             # show full subnet calculator manual
 | users | 5 | useradd, usermod, passwd, groups, sudo |
 | process | 4 | cron, at, nice, kill |
 | provisioning | 4 | cloud-init, nix, packer, vagrant |
-| editors | 4 | vim, neovim, emacs, nano |
+| editors | 4 | vim (1166 lines), neovim (930 lines), emacs, nano |
 | messaging | 3 | kafka, rabbitmq, nats |
 | performance | 3 | perf, bpftrace, ebpf |
 | cloud | 3 | aws-cli, gcloud, azure-cli |
@@ -112,13 +113,13 @@ One-liner explaining what this tool does.
 
 ### Specific Operation
 
-` + "```" + `bash
+```bash
 # Comment explaining the command
 command --flag value
 
 # Another example with real values
 command --option actual-value
-` + "```" + `
+```
 
 ## Tips
 

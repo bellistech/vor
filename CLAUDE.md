@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with 181 embedded markdown cheatsheets across 31 categories. Built-in calculator and subnet calculator, fuzzy search, shell completions. Better than man pages.
+Single-binary Go CLI with 200 embedded markdown cheatsheets across 32 categories. Built-in calculator and subnet calculator, fuzzy search, shell completions. Better than man pages.
 
 ## Build
 
@@ -21,7 +21,7 @@ make fmt            # gofmt -s -w .
 - `internal/calc/` — expression calculator (arithmetic, hex/oct/bin, bitwise ops)
 - `internal/subnet/` — CIDR subnet calculator
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`
-- `sheets/<category>/<topic>.md` — 181 embedded cheatsheets across 31 categories
+- `sheets/<category>/<topic>.md` — 200 embedded cheatsheets across 32 categories
 
 ## Adding Sheets
 
