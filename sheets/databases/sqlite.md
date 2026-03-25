@@ -255,3 +255,17 @@ sqlite3 mydb.db -header -table "SELECT * FROM users LIMIT 5;"
 - The `-json` flag on the CLI is handy for piping into `jq`.
 - Use `EXPLAIN QUERY PLAN` (not `EXPLAIN`) to see whether queries use indexes.
 - SQLite handles up to ~1TB databases and moderate write loads. For high write concurrency, consider PostgreSQL.
+
+## References
+
+- [SQLite Documentation](https://www.sqlite.org/docs.html)
+- [SQLite SQL Language Reference](https://www.sqlite.org/lang.html)
+- [SQLite CLI (sqlite3)](https://www.sqlite.org/cli.html)
+- [SQLite PRAGMA Statements](https://www.sqlite.org/pragma.html)
+- [SQLite Write-Ahead Logging (WAL)](https://www.sqlite.org/wal.html)
+- [SQLite STRICT Tables](https://www.sqlite.org/stricttables.html)
+- [SQLite JSON Functions](https://www.sqlite.org/json1.html)
+- [SQLite Full-Text Search (FTS5)](https://www.sqlite.org/fts5.html)
+- [SQLite EXPLAIN QUERY PLAN](https://www.sqlite.org/eqp.html)
+- [SQLite Limits](https://www.sqlite.org/limits.html)
+- [SQLite GitHub Mirror](https://github.com/sqlite/sqlite)

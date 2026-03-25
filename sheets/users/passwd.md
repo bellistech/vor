@@ -111,3 +111,15 @@ passwd -d deploy
 - `passwd -S` output format: `username status last_change min max warn inactive`.
 - PAM modules (`/etc/pam.d/`) control password complexity requirements -- not `passwd` itself.
 - `passwd -e` (expire) forces a password change at next login and is the standard way to provision temporary passwords.
+
+## References
+
+- [man passwd(1)](https://man7.org/linux/man-pages/man1/passwd.1.html)
+- [man passwd(5) — /etc/passwd](https://man7.org/linux/man-pages/man5/passwd.5.html)
+- [man shadow(5) — /etc/shadow](https://man7.org/linux/man-pages/man5/shadow.5.html)
+- [man chage(1) — Password Aging](https://man7.org/linux/man-pages/man1/chage.1.html)
+- [man login.defs(5)](https://man7.org/linux/man-pages/man5/login.defs.5.html)
+- [man crypt(5) — Password Hashing](https://man7.org/linux/man-pages/man5/crypt.5.html)
+- [Arch Wiki — Users and Groups](https://wiki.archlinux.org/title/Users_and_groups)
+- [Red Hat — Managing User Passwords](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings)
+- [Ubuntu — User Management](https://help.ubuntu.com/community/AddUsersHowto)

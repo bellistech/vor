@@ -260,3 +260,17 @@ Pull-based monitoring system with a multi-dimensional data model and powerful qu
 - `histogram_quantile` operates on the `le` (less-than-or-equal) label from histogram buckets.
 - Label cardinality is the primary cause of Prometheus memory issues. Avoid labels with unbounded values (user IDs, request IDs).
 - `up` is a built-in metric: 1 if the target was scraped successfully, 0 if not.
+
+## References
+
+- [Prometheus Documentation](https://prometheus.io/docs/introduction/overview/)
+- [PromQL Querying Basics](https://prometheus.io/docs/prometheus/latest/querying/basics/)
+- [PromQL Functions Reference](https://prometheus.io/docs/prometheus/latest/querying/functions/)
+- [PromQL Operators](https://prometheus.io/docs/prometheus/latest/querying/operators/)
+- [Prometheus Configuration](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)
+- [Recording Rules](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/)
+- [Alerting Rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/)
+- [Service Discovery](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#scrape_config)
+- [Metric Types (Counter, Gauge, Histogram, Summary)](https://prometheus.io/docs/concepts/metric_types/)
+- [Instrumentation Best Practices](https://prometheus.io/docs/practices/instrumentation/)
+- [Prometheus GitHub Repository](https://github.com/prometheus/prometheus)

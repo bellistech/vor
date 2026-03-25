@@ -136,3 +136,13 @@ ssh gateway mtr -r -c 100 example.com  # from another host
 - High jitter (StDev) matters for VoIP and real-time applications even without packet loss
 - `mtr` requires root (or `setuid`) for raw socket access; use `sudo mtr` if needed
 - Compare reports from both ends of a connection to identify asymmetric routing issues
+
+## References
+
+- [mtr GitHub Repository](https://github.com/traviscross/mtr)
+- [man mtr](https://man7.org/linux/man-pages/man8/mtr.8.html)
+- [man traceroute](https://man7.org/linux/man-pages/man8/traceroute.8.html)
+- [RFC 1393 — Traceroute Using an IP Option](https://www.rfc-editor.org/rfc/rfc1393)
+- [RFC 792 — Internet Control Message Protocol (ICMP)](https://www.rfc-editor.org/rfc/rfc792)
+- [Cloudflare — How Traceroute Works](https://www.cloudflare.com/learning/network-layer/what-is-traceroute/)
+- [Red Hat — Network Diagnostics with mtr](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/index)

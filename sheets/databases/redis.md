@@ -226,3 +226,17 @@ redis-cli DEBUG SLEEP 0                    # test connectivity
 - `BLPOP`/`BRPOP` implement a reliable queue pattern without polling.
 - Set `maxmemory` and `maxmemory-policy` (e.g., `allkeys-lru`) to prevent OOM.
 - Pub/Sub messages are fire-and-forget. If a subscriber is disconnected, messages are lost. Use Streams for durable messaging.
+
+## References
+
+- [Redis Documentation](https://redis.io/docs/)
+- [Redis Commands Reference](https://redis.io/docs/latest/commands/)
+- [Redis Data Types](https://redis.io/docs/latest/develop/data-types/)
+- [Redis Streams](https://redis.io/docs/latest/develop/data-types/streams/)
+- [Redis Pub/Sub](https://redis.io/docs/latest/develop/interact/pubsub/)
+- [Redis Persistence (RDB and AOF)](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/)
+- [Redis Sentinel (High Availability)](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)
+- [Redis Cluster](https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/)
+- [Redis Configuration](https://redis.io/docs/latest/operate/oss_and_stack/management/config/)
+- [redis-cli Reference](https://redis.io/docs/latest/develop/connect/cli/)
+- [Redis GitHub Repository](https://github.com/redis/redis)

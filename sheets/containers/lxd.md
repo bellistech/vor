@@ -185,3 +185,17 @@ lxc delete webserver --force               # delete running instance
 - Snapshots are cheap on ZFS/btrfs (copy-on-write); less so on dir backend.
 - For VMs, add `--vm` to launch. VMs support non-Linux guests and hardware passthrough.
 - `lxc exec` runs as root by default; use `-- su - username` for non-root shells.
+
+## References
+
+- [LXD Documentation](https://documentation.ubuntu.com/lxd/)
+- [LXD Getting Started Guide](https://documentation.ubuntu.com/lxd/en/latest/tutorial/first_steps/)
+- [LXD Instance Configuration](https://documentation.ubuntu.com/lxd/en/latest/reference/instance_options/)
+- [LXD Networking](https://documentation.ubuntu.com/lxd/en/latest/explanation/networks/)
+- [LXD Storage](https://documentation.ubuntu.com/lxd/en/latest/explanation/storage/)
+- [LXD Profiles](https://documentation.ubuntu.com/lxd/en/latest/explanation/profiles/)
+- [LXD CLI Reference](https://documentation.ubuntu.com/lxd/en/latest/reference/manpages/)
+- [LXD Image Server](https://images.linuxcontainers.org/)
+- [LXD GitHub Repository](https://github.com/canonical/lxd)
+- [LXC/LXD Linux Containers](https://linuxcontainers.org/)
+- [Incus — Community Fork of LXD](https://github.com/lxc/incus)

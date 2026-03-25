@@ -131,3 +131,12 @@ nslookup example.com 8.8.8.8 2>/dev/null | awk '/^Address:/{print $2}' | tail -1
 - The "Non-authoritative answer" header means the response came from a cache, not the authoritative NS
 - Some DNS servers refuse `type=ANY` queries (RFC 8482) — query specific types instead
 - On Windows, `nslookup` is often the only DNS tool available, making it essential to know
+
+## References
+
+- [man nslookup](https://man7.org/linux/man-pages/man1/nslookup.1.html)
+- [BIND 9 — nslookup Reference](https://bind9.readthedocs.io/en/latest/manpages.html#nslookup)
+- [RFC 1035 — Domain Names: Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035)
+- [IANA DNS Parameters — Resource Record Types](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [man dig — More Capable DNS Lookup Tool](https://man7.org/linux/man-pages/man1/dig.1.html)
+- [man host — Simplified DNS Lookup](https://man7.org/linux/man-pages/man1/host.1.html)

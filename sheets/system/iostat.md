@@ -103,3 +103,14 @@ iostat -dxm -y 1 3
 - Install with `apt install sysstat` or `yum install sysstat`.
 - `iostat -p ALL` shows per-partition stats (not just whole devices).
 - Pair with `iotop` for per-process I/O breakdown.
+
+## References
+
+- [man iostat(1)](https://man7.org/linux/man-pages/man1/iostat.1.html)
+- [man sar(1)](https://man7.org/linux/man-pages/man1/sar.1.html)
+- [man pidstat(1)](https://man7.org/linux/man-pages/man1/pidstat.1.html)
+- [sysstat Project Site](https://sysstat.github.io/)
+- [sysstat GitHub](https://github.com/sysstat/sysstat)
+- [Kernel Block Layer Statistics](https://www.kernel.org/doc/html/latest/block/stat.html)
+- [Arch Wiki — Sysstat](https://wiki.archlinux.org/title/Sysstat)
+- [Red Hat — Monitoring I/O Performance](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/monitoring-disk-i-o-performance-with-iostat_monitoring-and-managing-system-status-and-performance)

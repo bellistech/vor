@@ -155,3 +155,12 @@ wget --certificate=client.pem --private-key=key.pem https://mtls.example.com
 - `wget` respects `robots.txt` by default; use `-e robots=off` to ignore (be courteous)
 - `--content-disposition` handles servers that set `Content-Disposition: attachment; filename=...`
 - For single API calls, `curl` is usually better; `wget` shines for bulk and recursive downloads
+
+## References
+
+- [GNU Wget Manual](https://www.gnu.org/software/wget/manual/)
+- [GNU Wget — Detailed Invocation](https://www.gnu.org/software/wget/manual/wget.html)
+- [man wget](https://man7.org/linux/man-pages/man1/wget.1.html)
+- [Wget2 — Next Generation of GNU Wget](https://gitlab.com/gnuwget/wget2)
+- [GNU Wget — Recursive Download](https://www.gnu.org/software/wget/manual/wget.html#Recursive-Download)
+- [GNU Wget — HTTPS (SSL/TLS) Options](https://www.gnu.org/software/wget/manual/wget.html#HTTPS-_0028SSL_002fTLS_0029-Options)

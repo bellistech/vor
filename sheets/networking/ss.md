@@ -126,3 +126,13 @@ ss --sctp -a            # SCTP sockets
 - Quote complex filter expressions to prevent shell interpretation
 - `ss -i` shows TCP internal state (congestion window, RTT) — invaluable for debugging performance
 - On older systems without `ss`, fall back to `netstat`
+
+## References
+
+- [man ss](https://man7.org/linux/man-pages/man8/ss.8.html)
+- [man ip](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [iproute2 — Linux Foundation Wiki](https://wiki.linuxfoundation.org/networking/iproute2)
+- [Linux Kernel — TCP Sysctl Documentation](https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html)
+- [man proc — /proc/net socket entries](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [man netstat — Legacy Socket Statistics](https://man7.org/linux/man-pages/man8/netstat.8.html)
+- [Red Hat — Monitoring Network Sockets](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/index)

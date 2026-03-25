@@ -99,3 +99,15 @@ nice -n 19 ionice -c 3 rsync -a --bwlimit=10m /data/ /backup/
 - The CFQ I/O scheduler respects ionice classes. If you use `mq-deadline` or `none` (common on NVMe), ionice has no effect.
 - `chrt` is the tool for real-time CPU scheduling (FIFO, round-robin) -- different from nice values.
 - On systemd-managed services, use `Nice=` and `IOSchedulingClass=` in the unit file instead of wrapping with nice/ionice.
+
+## References
+
+- [man nice(1)](https://man7.org/linux/man-pages/man1/nice.1.html)
+- [man nice(2) — System Call](https://man7.org/linux/man-pages/man2/nice.2.html)
+- [man renice(1)](https://man7.org/linux/man-pages/man1/renice.1.html)
+- [man ionice(1)](https://man7.org/linux/man-pages/man1/ionice.1.html)
+- [man getpriority(2) / setpriority(2)](https://man7.org/linux/man-pages/man2/getpriority.2.html)
+- [man sched(7) — Scheduling Policies](https://man7.org/linux/man-pages/man7/sched.7.html)
+- [Kernel CFS Scheduler](https://www.kernel.org/doc/html/latest/scheduler/sched-design-CFS.html)
+- [Arch Wiki — Process Management](https://wiki.archlinux.org/title/Process)
+- [Ubuntu Manpage — nice](https://manpages.ubuntu.com/manpages/noble/man1/nice.1.html)

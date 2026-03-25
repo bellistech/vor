@@ -164,3 +164,15 @@ nmap -sA -p 80 example.com            # ACK scan reveals filtered vs unfiltered
 - Scan only networks you have authorization to test; unauthorized scanning may be illegal
 - `nmap -sV` can trigger IDS alerts — the probes are distinctive
 - Greppable output (`-oG`) is ideal for piping into `awk`/`grep` for bulk analysis
+
+## References
+
+- [Nmap Official Documentation](https://nmap.org/docs.html)
+- [Nmap Reference Guide](https://nmap.org/book/man.html)
+- [man nmap](https://man7.org/linux/man-pages/man1/nmap.1.html)
+- [Nmap Scripting Engine (NSE) Documentation](https://nmap.org/nsedoc/)
+- [Nmap Network Scanning — Online Book](https://nmap.org/book/)
+- [Nmap — Port Scanning Techniques](https://nmap.org/book/man-port-scanning-techniques.html)
+- [Nmap — Service and Version Detection](https://nmap.org/book/man-version-detection.html)
+- [Nmap — OS Detection](https://nmap.org/book/man-os-detection.html)
+- [Ncat Users' Guide](https://nmap.org/ncat/guide/)

@@ -201,3 +201,17 @@ npm cache verify                       # verify cache integrity
 - `package-lock.json` should be committed to version control. It ensures reproducible installs.
 - Use `--ignore-scripts` when installing untrusted packages to prevent arbitrary code execution.
 - `npm outdated` shows current, wanted (semver-compatible), and latest versions side by side.
+
+## References
+
+- [npm Documentation](https://docs.npmjs.com/)
+- [npm CLI Commands](https://docs.npmjs.com/cli/v10/commands)
+- [package.json Reference](https://docs.npmjs.com/cli/v10/configuring-npm/package-json)
+- [npm Scripts (Lifecycle)](https://docs.npmjs.com/cli/v10/using-npm/scripts)
+- [npm ci](https://docs.npmjs.com/cli/v10/commands/npm-ci)
+- [npm Workspaces](https://docs.npmjs.com/cli/v10/using-npm/workspaces)
+- [npm Audit](https://docs.npmjs.com/cli/v10/commands/npm-audit)
+- [npmrc Configuration](https://docs.npmjs.com/cli/v10/configuring-npm/npmrc)
+- [npx Usage](https://docs.npmjs.com/cli/v10/commands/npx)
+- [npm Registry](https://www.npmjs.com/)
+- [npm GitHub Repository](https://github.com/npm/cli)

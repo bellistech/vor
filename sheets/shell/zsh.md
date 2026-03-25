@@ -224,3 +224,17 @@ bindkey -L
 - For maximum compatibility, scripts should use `#!/bin/bash` -- zsh-specific syntax will break under bash.
 - `RPROMPT` sets a right-aligned prompt -- great for git branch or timestamps.
 - `hash -d proj=~/projects` creates a named directory: `cd ~proj`.
+
+## References
+
+- [Zsh Documentation](https://zsh.sourceforge.io/Doc/) -- official manual (all sections)
+- [man zsh](https://man7.org/linux/man-pages/man1/zsh.1.html) -- zsh overview man page
+- [man zshbuiltins](https://man7.org/linux/man-pages/man1/zshbuiltins.1.html) -- built-in commands reference
+- [man zshexpn](https://man7.org/linux/man-pages/man1/zshexpn.1.html) -- parameter expansion and globbing
+- [man zshcompsys](https://man7.org/linux/man-pages/man1/zshcompsys.1.html) -- completion system
+- [Zsh FAQ](https://zsh.sourceforge.io/FAQ/) -- frequently asked questions
+- [Zsh Guide (zsh.sourceforge.io)](https://zsh.sourceforge.io/Guide/) -- user-friendly guide from basics to advanced
+- [Oh My Zsh](https://ohmyz.sh/) -- framework for managing Zsh configuration
+- [Zsh GitHub Mirror](https://github.com/zsh-users/zsh) -- source code mirror
+- [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) -- fish-like autosuggestions for Zsh
+- [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) -- real-time syntax highlighting

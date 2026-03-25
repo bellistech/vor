@@ -270,3 +270,14 @@ Without `.PHONY`, if a file named `clean` exists, `make clean` would do nothing.
 - `@` before a command suppresses printing it: `@echo "quiet"`.
 - `-` before a command ignores its exit status: `-rm -f maybe_missing`.
 - `$(MAKE)` should be used instead of `make` for recursive calls to inherit flags like `-j`.
+
+## References
+
+- [GNU Make Manual](https://www.gnu.org/software/make/manual/) -- complete reference for GNU Make
+- [GNU Make Quick Reference](https://www.gnu.org/software/make/manual/html_node/Quick-Reference.html) -- one-page summary of directives and functions
+- [man make](https://man7.org/linux/man-pages/man1/make.1.html) -- make man page
+- [POSIX make Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/make.html) -- portable make behavior
+- [GNU Make Automatic Variables](https://www.gnu.org/software/make/manual/html_node/Automatic-Variables.html) -- `$@`, `$<`, `$^`, etc.
+- [GNU Make Functions](https://www.gnu.org/software/make/manual/html_node/Functions.html) -- `$(wildcard)`, `$(patsubst)`, `$(shell)`, etc.
+- [Remake](http://bashdb.sourceforge.net/remake/) -- GNU Make with debugger and improved error reporting
+- [BSD Make (bmake)](https://www.crufty.net/help/sjg/bmake.html) -- NetBSD make, used on FreeBSD/macOS

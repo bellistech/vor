@@ -240,3 +240,17 @@ tail -f /var/log/nginx/error.log
 - Use `$binary_remote_addr` (4 bytes) instead of `$remote_addr` (7-15 bytes) in shared memory zones.
 - `nginx -T` prints the full merged config, invaluable for debugging includes.
 - The `map` directive is more efficient than multiple `if` blocks for variable-based routing.
+
+## References
+
+- [nginx Documentation](https://nginx.org/en/docs/)
+- [nginx Beginner's Guide](https://nginx.org/en/docs/beginners_guide.html)
+- [nginx Directive Reference](https://nginx.org/en/docs/dirindex.html)
+- [nginx Variable Reference](https://nginx.org/en/docs/varindex.html)
+- [nginx Reverse Proxy Guide](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)
+- [nginx Load Balancing](https://nginx.org/en/docs/http/load_balancing.html)
+- [nginx SSL/TLS Configuration](https://nginx.org/en/docs/http/configuring_https_servers.html)
+- [nginx Location Block Processing](https://nginx.org/en/docs/http/ngx_http_core_module.html#location)
+- [nginx Rate Limiting](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html)
+- [nginx Admin Guide (F5)](https://docs.nginx.com/nginx/admin-guide/)
+- [nginx GitHub Mirror](https://github.com/nginx/nginx)

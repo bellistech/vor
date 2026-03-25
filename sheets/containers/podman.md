@@ -179,3 +179,17 @@ podman image prune -a
 - Quadlet files (`.container`, `.volume`, `.network`) are the modern way to manage podman services with systemd. They replace `podman generate systemd`.
 - `--userns keep-id` maps your host UID into the container, solving file permission issues with bind mounts in rootless mode.
 - Podman uses Buildah under the hood for builds; all Buildah features are available.
+
+## References
+
+- [Podman Documentation](https://docs.podman.io/)
+- [Podman GitHub Repository](https://github.com/containers/podman)
+- [Podman CLI Reference](https://docs.podman.io/en/latest/Commands.html)
+- [Podman Compose](https://github.com/containers/podman-compose)
+- [Podman Pod Management](https://docs.podman.io/en/latest/markdown/podman-pod.1.html)
+- [Podman Rootless Configuration](https://github.com/containers/podman/blob/main/docs/tutorials/rootless_tutorial.md)
+- [Buildah — OCI Image Builder](https://github.com/containers/buildah)
+- [Skopeo — Container Image Utility](https://github.com/containers/skopeo)
+- [containers-registries.conf(5)](https://github.com/containers/image/blob/main/docs/containers-registries.conf.5.md)
+- [Red Hat — Podman Documentation](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/building_running_and_managing_containers/)
+- [podman(1) man page](https://docs.podman.io/en/latest/markdown/podman.1.html)

@@ -277,3 +277,17 @@ delv @8.8.8.8 example.com                 # DNSSEC-aware lookup
 - Set `allow-transfer` to restrict zone transfers (AXFR) to known secondary servers only.
 - `rndc querylog on` enables query logging for debugging, but generates heavy log volume.
 - MX record values must be hostnames (not IPs) and should have matching A records.
+
+## References
+
+- [BIND 9 Administrator Reference Manual](https://bind9.readthedocs.io/en/latest/)
+- [BIND 9 — named.conf Configuration Reference](https://bind9.readthedocs.io/en/latest/reference.html)
+- [BIND 9 — DNSSEC Guide](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)
+- [BIND 9 — Man Pages](https://bind9.readthedocs.io/en/latest/manpages.html)
+- [ISC BIND 9 Downloads and Release Notes](https://www.isc.org/bind/)
+- [RFC 1035 — Domain Names: Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035)
+- [RFC 4033 — DNS Security Introduction and Requirements (DNSSEC)](https://www.rfc-editor.org/rfc/rfc4033)
+- [RFC 5936 — DNS Zone Transfer Protocol (AXFR)](https://www.rfc-editor.org/rfc/rfc5936)
+- [RFC 1996 — A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY)](https://www.rfc-editor.org/rfc/rfc1996)
+- [IANA Root Zone Database](https://www.iana.org/domains/root/db)
+- [man named](https://man7.org/linux/man-pages/man8/named.8.html)

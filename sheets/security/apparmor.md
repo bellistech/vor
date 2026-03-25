@@ -218,3 +218,15 @@ sudo aa-unconfined --paranoid            # all running processes without profile
 - Unlike SELinux, AppArmor is path-based; renaming a file can change its access -- be aware of symlinks
 - `Ux` (unconfined execute) defeats the purpose of AppArmor; prefer `Px` or `ix` for child processes
 - On Ubuntu, AppArmor ships with profiles for common services (snap, cups, tcpdump) -- check `aa-status` before writing your own
+
+## References
+
+- [AppArmor Documentation](https://gitlab.com/apparmor/apparmor/-/wikis/Documentation)
+- [AppArmor Core Policy Reference](https://gitlab.com/apparmor/apparmor/-/wikis/Policy_Layout)
+- [apparmor(7) Man Page](https://man7.org/linux/man-pages/man7/apparmor.7.html)
+- [apparmor_parser(8) Man Page](https://man7.org/linux/man-pages/man8/apparmor_parser.8.html)
+- [aa-genprof(8) Man Page](https://man7.org/linux/man-pages/man8/aa-genprof.8.html)
+- [Ubuntu — AppArmor](https://ubuntu.com/server/docs/apparmor)
+- [SUSE — Confining Privileges with AppArmor](https://documentation.suse.com/sles/15-SP5/html/SLES-all/part-apparmor.html)
+- [Arch Wiki — AppArmor](https://wiki.archlinux.org/title/AppArmor)
+- [Debian Wiki — AppArmor](https://wiki.debian.org/AppArmor)

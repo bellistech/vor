@@ -165,3 +165,15 @@ journalctl _COMM=sudo
 - `sudo -e` / `sudoedit` is safer than `sudo vim` because it copies the file, lets you edit as your user, then copies it back -- preventing editor shell escapes.
 - `sudo -i` starts a login shell as root (reads root's `.profile`); `sudo -s` starts a non-login shell (keeps your environment).
 - The `Defaults timestamp_timeout=N` directive sets how many minutes sudo caches credentials (default is usually 5-15).
+
+## References
+
+- [man sudo(8)](https://man7.org/linux/man-pages/man8/sudo.8.html)
+- [man sudoers(5)](https://man7.org/linux/man-pages/man5/sudoers.5.html)
+- [man visudo(8)](https://man7.org/linux/man-pages/man8/visudo.8.html)
+- [man sudo.conf(5)](https://man7.org/linux/man-pages/man5/sudo.conf.5.html)
+- [Sudo Project — Manual Pages](https://www.sudo.ws/docs/man/)
+- [Sudo Project — sudoers Manual](https://www.sudo.ws/docs/man/sudoers.man/)
+- [Arch Wiki — sudo](https://wiki.archlinux.org/title/Sudo)
+- [Red Hat — Configuring sudo Access](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-sudo-access_configuring-basic-system-settings)
+- [Ubuntu — Sudoers](https://help.ubuntu.com/community/Sudoers)

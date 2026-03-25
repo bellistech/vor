@@ -165,3 +165,15 @@ journalctl -u nginx -g "error|timeout"
 - `-r` reverses output (newest first) which pairs well with `-n`.
 - The `-g` grep flag requires systemd 246+; on older systems pipe through `grep`.
 - Journal vacuum only removes archived files -- it will not shrink the active journal file.
+
+## References
+
+- [man journalctl(1)](https://man7.org/linux/man-pages/man1/journalctl.1.html)
+- [man systemd-journald(8)](https://man7.org/linux/man-pages/man8/systemd-journald.8.html)
+- [man journald.conf(5)](https://man7.org/linux/man-pages/man5/journald.conf.5.html)
+- [man systemd.journal-fields(7)](https://man7.org/linux/man-pages/man7/systemd.journal-fields.7.html)
+- [systemd-journald Documentation](https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html)
+- [systemd Journal File Format](https://www.freedesktop.org/wiki/Software/systemd/journal-files/)
+- [Arch Wiki — Systemd Journal](https://wiki.archlinux.org/title/Systemd/Journal)
+- [Red Hat — Reviewing Logs with journalctl](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/assembly_troubleshooting-problems-using-log-files_configuring-basic-system-settings)
+- [Ubuntu — Systemd Journal](https://manpages.ubuntu.com/manpages/noble/man1/journalctl.1.html)

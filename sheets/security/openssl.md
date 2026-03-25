@@ -217,3 +217,15 @@ openssl pkcs8 -topk8 -nocrypt -in server.key -out server-pkcs8.key
 - `rsautl` can only encrypt data smaller than the key size minus padding; use symmetric encryption for large files
 - PEM files are base64 with `-----BEGIN/END-----` headers; DER is raw binary
 - When debugging TLS, `-servername` flag is required for SNI-enabled servers
+
+## References
+
+- [OpenSSL Documentation](https://www.openssl.org/docs/)
+- [openssl(1ssl) Man Page](https://man7.org/linux/man-pages/man1/openssl.1ssl.html)
+- [OpenSSL Man Pages (3.0)](https://www.openssl.org/docs/man3.0/)
+- [openssl-req(1ssl) Man Page](https://man7.org/linux/man-pages/man1/openssl-req.1ssl.html)
+- [openssl-x509(1ssl) Man Page](https://man7.org/linux/man-pages/man1/openssl-x509.1ssl.html)
+- [openssl-s_client(1ssl) Man Page](https://man7.org/linux/man-pages/man1/openssl-s_client.1ssl.html)
+- [OpenSSL Cookbook (feisty duck)](https://www.feistyduck.com/library/openssl-cookbook/)
+- [Arch Wiki — OpenSSL](https://wiki.archlinux.org/title/OpenSSL)
+- [RFC 5280 — X.509 PKI Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280)

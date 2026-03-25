@@ -267,3 +267,16 @@ echo $((2 ** 10))         # 1024
 - `${var:-}` is the safe way to reference a possibly-unset variable under `set -u`.
 - Process substitution `<()` creates a temporary file descriptor -- not available in POSIX sh.
 - Heredocs with `<<'EOF'` (quoted) disable variable expansion inside the block.
+
+## References
+
+- [Bash Reference Manual](https://www.gnu.org/software/bash/manual/) -- complete GNU Bash reference
+- [man bash](https://man7.org/linux/man-pages/man1/bash.1.html) -- bash man page
+- [Bash Hackers Wiki (archived)](https://web.archive.org/web/2023*/https://wiki.bash-hackers.org/) -- in-depth articles and scripting patterns
+- [POSIX Shell Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) -- portable shell behavior
+- [ShellCheck](https://www.shellcheck.net/) -- online shell script linter and analyzer
+- [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls) -- common mistakes and how to avoid them
+- [Bash FAQ](https://mywiki.wooledge.org/BashFAQ) -- answers to frequently asked questions
+- [Bash Guide (Wooledge)](https://mywiki.wooledge.org/BashGuide) -- comprehensive beginner-to-advanced guide
+- [GNU Readline Library](https://tiswww.case.edu/php/chet/readline/rltop.html) -- line editing and key bindings used by Bash
+- [Bash Changes (NEWS)](https://tiswww.case.edu/php/chet/bash/NEWS) -- changelog for every Bash release

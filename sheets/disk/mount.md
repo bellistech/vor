@@ -189,3 +189,14 @@ dmesg | tail                             # kernel messages
 - tmpfs is lost on reboot by design; size defaults to 50% of RAM if not specified
 - `mount --rbind` inside containers is how container runtimes expose host paths
 - If `umount` says "target is busy", use `lsof` or `fuser` to find and stop the offending process
+
+## References
+
+- [mount(8) Man Page](https://man7.org/linux/man-pages/man8/mount.8.html)
+- [umount(8) Man Page](https://man7.org/linux/man-pages/man8/umount.8.html)
+- [findmnt(8) Man Page](https://man7.org/linux/man-pages/man8/findmnt.8.html)
+- [mount_namespaces(7) Man Page](https://man7.org/linux/man-pages/man7/mount_namespaces.7.html)
+- [fstab(5) Man Page](https://man7.org/linux/man-pages/man5/fstab.5.html)
+- [Arch Wiki — File Systems](https://wiki.archlinux.org/title/File_systems)
+- [Red Hat RHEL 9 — Mounting File Systems](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/mounting-file-systems_managing-file-systems)
+- [Kernel Filesystems Documentation](https://www.kernel.org/doc/html/latest/filesystems/)

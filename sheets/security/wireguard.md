@@ -228,3 +228,15 @@ lsmod | grep wireguard
 - DNS in the `[Interface]` section is only handled by `wg-quick`; manual `wg` setup ignores it
 - WireGuard uses UDP only (default port 51820); if blocked, consider running on port 443/udp
 - `wg syncconf` applies peer changes without dropping existing connections, unlike `wg-quick down && up`
+
+## References
+
+- [WireGuard Official Documentation](https://www.wireguard.com/)
+- [WireGuard Whitepaper](https://www.wireguard.com/papers/wireguard.pdf)
+- [WireGuard Quick Start](https://www.wireguard.com/quickstart/)
+- [wg(8) Man Page](https://man7.org/linux/man-pages/man8/wg.8.html)
+- [wg-quick(8) Man Page](https://man7.org/linux/man-pages/man8/wg-quick.8.html)
+- [Arch Wiki — WireGuard](https://wiki.archlinux.org/title/WireGuard)
+- [Ubuntu — WireGuard VPN](https://ubuntu.com/server/docs/wireguard-vpn)
+- [Red Hat RHEL 9 — Configuring a WireGuard VPN](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/assembly_setting-up-a-wireguard-vpn_configuring-and-managing-networking)
+- [Kernel WireGuard Module Documentation](https://www.kernel.org/doc/html/latest/networking/wireguard.html)

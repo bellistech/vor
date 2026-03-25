@@ -246,3 +246,16 @@ logger -p auth.warning "Auth test"
 - Templates with `%HOSTNAME%` in the filename create per-host log directories for central log servers.
 - `rsyslogd -N1` validates config but does not catch runtime issues. Watch `/var/log/syslog` after restart.
 - Rate limiting is on by default (`$SystemLogRateLimitInterval`). Disable for high-volume apps with `$SystemLogRateLimitInterval 0`.
+
+## References
+
+- [man rsyslogd(8)](https://man7.org/linux/man-pages/man8/rsyslogd.8.html)
+- [man rsyslog.conf(5)](https://man7.org/linux/man-pages/man5/rsyslog.conf.5.html)
+- [man syslog(3)](https://man7.org/linux/man-pages/man3/syslog.3.html)
+- [rsyslog Official Documentation](https://www.rsyslog.com/doc/master/)
+- [rsyslog Configuration — RainerScript](https://www.rsyslog.com/doc/master/rainerscript/index.html)
+- [rsyslog Modules Reference](https://www.rsyslog.com/doc/master/configuration/modules/index.html)
+- [rsyslog GitHub Repository](https://github.com/rsyslog/rsyslog)
+- [Arch Wiki — rsyslog](https://wiki.archlinux.org/title/Rsyslog)
+- [Red Hat — Configuring rsyslog](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/assembly_troubleshooting-problems-using-log-files_configuring-basic-system-settings)
+- [Ubuntu — rsyslog](https://help.ubuntu.com/community/Rsyslog)

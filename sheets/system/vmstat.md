@@ -126,3 +126,15 @@ vmstat -S k 1
 - `cs` in the thousands is normal; in the hundreds of thousands suggests excessive context switching.
 - `vmstat -s` gives a one-shot memory summary that is easier to read than `/proc/meminfo`.
 - `vmstat -d` output is cumulative (since boot), not per-second.
+
+## References
+
+- [man vmstat(8)](https://man7.org/linux/man-pages/man8/vmstat.8.html)
+- [man proc(5) — /proc/meminfo, /proc/stat](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [man free(1)](https://man7.org/linux/man-pages/man1/free.1.html)
+- [man sar(1)](https://man7.org/linux/man-pages/man1/sar.1.html)
+- [procps-ng Project (vmstat source)](https://gitlab.com/procps-ng/procps)
+- [Kernel /proc/meminfo Documentation](https://www.kernel.org/doc/html/latest/filesystems/proc.html)
+- [Kernel VM Subsystem Documentation](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/vm.html)
+- [Arch Wiki — Memory Management](https://wiki.archlinux.org/title/Memory)
+- [Red Hat — Monitoring Virtual Memory](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/monitoring-memory-usage_monitoring-and-managing-system-status-and-performance)

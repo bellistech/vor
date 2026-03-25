@@ -148,3 +148,15 @@ kill -USR1 $(cat /var/run/myapp.pid)
 - Zombie processes (`Z` state) cannot be killed because they are already dead. Kill their parent to reap them.
 - SIGHUP to a shell session kills all child processes. For daemons, SIGHUP conventionally means "reload config."
 - `kill -0 PID` sends no signal but checks if the process exists (exit code 0 = alive).
+
+## References
+
+- [man kill(1)](https://man7.org/linux/man-pages/man1/kill.1.html)
+- [man kill(2) — System Call](https://man7.org/linux/man-pages/man2/kill.2.html)
+- [man signal(7) — Signal List](https://man7.org/linux/man-pages/man7/signal.7.html)
+- [man signal(2)](https://man7.org/linux/man-pages/man2/signal.2.html)
+- [man killall(1)](https://man7.org/linux/man-pages/man1/killall.1.html)
+- [man pkill(1)](https://man7.org/linux/man-pages/man1/pkill.1.html)
+- [Kernel Signal Documentation](https://www.kernel.org/doc/html/latest/process/signal.html)
+- [Arch Wiki — Process Management](https://wiki.archlinux.org/title/Process)
+- [Ubuntu Manpage — kill](https://manpages.ubuntu.com/manpages/noble/man1/kill.1.html)

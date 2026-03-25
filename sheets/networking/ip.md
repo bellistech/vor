@@ -180,3 +180,16 @@ ip monitor address               # address changes
 - `ip link set dev eth0 netns <ns>` moves the interface — it disappears from the host
 - `ip route replace` is idempotent and safer than `add` in scripts
 - `ip neigh flush` can disrupt active connections briefly while ARP re-resolves
+
+## References
+
+- [man ip](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [man ip-address](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [man ip-route](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [man ip-link](https://man7.org/linux/man-pages/man8/ip-link.8.html)
+- [man ip-neighbour](https://man7.org/linux/man-pages/man8/ip-neighbour.8.html)
+- [man ip-netns](https://man7.org/linux/man-pages/man8/ip-netns.8.html)
+- [iproute2 — Linux Foundation Wiki](https://wiki.linuxfoundation.org/networking/iproute2)
+- [Linux Kernel — IP Sysctl Documentation](https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html)
+- [iproute2 Source Repository](https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/)
+- [Red Hat — Configuring and Managing Networking](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/index)

@@ -144,3 +144,13 @@ sudo parted /dev/sdb rescue 1MiB 100GiB
 - For UEFI systems, the ESP must be FAT32 and at least 100 MiB (512 MiB recommended)
 - `parted` does not format partitions; after creating them, use `mkfs.ext4`, `mkfs.xfs`, etc.
 - GPT reserves the first and last 34 sectors (17 KiB) for the partition table and backup; start at 1MiB
+
+## References
+
+- [GNU Parted Manual](https://www.gnu.org/software/parted/manual/)
+- [parted(8) Man Page](https://man7.org/linux/man-pages/man8/parted.8.html)
+- [partprobe(8) Man Page](https://man7.org/linux/man-pages/man8/partprobe.8.html)
+- [Arch Wiki — GNU Parted](https://wiki.archlinux.org/title/GNU_Parted)
+- [Arch Wiki — Partitioning](https://wiki.archlinux.org/title/Partitioning)
+- [Red Hat RHEL 9 — Getting Started with Partitions](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_storage_devices/getting-started-with-partitions_managing-storage-devices)
+- [Ubuntu — Partitioning with parted](https://help.ubuntu.com/community/HowtoPartition/PartitioningwithGParted)

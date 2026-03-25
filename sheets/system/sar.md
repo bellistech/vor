@@ -134,3 +134,14 @@ sar -A 1 1
 - Default retention is 7-28 days depending on distro; change `HISTORY` in `/etc/sysstat/sysstat`.
 - `sar -n DEV` is the quickest way to check network throughput historically without having had a monitoring agent running.
 - On RHEL/CentOS the config file is `/etc/sysconfig/sysstat`; on Debian it is `/etc/sysstat/sysstat`.
+
+## References
+
+- [man sar(1)](https://man7.org/linux/man-pages/man1/sar.1.html)
+- [man sadc(8)](https://man7.org/linux/man-pages/man8/sadc.8.html)
+- [man sadf(1)](https://man7.org/linux/man-pages/man1/sadf.1.html)
+- [man iostat(1)](https://man7.org/linux/man-pages/man1/iostat.1.html)
+- [sysstat Project Site](https://sysstat.github.io/)
+- [sysstat GitHub](https://github.com/sysstat/sysstat)
+- [Arch Wiki — Sysstat](https://wiki.archlinux.org/title/Sysstat)
+- [Red Hat — Monitoring System Performance with sar](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/recording-and-analyzing-performance-profiles-with-sysstat_monitoring-and-managing-system-status-and-performance)

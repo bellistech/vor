@@ -213,3 +213,17 @@ chmod 600 ~/.ssh/config
 - Use `ssh -v` (or `-vvv`) to debug connection issues; output shows auth method negotiation
 - `ssh-copy-id` fails if password auth is already disabled; use the manual method instead
 - On SELinux systems, run `restorecon -Rv ~/.ssh` after modifying authorized_keys
+
+## References
+
+- [OpenSSH Manual Pages](https://www.openssh.com/manual.html)
+- [ssh(1) Man Page](https://man7.org/linux/man-pages/man1/ssh.1.html)
+- [sshd(8) Man Page](https://man7.org/linux/man-pages/man8/sshd.8.html)
+- [ssh_config(5) Man Page](https://man7.org/linux/man-pages/man5/ssh_config.5.html)
+- [sshd_config(5) Man Page](https://man7.org/linux/man-pages/man5/sshd_config.5.html)
+- [ssh-keygen(1) Man Page](https://man7.org/linux/man-pages/man1/ssh-keygen.1.html)
+- [ssh-agent(1) Man Page](https://man7.org/linux/man-pages/man1/ssh-agent.1.html)
+- [RFC 4251 — SSH Protocol Architecture](https://www.rfc-editor.org/rfc/rfc4251)
+- [RFC 4253 — SSH Transport Layer Protocol](https://www.rfc-editor.org/rfc/rfc4253)
+- [Arch Wiki — OpenSSH](https://wiki.archlinux.org/title/OpenSSH)
+- [Red Hat RHEL 9 — Configuring Secure Communication with SSH](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/securing_networks/assembly_using-secure-communications-between-two-systems-with-openssh_securing-networks)

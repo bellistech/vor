@@ -146,3 +146,13 @@ sudo sfdisk /dev/sdb < sdb-gpt.bak
 - `fdisk` cannot resize partitions; use `parted` or delete and recreate with the same start sector
 - Scripting fdisk is fragile; prefer `sfdisk` or `parted --script` for automation
 - On NVMe drives, partitions are named `nvme0n1p1` not `nvme0n11`; the `p` separates device from partition number
+
+## References
+
+- [fdisk(8) Man Page](https://man7.org/linux/man-pages/man8/fdisk.8.html)
+- [sfdisk(8) Man Page](https://man7.org/linux/man-pages/man8/sfdisk.8.html)
+- [cfdisk(8) Man Page](https://man7.org/linux/man-pages/man8/cfdisk.8.html)
+- [Arch Wiki — Partitioning](https://wiki.archlinux.org/title/Partitioning)
+- [Arch Wiki — fdisk](https://wiki.archlinux.org/title/Fdisk)
+- [Red Hat RHEL 9 — Getting Started with Partitions](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_storage_devices/getting-started-with-partitions_managing-storage-devices)
+- [Kernel Block Device Documentation](https://www.kernel.org/doc/html/latest/block/)

@@ -273,3 +273,16 @@ sudo ceph auth get client.myapp
 - `min_size` determines the minimum number of replicas needed for I/O; setting it to 1 risks data loss
 - BlueStore is the only production-ready backend since Nautilus; FileStore is deprecated
 - CRUSH rules control data placement across failure domains; always verify rules match your physical topology
+
+## References
+
+- [Ceph Documentation](https://docs.ceph.com/)
+- [Ceph Architecture Overview](https://docs.ceph.com/en/latest/architecture/)
+- [Ceph RADOS — Cluster Operations](https://docs.ceph.com/en/latest/rados/)
+- [Ceph RBD — Block Device Guide](https://docs.ceph.com/en/latest/rbd/)
+- [CephFS — File System Guide](https://docs.ceph.com/en/latest/cephfs/)
+- [Ceph Object Gateway (RGW)](https://docs.ceph.com/en/latest/radosgw/)
+- [Ceph Placement Groups](https://docs.ceph.com/en/latest/rados/operations/placement-groups/)
+- [Ceph Hardware Recommendations](https://docs.ceph.com/en/latest/start/hardware-recommendations/)
+- [Red Hat Ceph Storage — Administration Guide](https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/)
+- [Arch Wiki — Ceph](https://wiki.archlinux.org/title/Ceph)

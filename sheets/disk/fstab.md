@@ -174,3 +174,14 @@ LABEL=backup  /mnt/backup xfs   defaults,nofail   0  2
 - `noatime` subsumes `nodiratime`; you only need `noatime`
 - A broken fstab can prevent boot; keep a live USB ready for recovery, or use `nofail` liberally
 - systemd's `x-systemd.automount` is useful for slow or unreliable mounts (NFS, USB) as it defers until first access
+
+## References
+
+- [fstab(5) Man Page](https://man7.org/linux/man-pages/man5/fstab.5.html)
+- [mount(8) Man Page](https://man7.org/linux/man-pages/man8/mount.8.html)
+- [findmnt(8) Man Page](https://man7.org/linux/man-pages/man8/findmnt.8.html)
+- [blkid(8) Man Page](https://man7.org/linux/man-pages/man8/blkid.8.html)
+- [Arch Wiki — fstab](https://wiki.archlinux.org/title/Fstab)
+- [Red Hat RHEL 9 — Persistently Mounting File Systems](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/persistently-mounting-file-systems_managing-file-systems)
+- [Ubuntu — fstab](https://help.ubuntu.com/community/Fstab)
+- [Kernel Filesystems Documentation](https://www.kernel.org/doc/html/latest/filesystems/)

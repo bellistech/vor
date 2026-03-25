@@ -295,3 +295,17 @@ curl -X POST http://admin:admin@localhost:3000/api/auth/keys \
 - Set `GF_SECURITY_ADMIN_PASSWORD` environment variable for Docker deployments.
 - Use folders to organize dashboards by team or service.
 - The Explore view is better than dashboards for ad-hoc queries and debugging.
+
+## References
+
+- [Grafana Documentation](https://grafana.com/docs/grafana/latest/)
+- [Grafana Dashboard Guide](https://grafana.com/docs/grafana/latest/dashboards/)
+- [Grafana Alerting](https://grafana.com/docs/grafana/latest/alerting/)
+- [Grafana Variables](https://grafana.com/docs/grafana/latest/dashboards/variables/)
+- [Grafana Provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/)
+- [Grafana HTTP API Reference](https://grafana.com/docs/grafana/latest/developers/http_api/)
+- [Grafana Data Sources](https://grafana.com/docs/grafana/latest/datasources/)
+- [Grafana Panels and Visualizations](https://grafana.com/docs/grafana/latest/panels-visualizations/)
+- [Grafana Dashboard Library](https://grafana.com/grafana/dashboards/)
+- [Grafana Plugin Directory](https://grafana.com/grafana/plugins/)
+- [Grafana GitHub Repository](https://github.com/grafana/grafana)

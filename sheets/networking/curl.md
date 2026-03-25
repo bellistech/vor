@@ -184,3 +184,14 @@ curl --retry 3 --retry-all-errors https://example.com  # retry on any error
 - `-o /dev/null` discards the body when you only care about headers or timing
 - Environment variable `CURL_CA_BUNDLE` sets the default CA cert path
 - On macOS, system curl supports `--apple-ssl` backend; Homebrew curl uses OpenSSL
+
+## References
+
+- [curl Official Documentation](https://curl.se/docs/)
+- [curl Man Page](https://man7.org/linux/man-pages/man1/curl.1.html)
+- [curl — The curl Guide to HTTP](https://everything.curl.dev/)
+- [curl GitHub Repository](https://github.com/curl/curl)
+- [curl — Command Line Options Reference](https://curl.se/docs/manpage.html)
+- [curl — HTTP Scripting Tutorial](https://curl.se/docs/httpscripting.html)
+- [curl — SSL/TLS Certificate Handling](https://curl.se/docs/sslcerts.html)
+- [curl — libcurl API Documentation](https://curl.se/libcurl/)

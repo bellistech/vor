@@ -243,3 +243,16 @@ sudo btrfs qgroup show -reF /mnt/data   # human-readable, exclusive data
 - Btrfs can run out of metadata space before data space; `btrfs filesystem usage` shows both
 - For root filesystem snapshots, use tools like `snapper` or `timeshift` which automate snapshot rotation
 - Mount options like `noatime,compress=zstd,space_cache=v2` are recommended for general use
+
+## References
+
+- [Btrfs Documentation](https://btrfs.readthedocs.io/)
+- [btrfs(8) Man Page](https://man7.org/linux/man-pages/man8/btrfs.8.html)
+- [btrfs-subvolume(8) Man Page](https://man7.org/linux/man-pages/man8/btrfs-subvolume.8.html)
+- [btrfs-balance(8) Man Page](https://man7.org/linux/man-pages/man8/btrfs-balance.8.html)
+- [btrfs-scrub(8) Man Page](https://man7.org/linux/man-pages/man8/btrfs-scrub.8.html)
+- [Kernel Btrfs Documentation](https://www.kernel.org/doc/html/latest/filesystems/btrfs.html)
+- [Arch Wiki — Btrfs](https://wiki.archlinux.org/title/Btrfs)
+- [SUSE — Managing Btrfs File Systems](https://documentation.suse.com/sles/15-SP5/html/SLES-all/cha-filesystems.html)
+- [Red Hat RHEL 9 — Btrfs](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/creating-a-btrfs-file-system_managing-file-systems)
+- [Btrfs Wiki — FAQ](https://btrfs.wiki.kernel.org/index.php/FAQ)

@@ -170,3 +170,13 @@ EOF
 - Some SFTP servers have restricted shells (chroot) — `cd` above the chroot root will fail silently
 - `!command` executes on the local machine — useful for quick checks without leaving the session
 - Tab completion works in interactive mode for both local and remote paths (OpenSSH implementation)
+
+## References
+
+- [man sftp](https://man7.org/linux/man-pages/man1/sftp.1.html)
+- [man sftp-server](https://man7.org/linux/man-pages/man8/sftp-server.8.html)
+- [man ssh_config](https://man7.org/linux/man-pages/man5/ssh_config.5.html)
+- [man sshd_config — SFTP Subsystem Configuration](https://man7.org/linux/man-pages/man5/sshd_config.5.html)
+- [OpenSSH Official Manual Pages](https://www.openssh.com/manual.html)
+- [RFC 4253 — The Secure Shell (SSH) Transport Layer Protocol](https://www.rfc-editor.org/rfc/rfc4253)
+- [Arch Wiki — SFTP Chroot](https://wiki.archlinux.org/title/SFTP_chroot)

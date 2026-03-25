@@ -237,3 +237,16 @@ salt 'web1' grains.setval role webserver
 - `salt-call --local state.apply nginx` runs states without a master (masterless mode).
 - Requisites matter: `require` ensures ordering, `watch` triggers restarts on change, `onchanges` runs only when something changed.
 - Salt SSH (`salt-ssh`) works without a minion agent, similar to Ansible.
+
+## References
+
+- [Salt Documentation](https://docs.saltproject.io/)
+- [Salt Module Reference](https://docs.saltproject.io/en/latest/ref/modules/all/index.html)
+- [Salt State Reference](https://docs.saltproject.io/en/latest/ref/states/all/index.html)
+- [Salt Pillar Documentation](https://docs.saltproject.io/en/latest/topics/pillar/index.html)
+- [Salt Grains Reference](https://docs.saltproject.io/en/latest/topics/grains/index.html)
+- [Salt Targeting (Glob, Regex, Compound)](https://docs.saltproject.io/en/latest/topics/targeting/index.html)
+- [Salt Formulas](https://docs.saltproject.io/en/latest/topics/development/conventions/formulas.html)
+- [Salt Orchestration Runner](https://docs.saltproject.io/en/latest/topics/orchestrate/orchestrate_runner.html)
+- [Salt GitHub Repository](https://github.com/saltstack/salt)
+- [Salt Best Practices](https://docs.saltproject.io/en/latest/topics/best_practices.html)

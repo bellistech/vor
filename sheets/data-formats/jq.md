@@ -258,3 +258,14 @@ jq --argjson age 30 '.users[] | select(.age > $age)' data.json
 - `@csv` and `@tsv` require arrays of values, not objects. Project fields first: `[.name, .age] | @csv`.
 - `--arg` passes a string variable. `--argjson` passes a JSON value (number, bool, object).
 - Use `env.VAR_NAME` to access environment variables inside jq expressions.
+
+## References
+
+- [jq Manual](https://jqlang.github.io/jq/manual/) -- complete builtin reference
+- [jq GitHub Repository](https://github.com/jqlang/jq) -- source code, issues, and releases
+- [jq Cookbook](https://github.com/stedolan/jq/wiki/Cookbook) -- community recipes and patterns
+- [jqplay](https://jqplay.org/) -- interactive jq playground in the browser
+- [jq Language Description](https://jqlang.github.io/jq/manual/#builtin-operators-and-functions) -- operators and functions reference
+- [gojq](https://github.com/itchyny/gojq) -- pure Go implementation of jq (stricter, portable)
+- [jaq](https://github.com/01mf02/jaq) -- Rust implementation with improved error messages
+- [yq](https://github.com/mikefarah/yq) -- jq-like tool for YAML, JSON, XML, CSV, and TOML

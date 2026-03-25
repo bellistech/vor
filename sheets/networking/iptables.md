@@ -170,3 +170,14 @@ iptables -A INPUT -j DROP
 - `iptables` is being replaced by `nftables` — new deployments should prefer `nft`
 - Don't lock yourself out: test with `at now + 5 minutes <<< 'iptables -F'` before applying strict rules over SSH
 - IPv6 uses `ip6tables` — a separate ruleset that must be configured independently
+
+## References
+
+- [man iptables](https://man7.org/linux/man-pages/man8/iptables.8.html)
+- [man iptables-extensions](https://man7.org/linux/man-pages/man8/iptables-extensions.8.html)
+- [Netfilter/iptables Project Documentation](https://www.netfilter.org/documentation/)
+- [Netfilter — Packet Flow Diagram](https://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO.html)
+- [Linux Kernel — Netfilter Documentation](https://www.kernel.org/doc/html/latest/networking/netfilter.html)
+- [iptables Tutorial by Oskar Andreasson](https://www.frozentux.net/iptables-tutorial/iptables-tutorial.html)
+- [Red Hat — iptables and ip6tables](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/7/html/security_guide/sec-using_firewalls)
+- [Debian Wiki — iptables](https://wiki.debian.org/iptables)

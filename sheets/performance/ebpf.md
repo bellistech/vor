@@ -281,3 +281,18 @@ bpftrace -e 'kprobe:vfs_read /comm == "myapp"/ { @[kstack] = count(); }'
 - `bpftool feature probe` shows exactly which BPF features your kernel supports.
 - Kernel 5.8+ added BPF LSM hooks for security policy enforcement without kernel modules.
 - The `CAP_BPF` capability (kernel 5.8+) allows non-root users to load BPF programs.
+
+## References
+
+- [eBPF.io — Official Documentation](https://ebpf.io/)
+- [eBPF.io — What is eBPF?](https://ebpf.io/what-is-ebpf/)
+- [eBPF.io — Project Landscape](https://ebpf.io/projects/)
+- [Kernel BPF Documentation](https://www.kernel.org/doc/html/latest/bpf/)
+- [Kernel BPF Design Q&A](https://www.kernel.org/doc/html/latest/bpf/bpf_design_QA.html)
+- [Kernel BPF Instruction Set](https://www.kernel.org/doc/html/latest/bpf/standardization/instruction-set.html)
+- [man bpf(2) — BPF System Call](https://man7.org/linux/man-pages/man2/bpf.2.html)
+- [BCC — BPF Compiler Collection](https://github.com/iovisor/bcc)
+- [libbpf — C Library for BPF](https://github.com/libbpf/libbpf)
+- [Brendan Gregg — BPF Performance Tools](https://www.brendangregg.com/bpf-performance-tools-book.html)
+- [Cilium — eBPF Reference Guide](https://docs.cilium.io/en/latest/bpf/)
+- [Red Hat — eBPF Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/assembly_understanding-extended-bpf_managing-monitoring-and-updating-the-kernel)

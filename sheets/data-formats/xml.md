@@ -267,3 +267,16 @@ xmlstarlet el data.xml                         # list element paths
 - `xmllint --format` pretty-prints XML. `xmllint --noout` validates without output.
 - Prefer JSON for APIs and data exchange. XML remains dominant in enterprise, SOAP, and document-centric workflows.
 - Comments use `<!-- text -->` and cannot be nested.
+
+## References
+
+- [W3C XML 1.0 Specification](https://www.w3.org/TR/xml/) -- Extensible Markup Language (Fifth Edition)
+- [W3C XML Namespaces](https://www.w3.org/TR/xml-names/) -- namespace specification
+- [W3C XPath 1.0](https://www.w3.org/TR/xpath-10/) -- XPath expression language for XML
+- [W3C XSLT 1.0](https://www.w3.org/TR/xslt-10/) -- XML stylesheet transformations
+- [W3C XML Schema (XSD)](https://www.w3.org/TR/xmlschema11-1/) -- schema definition language
+- [RELAX NG Specification](https://relaxng.org/spec-20011203.html) -- compact alternative to XSD
+- [man xmllint](https://linux.die.net/man/1/xmllint) -- libxml2 CLI for parsing, validating, and formatting XML
+- [man xmlstarlet](https://xmlstar.sourceforge.net/doc/UG/xmlstarlet-ug.html) -- command-line XML toolkit
+- [SAX (Simple API for XML)](http://www.saxproject.org/) -- event-driven XML parsing interface
+- [libxml2 Documentation](https://gnome.pages.gitlab.gnome.org/libxml2/devhelp/) -- C XML parsing library

@@ -142,3 +142,13 @@ dig +json example.com                 # JSON format output
 - `dig` returns exit code 0 even when the query returns NXDOMAIN; check the status line or `+short` output
 - On macOS, system `dig` may lag behind; install BIND tools via Homebrew for the latest version
 - For quick lookups where you don't need detail, `host` or `nslookup` are shorter to type
+
+## References
+
+- [dig Man Page](https://man7.org/linux/man-pages/man1/dig.1.html)
+- [BIND 9 dig Reference](https://bind9.readthedocs.io/en/latest/manpages.html#dig)
+- [RFC 1035 — Domain Names: Implementation and Specification](https://www.rfc-editor.org/rfc/rfc1035)
+- [RFC 8484 — DNS Queries over HTTPS (DoH)](https://www.rfc-editor.org/rfc/rfc8484)
+- [IANA DNS Parameters — Resource Record Types](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [Cloudflare — DNS Query Debugging Guide](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/)
+- [ISC BIND 9 Administrator Reference Manual](https://bind9.readthedocs.io/en/latest/)

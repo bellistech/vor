@@ -170,3 +170,16 @@ nerdctl info                               # runtime info
 - `ctr run` is a convenience wrapper around `ctr container create` + `ctr task start`.
 - For rootless containerd, use `containerd-rootless-setuptool.sh install` and prefix commands with `nerdctl` (rootless by default with rootless containerd).
 - containerd uses OCI image spec; no proprietary image format.
+
+## References
+
+- [containerd Official Documentation](https://containerd.io/docs/)
+- [containerd GitHub Repository](https://github.com/containerd/containerd)
+- [containerd Getting Started Guide](https://containerd.io/docs/getting-started/)
+- [ctr CLI Reference](https://github.com/containerd/containerd/blob/main/docs/man/ctr.1.md)
+- [containerd Client API (Go)](https://pkg.go.dev/github.com/containerd/containerd)
+- [containerd Configuration](https://github.com/containerd/containerd/blob/main/docs/cri/config.md)
+- [containerd CRI Plugin](https://github.com/containerd/containerd/blob/main/docs/cri/crictl.md)
+- [nerdctl — Docker-compatible CLI for containerd](https://github.com/containerd/nerdctl)
+- [OCI Runtime Specification](https://github.com/opencontainers/runtime-spec)
+- [containerd Namespaces and Multi-tenancy](https://github.com/containerd/containerd/blob/main/docs/namespaces.md)

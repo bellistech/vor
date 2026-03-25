@@ -246,3 +246,16 @@ sudo zfs get userused@alice tank/data
 - `atime=off` is a significant performance improvement and should be set on every pool
 - Snapshots are free until data diverges; they only consume space as blocks change
 - `zpool scrub` is not a backup; it verifies on-disk integrity but does not protect against catastrophic loss
+
+## References
+
+- [OpenZFS Documentation](https://openzfs.github.io/openzfs-docs/)
+- [OpenZFS Admin Documentation](https://openzfs.github.io/openzfs-docs/man/master/8/)
+- [zpool(8) Man Page](https://openzfs.github.io/openzfs-docs/man/master/8/zpool.8.html)
+- [zfs(8) Man Page](https://openzfs.github.io/openzfs-docs/man/master/8/zfs.8.html)
+- [zfs-send(8) Man Page](https://openzfs.github.io/openzfs-docs/man/master/8/zfs-send.8.html)
+- [zfs-snapshot(8) Man Page](https://openzfs.github.io/openzfs-docs/man/master/8/zfs-snapshot.8.html)
+- [OpenZFS Performance Tuning](https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/index.html)
+- [Arch Wiki — ZFS](https://wiki.archlinux.org/title/ZFS)
+- [Ubuntu — ZFS Storage](https://ubuntu.com/server/docs/about-zfs)
+- [FreeBSD Handbook — ZFS](https://docs.freebsd.org/en/books/handbook/zfs/)

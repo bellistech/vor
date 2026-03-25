@@ -126,3 +126,14 @@ EOF
 - `batch` is useful for deferring heavy tasks until the machine is idle -- it checks load average before running.
 - The output of at jobs is mailed to the user. Redirect to a file or `/dev/null` to avoid mail.
 - `at -c <job>` shows the full environment and commands that will run -- useful for debugging.
+
+## References
+
+- [man at(1)](https://man7.org/linux/man-pages/man1/at.1.html)
+- [man atd(8)](https://man7.org/linux/man-pages/man8/atd.8.html)
+- [man batch(1)](https://man7.org/linux/man-pages/man1/batch.1.html)
+- [man atq(1) / atrm(1)](https://man7.org/linux/man-pages/man1/atq.1.html)
+- [man at.allow(5) / at.deny(5)](https://man7.org/linux/man-pages/man5/at.allow.5.html)
+- [Arch Wiki — at](https://wiki.archlinux.org/title/At)
+- [Ubuntu Manpage — at](https://manpages.ubuntu.com/manpages/noble/man1/at.1.html)
+- [Red Hat — Scheduling One-Time Tasks](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-system-services-with-systemctl_configuring-basic-system-settings)

@@ -161,3 +161,13 @@ rsync --list-only user@host:/remote/  # list remote directory
 - rsync over SSH is encrypted; rsync daemon protocol (rsync://) is not
 - `--dry-run` (`-n`) is your safety net — always use it with `--delete` the first time
 - For very large file sets, `--info=progress2` is much more useful than `--progress`
+
+## References
+
+- [rsync Official Documentation](https://rsync.samba.org/documentation.html)
+- [man rsync](https://man7.org/linux/man-pages/man1/rsync.1.html)
+- [man rsyncd.conf — rsync Daemon Configuration](https://man7.org/linux/man-pages/man5/rsyncd.conf.5.html)
+- [rsync — Algorithm Technical Report (Andrew Tridgell)](https://rsync.samba.org/tech_report/)
+- [rsync GitHub Repository](https://github.com/RsyncProject/rsync)
+- [Red Hat — Synchronizing Files with rsync](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_file_systems/synchronizing-two-directories-with-rsync_managing-file-systems)
+- [Arch Wiki — rsync](https://wiki.archlinux.org/title/Rsync)

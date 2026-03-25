@@ -333,3 +333,17 @@ caddy file-server --root /var/www/html --listen :8080
 - The JSON config API at `localhost:2019` allows live config changes without reload.
 - Caddy stores certificates in `~/.local/share/caddy/` (or `$XDG_DATA_HOME/caddy/`).
 - Use `tls internal` for internal services to get self-signed certs without Let's Encrypt.
+
+## References
+
+- [Caddy Documentation](https://caddyserver.com/docs/)
+- [Caddyfile Concepts](https://caddyserver.com/docs/caddyfile/concepts)
+- [Caddyfile Directives](https://caddyserver.com/docs/caddyfile/directives)
+- [Caddy reverse_proxy Directive](https://caddyserver.com/docs/caddyfile/directives/reverse_proxy)
+- [Caddy TLS / Automatic HTTPS](https://caddyserver.com/docs/automatic-https)
+- [Caddy Request Matchers](https://caddyserver.com/docs/caddyfile/matchers)
+- [Caddy JSON API](https://caddyserver.com/docs/api)
+- [Caddy Modules and Plugins](https://caddyserver.com/docs/modules/)
+- [Caddy Quick Starts](https://caddyserver.com/docs/quick-starts)
+- [Caddy GitHub Repository](https://github.com/caddyserver/caddy)
+- [Caddy Community Forum](https://caddy.community/)

@@ -242,3 +242,12 @@ screen -T screen-256color
 - `Ctrl-a :fit` resizes the current window to the terminal dimensions -- useful after reattaching from a different-sized terminal.
 - To convert from screen to tmux: sessions map 1:1, and most concepts are similar, but the config syntax is completely different.
 - If Ctrl-s freezes your terminal (flow control), Ctrl-q unfreezes it. Disable with `defflow off`.
+
+## References
+
+- [GNU Screen Manual](https://www.gnu.org/software/screen/manual/) -- complete user manual
+- [man screen](https://man7.org/linux/man-pages/man1/screen.1.html) -- screen man page
+- [GNU Screen FAQ](https://www.gnu.org/software/screen/faq.html) -- frequently asked questions
+- [Screen Quick Reference](https://www.gnu.org/software/screen/manual/html_node/Commands.html) -- command index
+- [Screen User's Manual -- Key Bindings](https://www.gnu.org/software/screen/manual/html_node/Default-Key-Bindings.html) -- default keybindings
+- [GNU Screen Git Repository](https://git.savannah.gnu.org/cgit/screen.git) -- source code

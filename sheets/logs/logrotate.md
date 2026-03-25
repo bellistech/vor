@@ -296,3 +296,14 @@ cat /var/lib/logrotate/status               # last rotation times
 - `su myapp myapp` is required when logrotate runs as root but the log directory is owned by a non-root user.
 - `maxage 90` automatically removes rotated files older than 90 days, acting as a cleanup mechanism.
 - logrotate runs via cron (usually `/etc/cron.daily/logrotate`). Check that cron is running if rotation stops happening.
+
+## References
+
+- [man logrotate(8)](https://man7.org/linux/man-pages/man8/logrotate.8.html)
+- [man logrotate.conf(5)](https://man7.org/linux/man-pages/man5/logrotate.conf.5.html)
+- [logrotate GitHub Repository](https://github.com/logrotate/logrotate)
+- [logrotate README](https://github.com/logrotate/logrotate/blob/main/README.md)
+- [Arch Wiki — Logrotate](https://wiki.archlinux.org/title/Logrotate)
+- [Red Hat — Managing Log Files with logrotate](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/assembly_troubleshooting-problems-using-log-files_configuring-basic-system-settings)
+- [Ubuntu — Logrotate](https://manpages.ubuntu.com/manpages/noble/man8/logrotate.8.html)
+- [Ubuntu Server Guide — Log Rotation](https://help.ubuntu.com/community/LinuxLogFiles)

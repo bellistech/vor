@@ -185,3 +185,16 @@ sudo dumpe2fs -h /dev/sdb1 | grep -E "Block count|Free blocks|Inode count|Free i
 - Always run `e2fsck -f` before shrinking; `resize2fs` refuses to shrink without a clean fsck
 - `metadata_csum` (enabled by default since e2fsprogs 1.44) adds per-block checksums; older kernels may not support it
 - Journal recovery is automatic on mount; if it fails, `e2fsck` is the next step
+
+## References
+
+- [ext4 Wiki](https://ext4.wiki.kernel.org/)
+- [Kernel ext4 Documentation](https://www.kernel.org/doc/html/latest/filesystems/ext4/)
+- [mke2fs(8) Man Page](https://man7.org/linux/man-pages/man8/mke2fs.8.html)
+- [tune2fs(8) Man Page](https://man7.org/linux/man-pages/man8/tune2fs.8.html)
+- [e2fsck(8) Man Page](https://man7.org/linux/man-pages/man8/e2fsck.8.html)
+- [dumpe2fs(8) Man Page](https://man7.org/linux/man-pages/man8/dumpe2fs.8.html)
+- [resize2fs(8) Man Page](https://man7.org/linux/man-pages/man8/resize2fs.8.html)
+- [ext4(5) Man Page](https://man7.org/linux/man-pages/man5/ext4.5.html)
+- [Arch Wiki — ext4](https://wiki.archlinux.org/title/Ext4)
+- [Red Hat RHEL 9 — Managing ext4 File Systems](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/getting-started-with-an-ext4-file-system_managing-file-systems)

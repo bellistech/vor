@@ -124,3 +124,14 @@ dmesg -T | grep segfault
 - `-w` (follow mode) is essential when diagnosing hardware issues in real time (plug in a USB device, watch output).
 - `dmesg -c` both displays AND clears the buffer -- useful for isolating messages from a specific action.
 - On systems with systemd, `journalctl -k` is an alternative that supports the same time filtering as journalctl.
+
+## References
+
+- [man dmesg(1)](https://man7.org/linux/man-pages/man1/dmesg.1.html)
+- [man syslog(2)](https://man7.org/linux/man-pages/man2/syslog.2.html)
+- [man kmsg(4) — /dev/kmsg](https://man7.org/linux/man-pages/man4/kmsg.4.html)
+- [Kernel Log Buffer Documentation](https://www.kernel.org/doc/html/latest/core-api/printk-basics.html)
+- [Kernel printk Documentation](https://www.kernel.org/doc/html/latest/admin-guide/serial-console.html)
+- [Arch Wiki — Kernel Messages](https://wiki.archlinux.org/title/Syslog)
+- [Red Hat — Inspecting Kernel Ring Buffer](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/getting-started-with-kernel-logging_managing-monitoring-and-updating-the-kernel)
+- [Ubuntu Manpage — dmesg](https://manpages.ubuntu.com/manpages/noble/man1/dmesg.1.html)

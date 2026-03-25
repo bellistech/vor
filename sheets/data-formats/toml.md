@@ -254,3 +254,14 @@ Minimal configuration format that maps clearly to a hash table, used by Cargo, p
 - Dotted keys (`physical.color = "blue"`) are syntactic sugar for nested tables.
 - TOML has native datetime support, unlike JSON and YAML.
 - Use `taplo` or `toml-sort` for formatting and validating TOML files.
+
+## References
+
+- [TOML Specification (v1.0)](https://toml.io/en/v1.0.0) -- full language specification
+- [TOML GitHub Repository](https://github.com/toml-lang/toml) -- spec source, issues, and ABNF grammar
+- [TOML Wiki -- Implementations](https://github.com/toml-lang/toml/wiki) -- parsers and encoders by language
+- [taplo](https://taplo.tamasfe.dev/) -- TOML toolkit: formatter, linter, LSP, and schema validation
+- [Cargo Manifest Format](https://doc.rust-lang.org/cargo/reference/manifest.html) -- TOML used in Rust's Cargo.toml
+- [pyproject.toml Specification (PEP 518)](https://peps.python.org/pep-0518/) -- TOML in Python packaging
+- [BurntSushi/toml (Go)](https://github.com/BurntSushi/toml) -- reference Go TOML library
+- [toml-sort](https://github.com/pappasam/toml-sort) -- CLI tool for sorting and formatting TOML files

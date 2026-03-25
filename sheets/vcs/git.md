@@ -271,3 +271,17 @@ git submodule deinit vendor/lib        # unregister
 - `git diff --cached` is the same as `git diff --staged`.
 - `git switch` and `git restore` are the modern replacements for `git checkout` -- they split its overloaded behavior.
 - `git worktree` lets you work on multiple branches simultaneously without stashing or cloning again.
+
+## References
+
+- [Git Documentation](https://git-scm.com/doc) -- official docs, book, and videos
+- [Git Reference](https://git-scm.com/docs) -- man pages for every git command
+- [Pro Git Book](https://git-scm.com/book/en/v2) -- free comprehensive book by Scott Chacon and Ben Straub
+- [man git](https://man7.org/linux/man-pages/man1/git.1.html) -- git man page
+- [man gitrevisions](https://man7.org/linux/man-pages/man7/gitrevisions.7.html) -- revision and range syntax (HEAD~2, @{upstream}, etc.)
+- [man gitworkflows](https://man7.org/linux/man-pages/man7/gitworkflows.7.html) -- recommended workflows
+- [man gitattributes](https://man7.org/linux/man-pages/man5/gitattributes.5.html) -- per-path settings (LFS, diff, merge)
+- [Git Internals (Pro Git Ch. 10)](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain) -- objects, refs, packfiles
+- [git-tips](https://github.com/git-tips/tips) -- collection of practical git tips
+- [Oh Shit, Git!?!](https://ohshitgit.com/) -- how to undo common git mistakes
+- [Git Flight Rules](https://github.com/k88hudson/git-flight-rules) -- what to do when things go wrong

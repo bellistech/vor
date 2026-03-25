@@ -188,3 +188,15 @@ iptables-save | iptables-restore-translate    # translate full ruleset
 - `nft monitor` watches for rule changes in real time
 - `nft describe tcp dport` shows valid types and ranges for any selector
 - iptables compatibility layer (`iptables-nft`) lets old scripts work with nftables kernel backend
+
+## References
+
+- [nftables Wiki](https://wiki.nftables.org/)
+- [nftables Wiki — Quick Reference](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
+- [nftables Wiki — Moving from iptables to nftables](https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables)
+- [man nft](https://man7.org/linux/man-pages/man8/nft.8.html)
+- [Netfilter Project — nftables](https://www.netfilter.org/projects/nftables/)
+- [Linux Kernel — Netfilter Documentation](https://www.kernel.org/doc/html/latest/networking/netfilter.html)
+- [Red Hat — Getting Started with nftables](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_firewalls_and_packet_filters/getting-started-with-nftables_firewall-packet-filters)
+- [Debian Wiki — nftables](https://wiki.debian.org/nftables)
+- [Arch Wiki — nftables](https://wiki.archlinux.org/title/Nftables)

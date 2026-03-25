@@ -269,3 +269,17 @@ echo "enable server app_servers/app1" | socat stdio /var/run/haproxy/admin.sock
 - Stick tables with `http_req_rate` are a lightweight way to rate-limit without external tools.
 - `haproxy -d -f haproxy.cfg` runs in debug mode (foreground, verbose) for troubleshooting.
 - The stats page at `/stats` is the fastest way to see backend health and traffic distribution.
+
+## References
+
+- [HAProxy Documentation](https://docs.haproxy.org/)
+- [HAProxy Configuration Manual](https://www.haproxy.org/download/2.8/doc/configuration.txt)
+- [HAProxy Starter Guide](https://www.haproxy.org/download/2.8/doc/intro.txt)
+- [HAProxy Management Guide](https://www.haproxy.org/download/2.8/doc/management.txt)
+- [HAProxy Logging](https://www.haproxy.com/blog/introduction-to-haproxy-logging)
+- [HAProxy ACL Documentation](https://docs.haproxy.org/2.8/configuration.html#7)
+- [HAProxy Health Checks](https://www.haproxy.com/blog/how-to-enable-health-checks-in-haproxy)
+- [HAProxy SSL/TLS Configuration](https://www.haproxy.com/blog/haproxy-ssl-termination)
+- [HAProxy Enterprise Documentation](https://www.haproxy.com/documentation/)
+- [HAProxy GitHub Repository](https://github.com/haproxy/haproxy)
+- [HAProxy Runtime API](https://www.haproxy.org/download/2.8/doc/management.txt)

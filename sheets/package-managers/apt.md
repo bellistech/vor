@@ -160,3 +160,16 @@ apt-get changelog nginx                # view package changelog
 - After adding a new source, always run `sudo apt update` before trying to install from it.
 - `apt purge` removes config files; `apt remove` does not. Use `purge` for a clean uninstall.
 - For unattended upgrades, install `unattended-upgrades` and configure `/etc/apt/apt.conf.d/50unattended-upgrades`.
+
+## References
+
+- [apt(8) Man Page](https://manpages.debian.org/bookworm/apt/apt.8.en.html)
+- [apt-get(8) Man Page](https://manpages.debian.org/bookworm/apt/apt-get.8.en.html)
+- [apt-cache(8) Man Page](https://manpages.debian.org/bookworm/apt/apt-cache.8.en.html)
+- [dpkg(1) Man Page](https://manpages.debian.org/bookworm/dpkg/dpkg.1.en.html)
+- [Debian Package Management](https://www.debian.org/doc/manuals/debian-reference/ch02.en.html)
+- [Ubuntu Package Management Guide](https://ubuntu.com/server/docs/package-management)
+- [sources.list(5) Man Page](https://manpages.debian.org/bookworm/apt/sources.list.5.en.html)
+- [APT Preferences (Pinning)](https://manpages.debian.org/bookworm/apt/apt_preferences.5.en.html)
+- [Debian APT HOWTO](https://www.debian.org/doc/manuals/apt-howto/)
+- [Unattended Upgrades](https://wiki.debian.org/UnattendedUpgrades)

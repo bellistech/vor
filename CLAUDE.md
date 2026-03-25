@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with 97 embedded markdown cheatsheets. Better than man pages.
+Single-binary Go CLI with 118 embedded markdown cheatsheets across 28 categories. Built-in calculator and subnet calculator. Better than man pages.
 
 ## Build
 

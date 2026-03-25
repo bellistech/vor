@@ -246,3 +246,18 @@ cargo bench                                # run benchmarks
 - `#[derive(Debug)]` on all structs. You will need it for error messages.
 - `impl From<X> for Y` enables the `?` operator and `.into()` conversions automatically.
 - `Vec`, `HashMap`, and `String` allocate on the heap. Slices (`&[T]`, `&str`) are just views.
+
+## References
+
+- [The Rust Book](https://doc.rust-lang.org/book/) -- official tutorial and guide
+- [Rust Standard Library](https://doc.rust-lang.org/std/) -- stdlib API reference
+- [Rust Reference](https://doc.rust-lang.org/reference/) -- language syntax and semantics reference
+- [Rust by Example](https://doc.rust-lang.org/rust-by-example/) -- learn Rust through annotated examples
+- [The Cargo Book](https://doc.rust-lang.org/cargo/) -- package manager and build system guide
+- [crates.io](https://crates.io/) -- Rust package registry
+- [docs.rs](https://docs.rs/) -- auto-generated documentation for every crate
+- [Rust Edition Guide](https://doc.rust-lang.org/edition-guide/) -- edition differences (2015, 2018, 2021, 2024)
+- [Rustonomicon](https://doc.rust-lang.org/nomicon/) -- guide to unsafe Rust and advanced topics
+- [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/) -- conventions for writing idiomatic Rust APIs
+- [Rust Playground](https://play.rust-lang.org/) -- run and share Rust code online
+- [This Week in Rust](https://this-week-in-rust.org/) -- weekly newsletter of Rust ecosystem updates

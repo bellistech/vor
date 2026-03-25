@@ -151,3 +151,12 @@ tar cf - /var/data/ | pv | gzip > backup.tar.gz
 - `tar` does not follow symlinks by default. Use `-h` to archive the targets instead.
 - Compression comparison: `gzip` is fastest, `xz` has the best ratio, `zstd` is the best balance of speed and ratio.
 - `-p` (preserve permissions) is on by default when running as root but not as a regular user.
+
+## References
+
+- [GNU Tar Manual](https://www.gnu.org/software/tar/manual/)
+- [tar(1) Man Page](https://man7.org/linux/man-pages/man1/tar.1.html)
+- [GNU Tar Operations](https://www.gnu.org/software/tar/manual/html_section/tar_toc.html)
+- [pax (POSIX Archiver) Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/pax.html)
+- [bsdtar (libarchive)](https://www.libarchive.org/)
+- [GNU Tar Incremental Backups](https://www.gnu.org/software/tar/manual/html_node/Incremental-Dumps.html)

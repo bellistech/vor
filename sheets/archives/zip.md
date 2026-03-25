@@ -141,3 +141,12 @@ zip -r --symlinks archive.zip project/
 - zip preserves directory structure by default. Use `unzip -j` to extract flat (ignore directory paths).
 - `-x` exclude patterns must come after the source path in the command.
 - zip is the best choice when archives need to be opened on Windows systems without additional software.
+
+## References
+
+- [Info-ZIP Home Page](https://infozip.sourceforge.net/)
+- [zip(1) Man Page](https://man7.org/linux/man-pages/man1/zip.1.html)
+- [unzip(1) Man Page](https://man7.org/linux/man-pages/man1/unzip.1.html)
+- [ZIP File Format Specification (APPNOTE)](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT)
+- [libzip Library](https://libzip.org/)
+- [Python zipfile Module](https://docs.python.org/3/library/zipfile.html)

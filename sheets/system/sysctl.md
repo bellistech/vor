@@ -123,3 +123,15 @@ sysctl -w kernel.sysrq=1
 - `vm.max_map_count=262144` is required by Elasticsearch -- the default 65530 causes it to fail.
 - `fs.inotify.max_user_watches` too low causes "no space left on device" errors from tools like webpack, VSCode, or inotifywait.
 - `sysctl --system` reloads from all standard locations (`/etc/sysctl.d/`, `/run/sysctl.d/`, `/usr/lib/sysctl.d/`).
+
+## References
+
+- [man sysctl(8)](https://man7.org/linux/man-pages/man8/sysctl.8.html)
+- [man sysctl.conf(5)](https://man7.org/linux/man-pages/man5/sysctl.conf.5.html)
+- [man sysctl.d(5)](https://man7.org/linux/man-pages/man5/sysctl.d.5.html)
+- [man proc(5) — /proc/sys](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [Kernel sysctl Admin Guide](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/)
+- [Kernel sysctl/vm Documentation](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/vm.html)
+- [Kernel sysctl/net Documentation](https://www.kernel.org/doc/html/latest/admin-guide/sysctl/net.html)
+- [Arch Wiki — Sysctl](https://wiki.archlinux.org/title/Sysctl)
+- [Red Hat — Configuring Kernel Parameters](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/configuring-kernel-parameters-at-runtime_managing-monitoring-and-updating-the-kernel)

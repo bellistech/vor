@@ -222,3 +222,16 @@ sudo vgchange -an data_vg               # deactivate all LVs in VG
 - Add LVM entries to `/etc/fstab` using the `/dev/mapper/` path or UUID from `blkid`
 - Thin provisioning allows over-commitment but requires monitoring; set up alerts on pool usage
 - `lvm.conf` can restrict which devices LVM scans; useful in multipath or VM environments
+
+## References
+
+- [LVM2 Documentation](https://sourceware.org/lvm2/)
+- [lvm(8) Man Page](https://man7.org/linux/man-pages/man8/lvm.8.html)
+- [pvcreate(8) Man Page](https://man7.org/linux/man-pages/man8/pvcreate.8.html)
+- [vgcreate(8) Man Page](https://man7.org/linux/man-pages/man8/vgcreate.8.html)
+- [lvcreate(8) Man Page](https://man7.org/linux/man-pages/man8/lvcreate.8.html)
+- [lvextend(8) Man Page](https://man7.org/linux/man-pages/man8/lvextend.8.html)
+- [Red Hat RHEL 9 — Configuring and Managing LVM](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_and_managing_logical_volumes/)
+- [Arch Wiki — LVM](https://wiki.archlinux.org/title/LVM)
+- [Ubuntu — LVM Guide](https://ubuntu.com/server/docs/about-logical-volume-management-lvm)
+- [Kernel Device Mapper Documentation](https://www.kernel.org/doc/html/latest/admin-guide/device-mapper/)

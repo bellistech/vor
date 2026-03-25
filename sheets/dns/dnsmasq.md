@@ -265,3 +265,15 @@ sudo brew services start dnsmasq
 - On macOS, use `/etc/resolver/` directory to route specific TLDs to dnsmasq without changing system DNS.
 - `log-queries` is invaluable for debugging but generates a lot of output. Disable in production.
 - dnsmasq reads `/etc/hosts` on startup. Changes to `/etc/hosts` require a SIGHUP or restart.
+
+## References
+
+- [Dnsmasq Official Documentation](https://thekelleys.org.uk/dnsmasq/doc.html)
+- [Dnsmasq Man Page](https://thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html)
+- [Dnsmasq FAQ](https://thekelleys.org.uk/dnsmasq/docs/FAQ)
+- [Dnsmasq Setup Guide](https://thekelleys.org.uk/dnsmasq/docs/setup.html)
+- [man dnsmasq](https://man7.org/linux/man-pages/man8/dnsmasq.8.html)
+- [Arch Wiki — Dnsmasq](https://wiki.archlinux.org/title/Dnsmasq)
+- [Red Hat — Dnsmasq Configuration](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_networking_infrastructure_services/providing-dhcp-services_networking-infrastructure-services)
+- [RFC 2131 — Dynamic Host Configuration Protocol (DHCP)](https://www.rfc-editor.org/rfc/rfc2131)
+- [RFC 3315 — DHCPv6](https://www.rfc-editor.org/rfc/rfc3315)

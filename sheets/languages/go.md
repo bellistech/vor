@@ -264,3 +264,16 @@ CGO_ENABLED=0 go build -o myapp .     # static binary (no cgo)
 - Slices and maps are reference types. Passing them to functions shares the underlying data.
 - `sync.Once` is the safest way to do one-time initialization in concurrent code.
 - `go vet` catches common mistakes (printf format errors, unreachable code). Run it alongside tests.
+
+## References
+
+- [Go Documentation](https://go.dev/doc/) -- getting started, tutorials, and guides
+- [Go Language Specification](https://go.dev/ref/spec) -- formal language spec
+- [Go Standard Library](https://pkg.go.dev/std) -- stdlib package reference
+- [Effective Go](https://go.dev/doc/effective_go) -- idiomatic Go patterns and conventions
+- [Go Module Reference](https://go.dev/ref/mod) -- module system, go.mod, versioning
+- [Go Blog](https://go.dev/blog/) -- official articles on features and best practices
+- [Go Playground](https://go.dev/play/) -- run and share Go code online
+- [Go Wiki](https://go.dev/wiki/) -- community-maintained guides and FAQs
+- [pkg.go.dev](https://pkg.go.dev/) -- package discovery and documentation
+- [Go Release History](https://go.dev/doc/devel/release) -- changelog for every Go release

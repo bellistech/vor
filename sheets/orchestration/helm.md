@@ -170,3 +170,16 @@ helm diff upgrade my-nginx bitnami/nginx -f values-prod.yaml   # using helm-diff
 - Chart version (Chart.yaml `version`) and app version (`appVersion`) are different. Chart version tracks the Helm chart itself; app version tracks the software inside.
 - Use `helm list --failed` to find botched releases that need cleanup.
 - `helm uninstall --keep-history` lets you inspect or rollback a deleted release; without it, the history is gone.
+
+## References
+
+- [Helm Documentation](https://helm.sh/docs/)
+- [Helm CLI Reference](https://helm.sh/docs/helm/)
+- [Chart Template Guide](https://helm.sh/docs/chart_template_guide/)
+- [Chart.yaml Schema](https://helm.sh/docs/topics/charts/)
+- [Helm Built-in Objects](https://helm.sh/docs/chart_template_guide/builtin_objects/)
+- [Helm Best Practices](https://helm.sh/docs/chart_best_practices/)
+- [Helm GitHub Repository](https://github.com/helm/helm)
+- [Artifact Hub — Helm Chart Registry](https://artifacthub.io/)
+- [Helm Provenance and Integrity](https://helm.sh/docs/topics/provenance/)
+- [Library Charts](https://helm.sh/docs/topics/library_charts/)

@@ -148,3 +148,12 @@ ncat --sh-exec "echo hello" -l 8080   # execute command per connection
 - UDP port scanning with `nc -zu` is unreliable — an "open" result just means no ICMP unreachable was received
 - Named pipe relays are fragile; use `socat` for production relays
 - Never expose `-e /bin/bash` on an untrusted network — it creates a backdoor
+
+## References
+
+- [man ncat (Nmap version)](https://man7.org/linux/man-pages/man1/ncat.1.html)
+- [Ncat Users' Guide](https://nmap.org/ncat/guide/)
+- [Ncat Reference Guide](https://nmap.org/ncat/)
+- [OpenBSD netcat Man Page](https://man.openbsd.org/nc.1)
+- [GNU Netcat Project](https://netcat.sourceforge.net/)
+- [socat — Multipurpose Relay (nc alternative)](http://www.dest-unreach.org/socat/doc/socat.html)

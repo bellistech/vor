@@ -292,3 +292,17 @@ kitchen list          # show status
 - Test Kitchen with Docker (`kitchen-docker`) is faster than Vagrant for testing.
 - `chef-client -o 'recipe[nginx]'` overrides the run list for a single run.
 - Data bag secrets should never be committed to version control.
+
+## References
+
+- [Chef Documentation](https://docs.chef.io/)
+- [Chef Infra Client Overview](https://docs.chef.io/chef_client_overview/)
+- [Chef Resources Reference](https://docs.chef.io/resources/)
+- [Chef Cookbook Development](https://docs.chef.io/cookbooks/)
+- [knife CLI Reference](https://docs.chef.io/workstation/knife/)
+- [Chef InSpec — Compliance as Code](https://docs.chef.io/inspec/)
+- [Chef Supermarket — Community Cookbooks](https://supermarket.chef.io/)
+- [Test Kitchen](https://docs.chef.io/workstation/kitchen/)
+- [Chef GitHub Repository](https://github.com/chef/chef)
+- [Ohai — System Profiling](https://docs.chef.io/ohai/)
+- [Chef Workstation](https://docs.chef.io/workstation/)

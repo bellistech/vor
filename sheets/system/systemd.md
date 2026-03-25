@@ -170,3 +170,17 @@ systemctl list-dependencies --reverse nginx.service
 - Use `Type=notify` for services that signal readiness via sd_notify (e.g. PostgreSQL).
 - `Restart=on-failure` only restarts on non-zero exit; use `Restart=always` for services that should never stay down.
 - `systemctl --user` manages per-user services (e.g. `systemctl --user start syncthing`).
+
+## References
+
+- [man systemctl(1)](https://man7.org/linux/man-pages/man1/systemctl.1.html)
+- [man systemd(1)](https://man7.org/linux/man-pages/man1/systemd.1.html)
+- [man systemd.unit(5)](https://man7.org/linux/man-pages/man5/systemd.unit.5.html)
+- [man systemd.service(5)](https://man7.org/linux/man-pages/man5/systemd.service.5.html)
+- [man systemd.exec(5)](https://man7.org/linux/man-pages/man5/systemd.exec.5.html)
+- [systemd Documentation Index](https://www.freedesktop.org/software/systemd/man/latest/)
+- [systemd Unit File Reference](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)
+- [Arch Wiki — systemd](https://wiki.archlinux.org/title/Systemd)
+- [Arch Wiki — systemd FAQ](https://wiki.archlinux.org/title/Systemd/FAQ)
+- [Red Hat — Managing System Services](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-system-services-with-systemctl_configuring-basic-system-settings)
+- [Ubuntu — systemd](https://manpages.ubuntu.com/manpages/noble/man1/systemd.1.html)

@@ -119,3 +119,14 @@ btop
 - In tree mode, killing a parent sends the signal to that process only (children may be reparented to init).
 - `htop -C` starts without color (useful for screen readers or monochrome terminals).
 - btop is the modern successor with GPU, disk, and network panels but is not installed by default.
+
+## References
+
+- [man htop(1)](https://man7.org/linux/man-pages/man1/htop.1.html)
+- [man top(1)](https://man7.org/linux/man-pages/man1/top.1.html)
+- [man proc(5) — /proc filesystem](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [htop Project Site](https://htop.dev/)
+- [htop GitHub — README and FAQ](https://github.com/htop-dev/htop)
+- [Arch Wiki — htop](https://wiki.archlinux.org/title/Htop)
+- [Kernel /proc Documentation](https://www.kernel.org/doc/html/latest/filesystems/proc.html)
+- [Ubuntu Manpage — htop](https://manpages.ubuntu.com/manpages/noble/man1/htop.1.html)

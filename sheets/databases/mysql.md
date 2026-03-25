@@ -209,3 +209,17 @@ mysqlbinlog --start-datetime="2025-01-15 10:00:00" binlog.000042 | mysql -u root
 - `TRUNCATE` is faster than `DELETE FROM table` for removing all rows, but cannot be rolled back.
 - Set `innodb_buffer_pool_size` to 70-80% of available RAM on a dedicated database server.
 - `SHOW CREATE TABLE` gives the exact DDL including indexes and constraints, more useful than `DESCRIBE`.
+
+## References
+
+- [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/)
+- [MySQL SQL Statements](https://dev.mysql.com/doc/refman/8.0/en/sql-statements.html)
+- [MySQL Data Types](https://dev.mysql.com/doc/refman/8.0/en/data-types.html)
+- [MySQL InnoDB Storage Engine](https://dev.mysql.com/doc/refman/8.0/en/innodb-storage-engine.html)
+- [MySQL Server System Variables](https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html)
+- [mysql Client Reference](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
+- [mysqldump Reference](https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html)
+- [MySQL EXPLAIN Output Format](https://dev.mysql.com/doc/refman/8.0/en/explain-output.html)
+- [MySQL Performance Schema](https://dev.mysql.com/doc/refman/8.0/en/performance-schema.html)
+- [MySQL Security Guide](https://dev.mysql.com/doc/refman/8.0/en/security.html)
+- [MySQL GitHub Repository](https://github.com/mysql/mysql-server)

@@ -166,3 +166,16 @@ rpm --import https://example.com/RPM-GPG-KEY  # import GPG key
 - `max_parallel_downloads=10` dramatically speeds up large installs and upgrades.
 - Unlike apt, `dnf upgrade` handles both package updates and dependency changes in one command.
 - `dnf needs-restarting -r` checks if a reboot is needed (after kernel/glibc updates).
+
+## References
+
+- [DNF Documentation](https://dnf.readthedocs.io/)
+- [DNF Command Reference](https://dnf.readthedocs.io/en/latest/command_ref.html)
+- [DNF Configuration Reference](https://dnf.readthedocs.io/en/latest/conf_ref.html)
+- [dnf(8) Man Page](https://man7.org/linux/man-pages/man8/dnf.8.html)
+- [rpm(8) Man Page](https://man7.org/linux/man-pages/man8/rpm.8.html)
+- [Fedora Package Management](https://docs.fedoraproject.org/en-US/quick-docs/dnf/)
+- [RHEL Package Management](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_software_with_the_dnf_tool/index)
+- [DNF Modularity](https://docs.fedoraproject.org/en-US/modularity/)
+- [DNF Automatic (Unattended Updates)](https://dnf.readthedocs.io/en/latest/automatic.html)
+- [DNF GitHub Repository](https://github.com/rpm-software-management/dnf)

@@ -152,3 +152,14 @@ tcpdump -i eth0 -ttttt             # delta from first packet
 - `tcpdump -r file.pcap | wc -l` quickly counts packets in a capture
 - PCAP files from tcpdump open in Wireshark/tshark for detailed analysis
 - On busy interfaces, capture to file and analyze later to avoid dropping packets
+
+## References
+
+- [tcpdump Official Man Page](https://www.tcpdump.org/manpages/tcpdump.1.html)
+- [tcpdump/libpcap Project](https://www.tcpdump.org/)
+- [pcap-filter — BPF Filter Syntax](https://www.tcpdump.org/manpages/pcap-filter.7.html)
+- [libpcap Documentation](https://www.tcpdump.org/manpages/pcap.3pcap.html)
+- [man tcpdump](https://man7.org/linux/man-pages/man1/tcpdump.1.html)
+- [Wireshark — Capture Filters (BPF Syntax)](https://wiki.wireshark.org/CaptureFilters)
+- [Cloudflare Blog — BPF and tcpdump](https://blog.cloudflare.com/bpf-the-forgotten-bytecode/)
+- [Daniel Miessler — tcpdump Tutorial and Primer](https://danielmiessler.com/p/tcpdump/)

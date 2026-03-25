@@ -120,3 +120,13 @@ netstat -an -f inet6    # IPv6 only
 - `netstat -s` is still useful even on modern systems — `ss -s` shows less detail
 - `netstat -i` output is cumulative since boot; use `sar` or `nstat` for interval stats
 - Watch for high `RX-DRP` or `RX-OVR` in `netstat -i` — indicates kernel is dropping packets
+
+## References
+
+- [man netstat](https://man7.org/linux/man-pages/man8/netstat.8.html)
+- [man ss — socket statistics (modern replacement)](https://man7.org/linux/man-pages/man8/ss.8.html)
+- [man proc — /proc/net/* entries used by netstat](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [net-tools Source Repository](https://sourceforge.net/projects/net-tools/)
+- [iproute2 — Linux Foundation Wiki](https://wiki.linuxfoundation.org/networking/iproute2)
+- [Linux Kernel — Networking Statistics](https://www.kernel.org/doc/html/latest/networking/statistics.html)
+- [Red Hat — Monitoring Network Traffic](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/index)

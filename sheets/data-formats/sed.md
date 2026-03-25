@@ -250,3 +250,14 @@ sed -f commands.sed file.txt
 - `&` in the replacement refers to the entire matched text.
 - sed processes line by line. For multi-line operations, use `N` to pull the next line into the pattern space.
 - For complex transformations, consider `awk` or `perl -pe` instead of fighting with hold space.
+
+## References
+
+- [GNU Sed Manual](https://www.gnu.org/software/sed/manual/) -- complete reference for GNU sed
+- [man sed](https://man7.org/linux/man-pages/man1/sed.1.html) -- sed man page
+- [POSIX sed Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sed.html) -- portable sed behavior
+- [Sed One-Liners Explained](https://catonmat.net/sed-one-liners-explained-part-one) -- practical recipes with explanations
+- [Sed FAQ](https://sed.sourceforge.io/sedfaq.html) -- common questions and solutions
+- [Grymoire Sed Tutorial](https://www.grymoire.com/Unix/Sed.html) -- in-depth tutorial with examples
+- [GNU Sed Addresses](https://www.gnu.org/software/sed/manual/html_node/Addresses-overview.html) -- line and pattern address syntax
+- [regex(7) Man Page](https://man7.org/linux/man-pages/man7/regex.7.html) -- POSIX regex used by sed

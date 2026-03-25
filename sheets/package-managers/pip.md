@@ -169,3 +169,16 @@ twine upload --repository testpypi dist/*  # upload to test PyPI
 - `pip list --not-required` shows top-level packages -- useful for auditing what you actually depend on.
 - Environment markers in requirements: `pywin32; sys_platform == "win32"` for platform-specific deps.
 - Prefer `python3 -m pip` over bare `pip` to ensure you are using the right Python interpreter.
+
+## References
+
+- [pip Documentation](https://pip.pypa.io/en/stable/)
+- [pip install Reference](https://pip.pypa.io/en/stable/cli/pip_install/)
+- [pip Requirements File Format](https://pip.pypa.io/en/stable/reference/requirements-file-format/)
+- [pip Configuration](https://pip.pypa.io/en/stable/topics/configuration/)
+- [Python venv Module](https://docs.python.org/3/library/venv.html)
+- [PyPI (Python Package Index)](https://pypi.org/)
+- [Python Packaging User Guide](https://packaging.python.org/)
+- [pip-tools (pip-compile)](https://pip-tools.readthedocs.io/)
+- [Setuptools Documentation](https://setuptools.pypa.io/en/latest/)
+- [pip GitHub Repository](https://github.com/pypa/pip)

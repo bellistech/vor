@@ -169,3 +169,15 @@ tshark -r capture.pcap -z io,phs -q
 - For TLS decryption, set `SSLKEYLOGFILE=/path/to/keys.log` before starting the client application
 - `-b files:N -b filesize:M` creates a ring buffer — essential for continuous monitoring without filling disk
 - `tshark` requires the same permissions as tcpdump (root or cap_net_raw)
+
+## References
+
+- [Wireshark/tshark Official Documentation](https://www.wireshark.org/docs/)
+- [tshark Man Page](https://www.wireshark.org/docs/man-pages/tshark.html)
+- [Wireshark Display Filter Reference](https://www.wireshark.org/docs/dfref/)
+- [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
+- [Wireshark Wiki — CaptureFilters](https://wiki.wireshark.org/CaptureFilters)
+- [Wireshark Wiki — DisplayFilters](https://wiki.wireshark.org/DisplayFilters)
+- [editcap Man Page](https://www.wireshark.org/docs/man-pages/editcap.html)
+- [mergecap Man Page](https://www.wireshark.org/docs/man-pages/mergecap.html)
+- [pcap-filter — BPF Filter Syntax](https://www.tcpdump.org/manpages/pcap-filter.7.html)

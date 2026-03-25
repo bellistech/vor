@@ -187,3 +187,14 @@ find / -path /proc -prune -o -path /sys -prune -o -type f -name "*.conf" -print
 - `-exec {} +` batches arguments like xargs and is significantly faster than `-exec {} \;` for many files.
 - Put `-maxdepth` and `-mindepth` before other predicates -- find processes left-to-right.
 - On macOS, `-regex` uses basic regex by default; use `-E` for extended regex.
+
+## References
+
+- [man find(1)](https://man7.org/linux/man-pages/man1/find.1.html)
+- [man xargs(1)](https://man7.org/linux/man-pages/man1/xargs.1.html)
+- [man locate(1)](https://man7.org/linux/man-pages/man1/locate.1.html)
+- [GNU Findutils Manual](https://www.gnu.org/software/findutils/manual/html_mono/find.html)
+- [GNU Findutils — Finding Files](https://www.gnu.org/software/findutils/manual/html_node/find_html/index.html)
+- [Arch Wiki — Find](https://wiki.archlinux.org/title/Find)
+- [Ubuntu Manpage — find](https://manpages.ubuntu.com/manpages/noble/man1/find.1.html)
+- [Red Hat — Using find Command](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/index)

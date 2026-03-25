@@ -275,3 +275,16 @@ cargo uninstall ripgrep                # remove installed binary
 - `cargo test -- --nocapture` is needed to see `println!` output from passing tests.
 - `cargo update` only updates within semver-compatible ranges. Edit Cargo.toml to bump major versions.
 - Use `workspace.dependencies` to keep dependency versions consistent across workspace members.
+
+## References
+
+- [The Cargo Book](https://doc.rust-lang.org/cargo/)
+- [Cargo Commands Reference](https://doc.rust-lang.org/cargo/commands/)
+- [Cargo.toml Manifest Format](https://doc.rust-lang.org/cargo/reference/manifest.html)
+- [Cargo Profiles (dev, release)](https://doc.rust-lang.org/cargo/reference/profiles.html)
+- [Cargo Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)
+- [Cargo Build Scripts](https://doc.rust-lang.org/cargo/reference/build-scripts.html)
+- [Cargo Environment Variables](https://doc.rust-lang.org/cargo/reference/environment-variables.html)
+- [crates.io (Rust Package Registry)](https://crates.io/)
+- [Rust Edition Guide](https://doc.rust-lang.org/edition-guide/)
+- [Cargo GitHub Repository](https://github.com/rust-lang/cargo)

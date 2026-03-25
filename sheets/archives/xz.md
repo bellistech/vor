@@ -107,3 +107,12 @@ xz -tv data.bin.xz
 - `pixz` and `pxz` are parallel xz alternatives if your version of xz does not support `-T`.
 - `xz` is the standard for kernel tarballs and package distribution where compression ratio matters more than speed.
 - For a balance of speed and ratio, consider `zstd` instead -- it compresses faster than gzip with ratios approaching xz.
+
+## References
+
+- [XZ Utils Home Page](https://tukaani.org/xz/)
+- [xz(1) Man Page](https://man7.org/linux/man-pages/man1/xz.1.html)
+- [XZ Utils Documentation](https://tukaani.org/xz/format.html)
+- [LZMA SDK](https://www.7-zip.org/sdk.html)
+- [XZ Utils GitHub Repository](https://github.com/tukaani-project/xz)
+- [pixz (Parallel Indexed XZ)](https://github.com/vasi/pixz)

@@ -266,3 +266,16 @@ High-level, dynamically typed language with batteries-included standard library.
 - Use `dataclasses` instead of plain `__init__` for simple data containers.
 - `functools.lru_cache` memoizes pure functions. Use `@cache` (3.9+) for unbounded caching.
 - Type hints (`def f(x: int) -> str:`) are documentation that `mypy` can verify at build time.
+
+## References
+
+- [Python Documentation](https://docs.python.org/3/) -- official docs, tutorials, and library reference
+- [Python Language Reference](https://docs.python.org/3/reference/) -- formal grammar and semantics
+- [Python Standard Library](https://docs.python.org/3/library/) -- every built-in module documented
+- [Python Package Index (PyPI)](https://pypi.org/) -- package registry for third-party libraries
+- [PEP Index](https://peps.python.org/) -- Python Enhancement Proposals (language evolution)
+- [PEP 8 -- Style Guide](https://peps.python.org/pep-0008/) -- official coding conventions
+- [Python Glossary](https://docs.python.org/3/glossary.html) -- definitions of Python-specific terms
+- [Python What's New](https://docs.python.org/3/whatsnew/) -- changelog per version
+- [Real Python](https://realpython.com/) -- tutorials and guides for all levels
+- [Python Packaging User Guide](https://packaging.python.org/) -- pip, venvs, building packages

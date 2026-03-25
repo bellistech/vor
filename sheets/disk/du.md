@@ -136,3 +136,11 @@ du -sh .
 - Redirect stderr with `2>/dev/null` to suppress "Permission denied" noise when scanning system directories
 - On macOS/BSD, use `-d` instead of `--max-depth` and note that `--exclude` is a GNU extension
 - For interactive exploration, `ncdu` is significantly faster and more user-friendly than repeated `du` commands
+
+## References
+
+- [du(1) Man Page](https://man7.org/linux/man-pages/man1/du.1.html)
+- [GNU Coreutils — du](https://www.gnu.org/software/coreutils/manual/html_node/du-invocation.html)
+- [stat(2) Man Page](https://man7.org/linux/man-pages/man2/stat.2.html)
+- [Arch Wiki — Disk Usage](https://wiki.archlinux.org/title/List_of_applications#Disk_usage_display)
+- [Ubuntu Manpage — du](https://manpages.ubuntu.com/manpages/noble/man1/du.1.html)

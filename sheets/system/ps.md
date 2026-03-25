@@ -168,3 +168,14 @@ ps aux | awk '$8 == "Z"'
 - `pgrep -f` matches the full command line, not just the process name -- essential for Python/Java/Node where the binary name is generic.
 - Zombie processes (`Z` state) cannot be killed -- they are already dead. Kill or restart their parent process instead.
 - `ps` shows a point-in-time snapshot; use `top`/`htop` for continuous monitoring.
+
+## References
+
+- [man ps(1)](https://man7.org/linux/man-pages/man1/ps.1.html)
+- [man proc(5) — /proc filesystem](https://man7.org/linux/man-pages/man5/proc.5.html)
+- [man pgrep(1)](https://man7.org/linux/man-pages/man1/pgrep.1.html)
+- [man top(1)](https://man7.org/linux/man-pages/man1/top.1.html)
+- [Arch Wiki — Process Management](https://wiki.archlinux.org/title/Process)
+- [Kernel /proc/PID Documentation](https://www.kernel.org/doc/html/latest/filesystems/proc.html)
+- [Red Hat — Monitoring Processes](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/monitoring-processes_monitoring-and-managing-system-status-and-performance)
+- [Ubuntu Manpage — ps](https://manpages.ubuntu.com/manpages/noble/man1/ps.1.html)

@@ -72,6 +72,23 @@ func Output(content string) error {
 	return err
 }
 
+// PlainOutput writes content directly to stdout (no glamour rendering)
+// but still uses the pager if output exceeds terminal height.
+func PlainOutput(content string) error {
+	if !IsTTY() {
+		_, err := fmt.Print(content)
+		return err
+	}
+
+	lines := strings.Count(content, "\n")
+	if lines > TermHeight() {
+		return pager(content)
+	}
+
+	_, err := fmt.Print(content)
+	return err
+}
+
 func pager(content string) error {
 	p := os.Getenv("PAGER")
 	if p == "" {

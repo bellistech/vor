@@ -113,3 +113,11 @@ df -hl --total | tail -1
 - Network filesystems (NFS, CIFS) appear in `df` output; use `-l` to exclude them
 - `--output` is a GNU extension; on macOS/BSD, use column filtering with `awk` instead
 - If `df` hangs, a network mount is likely unresponsive; use `df -l` to skip network mounts
+
+## References
+
+- [df(1) Man Page](https://man7.org/linux/man-pages/man1/df.1.html)
+- [GNU Coreutils — df](https://www.gnu.org/software/coreutils/manual/html_node/df-invocation.html)
+- [statvfs(3) Man Page](https://man7.org/linux/man-pages/man3/statvfs.3.html)
+- [Arch Wiki — File Systems](https://wiki.archlinux.org/title/File_systems)
+- [Ubuntu Manpage — df](https://manpages.ubuntu.com/manpages/noble/man1/df.1.html)

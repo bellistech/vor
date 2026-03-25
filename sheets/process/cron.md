@@ -158,3 +158,15 @@ chmod +x /etc/cron.daily/backup
 - `/etc/cron.d/` files require a username field between the schedule and the command (unlike user crontabs).
 - Scripts in `/etc/cron.daily/` etc. must not have a `.sh` extension on some systems (run-parts ignores files with dots).
 - Debug with `grep CRON /var/log/syslog` or `journalctl -u cron`.
+
+## References
+
+- [man crontab(5) — File Format](https://man7.org/linux/man-pages/man5/crontab.5.html)
+- [man crontab(1) — User Command](https://man7.org/linux/man-pages/man1/crontab.1.html)
+- [man cron(8)](https://man7.org/linux/man-pages/man8/cron.8.html)
+- [man anacrontab(5)](https://man7.org/linux/man-pages/man5/anacrontab.5.html)
+- [man run-parts(8)](https://man7.org/linux/man-pages/man8/run-parts.8.html)
+- [Arch Wiki — Cron](https://wiki.archlinux.org/title/Cron)
+- [Ubuntu — CronHowto](https://help.ubuntu.com/community/CronHowto)
+- [Red Hat — Automating System Tasks with cron](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-system-services-with-systemctl_configuring-basic-system-settings)
+- [crontab.guru — Cron Expression Editor](https://crontab.guru/)

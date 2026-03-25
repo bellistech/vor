@@ -232,3 +232,17 @@ kubectl cp web-abc123:/data ./backup -c sidecar   # from specific container
 - `kubectl port-forward` works with pods, services, and deployments. Service-level forwarding respects load balancing.
 - Set a default namespace with `kubectl config set-context --current --namespace=myapp` to avoid typing `-n` everywhere.
 - `kubectl run --rm -it debug --image=alpine -- sh` is indispensable for in-cluster network debugging.
+
+## References
+
+- [Kubernetes Documentation](https://kubernetes.io/docs/)
+- [kubectl Reference](https://kubernetes.io/docs/reference/kubectl/)
+- [Kubernetes API Reference](https://kubernetes.io/docs/reference/kubernetes-api/)
+- [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+- [Kubernetes Concepts](https://kubernetes.io/docs/concepts/)
+- [Managing Resources](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/)
+- [Kubernetes Networking Model](https://kubernetes.io/docs/concepts/services-networking/)
+- [RBAC Authorization](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
+- [ConfigMaps and Secrets](https://kubernetes.io/docs/concepts/configuration/)
+- [Kubernetes GitHub Repository](https://github.com/kubernetes/kubernetes)
+- [Kubernetes the Hard Way](https://github.com/kelseyhightower/kubernetes-the-hard-way)

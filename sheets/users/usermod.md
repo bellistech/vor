@@ -109,3 +109,15 @@ usermod -c "Deploy Service Account" deploy
 - After changing a UID, files owned by the old UID are orphaned. Use `find / -user OLD_UID` to find and fix them.
 - `usermod -e 1` (epoch day 1) effectively disables the account immediately.
 - Changes take effect on next login, not for currently active sessions.
+
+## References
+
+- [man usermod(8)](https://man7.org/linux/man-pages/man8/usermod.8.html)
+- [man useradd(8)](https://man7.org/linux/man-pages/man8/useradd.8.html)
+- [man userdel(8)](https://man7.org/linux/man-pages/man8/userdel.8.html)
+- [man passwd(5) — /etc/passwd](https://man7.org/linux/man-pages/man5/passwd.5.html)
+- [man shadow(5) — /etc/shadow](https://man7.org/linux/man-pages/man5/shadow.5.html)
+- [man login.defs(5)](https://man7.org/linux/man-pages/man5/login.defs.5.html)
+- [Arch Wiki — Users and Groups](https://wiki.archlinux.org/title/Users_and_groups)
+- [Red Hat — Modifying User Accounts](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings)
+- [Ubuntu Manpage — usermod](https://manpages.ubuntu.com/manpages/noble/man8/usermod.8.html)

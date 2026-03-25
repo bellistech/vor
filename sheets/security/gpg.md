@@ -196,3 +196,15 @@ gpg --verify report.pdf.asc report.pdf && echo "GOOD" || echo "BAD"
 - For git commit signing, add `signingkey` to `~/.gitconfig` and set `commit.gpgsign = true`
 - Subkeys are preferred for daily use -- keep the master key offline on a USB drive
 - `--trust-model always` skips trust checks, useful in CI but dangerous for real verification
+
+## References
+
+- [GnuPG Manual](https://www.gnupg.org/documentation/manuals/gnupg/)
+- [GnuPG FAQ](https://www.gnupg.org/faq/gnupg-faq.html)
+- [gpg(1) Man Page](https://man7.org/linux/man-pages/man1/gpg.1.html)
+- [gpg-agent(1) Man Page](https://man7.org/linux/man-pages/man1/gpg-agent.1.html)
+- [RFC 4880 — OpenPGP Message Format](https://www.rfc-editor.org/rfc/rfc4880)
+- [RFC 9580 — OpenPGP (Updated Specification)](https://www.rfc-editor.org/rfc/rfc9580)
+- [Arch Wiki — GnuPG](https://wiki.archlinux.org/title/GnuPG)
+- [Debian Wiki — GnuPG](https://wiki.debian.org/GnuPG)
+- [Red Hat — Using GPG Keys](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/security_hardening/creating-gpg-keys_security-hardening)

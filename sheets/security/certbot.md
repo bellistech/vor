@@ -221,3 +221,15 @@ server {
 - If port 80 is blocked, use `--preferred-challenges dns` or `--preferred-challenges tls-alpn-01` (port 443)
 - Run `certbot renew --dry-run` after any config change to verify renewal will work
 - The `certbot` snap package is the recommended install method on Ubuntu 20.04+
+
+## References
+
+- [Certbot Documentation](https://eff-certbot.readthedocs.io/)
+- [Certbot User Guide](https://eff-certbot.readthedocs.io/en/latest/using.html)
+- [Certbot Command-Line Options](https://eff-certbot.readthedocs.io/en/latest/cli.html)
+- [Let's Encrypt — How It Works](https://letsencrypt.org/how-it-works/)
+- [RFC 8555 — ACME Protocol](https://www.rfc-editor.org/rfc/rfc8555)
+- [Arch Wiki — Certbot](https://wiki.archlinux.org/title/Certbot)
+- [Certbot DNS Plugin Documentation](https://eff-certbot.readthedocs.io/en/latest/using.html#dns-plugins)
+- [Let's Encrypt Rate Limits](https://letsencrypt.org/docs/rate-limits/)
+- [Red Hat — Managing TLS Certificates with Certbot](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/securing_networks/requesting-certificates-using-rhel-system-roles_configuring-certificates-issued-and-managed-by-certmonger)

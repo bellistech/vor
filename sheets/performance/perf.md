@@ -226,3 +226,18 @@ perf list tracepoint                       # kernel tracepoints
 - `perf top` is like `top` for functions. Good for live diagnosis of CPU-bound processes.
 - Kernel symbols require `/proc/kallsyms` access (may need `sysctl kernel.kptr_restrict=0`).
 - `perf record` writes to `perf.data` in the current directory. Specify `-o filename` to change.
+
+## References
+
+- [man perf(1)](https://man7.org/linux/man-pages/man1/perf.1.html)
+- [man perf-record(1)](https://man7.org/linux/man-pages/man1/perf-record.1.html)
+- [man perf-stat(1)](https://man7.org/linux/man-pages/man1/perf-stat.1.html)
+- [man perf-report(1)](https://man7.org/linux/man-pages/man1/perf-report.1.html)
+- [man perf-top(1)](https://man7.org/linux/man-pages/man1/perf-top.1.html)
+- [perf Wiki](https://perf.wiki.kernel.org/index.php/Main_Page)
+- [perf Wiki — Tutorial](https://perf.wiki.kernel.org/index.php/Tutorial)
+- [Kernel perf Documentation](https://www.kernel.org/doc/html/latest/admin-guide/perf-security.html)
+- [Brendan Gregg — perf Examples](https://www.brendangregg.com/perf.html)
+- [Brendan Gregg — Linux perf Flame Graphs](https://www.brendangregg.com/FlameGraphs/cpuflamegraphs.html)
+- [Red Hat — Performance Observability with perf](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/getting-started-with-perf_monitoring-and-managing-system-status-and-performance)
+- [Arch Wiki — Perf](https://wiki.archlinux.org/title/Perf)

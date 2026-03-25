@@ -256,3 +256,14 @@ tmux wait-for -S build-done
 - `prefix z` zooms a pane to fullscreen and back -- invaluable for small panes.
 - `tmux source-file ~/.tmux.conf` reloads config without restarting.
 - Consider tmux plugin manager (tpm) for plugins like tmux-resurrect (persist sessions across reboots).
+
+## References
+
+- [tmux Wiki](https://github.com/tmux/tmux/wiki) -- official wiki with FAQ, guides, and recipes
+- [man tmux](https://man7.org/linux/man-pages/man1/tmux.1.html) -- tmux man page
+- [tmux GitHub Repository](https://github.com/tmux/tmux) -- source code, issues, and releases
+- [tmux Plugin Manager (tpm)](https://github.com/tmux-plugins/tpm) -- plugin manager for tmux
+- [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) -- persist and restore tmux sessions
+- [tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) -- universal set of reasonable defaults
+- [The Tao of tmux](https://leanpub.com/the-tao-of-tmux/read) -- free online book
+- [Awesome tmux](https://github.com/rothgar/awesome-tmux) -- curated list of tmux resources and plugins

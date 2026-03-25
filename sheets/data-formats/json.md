@@ -235,3 +235,16 @@ python3 -c "import csv,json,sys; print(json.dumps(list(csv.DictReader(sys.stdin)
 - `jq empty file.json` is the fastest way to validate JSON from the command line.
 - JSON does not distinguish between integers and floats. `1` and `1.0` may parse differently depending on the language.
 - For large JSON files, streaming parsers (`jq --stream`, Python `ijson`) avoid loading everything into memory.
+
+## References
+
+- [JSON Specification (json.org)](https://www.json.org/) -- grammar, syntax diagrams, and parser list
+- [RFC 8259 -- The JSON Data Interchange Format](https://www.rfc-editor.org/rfc/rfc8259) -- current JSON standard
+- [ECMA-404 -- The JSON Data Interchange Syntax](https://ecma-international.org/publications-and-standards/standards/ecma-404/) -- ISO/IEC 21778:2017
+- [RFC 6901 -- JSON Pointer](https://www.rfc-editor.org/rfc/rfc6901) -- path syntax for addressing values
+- [RFC 6902 -- JSON Patch](https://www.rfc-editor.org/rfc/rfc6902) -- operations for modifying JSON documents
+- [RFC 7396 -- JSON Merge Patch](https://www.rfc-editor.org/rfc/rfc7396) -- simplified patching format
+- [JSON Schema](https://json-schema.org/) -- vocabulary for validating JSON structure
+- [jq Manual](https://jqlang.github.io/jq/manual/) -- command-line JSON processor
+- [JSON Lines](https://jsonlines.org/) -- newline-delimited JSON for streaming and logs
+- [JSONPath Specification (RFC 9535)](https://www.rfc-editor.org/rfc/rfc9535) -- query language for JSON

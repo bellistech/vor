@@ -244,3 +244,17 @@ puppet resource service nginx
 - `--environment` lets you test changes in a separate code branch before promoting to production.
 - `r10k` or Code Manager automates deploying Puppet code from Git branches to environments.
 - `puppet parser validate manifest.pp` checks syntax without applying.
+
+## References
+
+- [Puppet Documentation](https://www.puppet.com/docs/puppet/)
+- [Puppet Language Reference](https://www.puppet.com/docs/puppet/latest/lang_summary.html)
+- [Puppet Resource Type Reference](https://www.puppet.com/docs/puppet/latest/type.html)
+- [Puppet Built-in Functions](https://www.puppet.com/docs/puppet/latest/function.html)
+- [Puppet Module Fundamentals](https://www.puppet.com/docs/puppet/latest/modules_fundamentals.html)
+- [Hiera — Data Lookup](https://www.puppet.com/docs/puppet/latest/hiera_intro.html)
+- [Puppet Forge — Module Registry](https://forge.puppet.com/)
+- [Facter — System Inventory](https://www.puppet.com/docs/puppet/latest/facter.html)
+- [r10k — Code Management](https://github.com/puppetlabs/r10k)
+- [Puppet GitHub Repository](https://github.com/puppetlabs/puppet)
+- [puppet-agent(8) man page](https://www.puppet.com/docs/puppet/latest/man/agent.html)

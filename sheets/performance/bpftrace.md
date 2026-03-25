@@ -233,3 +233,15 @@ bpftrace -e 'tracepoint:sched:sched_switch {
 - Tracepoints are stable across kernel versions. Prefer them over kprobes when available.
 - Filter early (`/comm == "myapp"/`) to reduce overhead on busy systems.
 - bpftrace scripts (`.bt` files) can be run with `bpftrace script.bt` for reuse.
+
+## References
+
+- [bpftrace Reference Guide](https://github.com/bpftrace/bpftrace/blob/master/docs/reference_guide.md)
+- [bpftrace One-Liners Tutorial](https://github.com/bpftrace/bpftrace/blob/master/docs/tutorial_one_liners.md)
+- [bpftrace GitHub Repository](https://github.com/bpftrace/bpftrace)
+- [bpftrace Internals](https://github.com/bpftrace/bpftrace/blob/master/docs/internals_development.md)
+- [man bpftrace(8)](https://man7.org/linux/man-pages/man8/bpftrace.8.html)
+- [Kernel BPF Documentation](https://www.kernel.org/doc/html/latest/bpf/)
+- [eBPF.io — bpftrace](https://ebpf.io/projects/#bpftrace)
+- [Brendan Gregg — bpftrace Cheat Sheet](https://www.brendangregg.com/BPF/bpftrace-cheat-sheet.html)
+- [Brendan Gregg — BPF Performance Tools](https://www.brendangregg.com/bpf-performance-tools-book.html)

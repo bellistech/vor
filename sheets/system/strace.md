@@ -155,3 +155,15 @@ strace -fp $(pgrep my_server) -e trace=futex,poll,epoll_wait
 - `-y` translates file descriptors to paths and `-yy` adds socket details -- invaluable for network debugging.
 - On newer kernels, `perf trace` is a lower-overhead alternative for syscall tracing.
 - `ltrace` is the equivalent for library calls (e.g., `ltrace -e malloc ./my_program`).
+
+## References
+
+- [man strace(1)](https://man7.org/linux/man-pages/man1/strace.1.html)
+- [man ptrace(2)](https://man7.org/linux/man-pages/man2/ptrace.2.html)
+- [man syscalls(2)](https://man7.org/linux/man-pages/man2/syscalls.2.html)
+- [man ltrace(1)](https://man7.org/linux/man-pages/man1/ltrace.1.html)
+- [strace Project Site](https://strace.io/)
+- [strace GitHub](https://github.com/strace/strace)
+- [Arch Wiki — strace](https://wiki.archlinux.org/title/Strace)
+- [Red Hat — Tracing System Calls with strace](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/developing_c_and_cpp_applications_in_rhel_9/debugging-applications_developing-applications)
+- [Kernel ptrace Documentation](https://www.kernel.org/doc/html/latest/process/adding-syscalls.html)

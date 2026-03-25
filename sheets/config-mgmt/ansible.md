@@ -264,3 +264,17 @@ ansible-galaxy collection install community.general
 - Use `ansible-lint` to catch anti-patterns before they hit production.
 - `gather_facts: false` speeds up playbooks that do not need host facts.
 - Tags let you run subsets of a playbook: always tag deploy steps separately from config steps.
+
+## References
+
+- [Ansible Documentation](https://docs.ansible.com/ansible/latest/)
+- [Ansible Module Index](https://docs.ansible.com/ansible/latest/collections/index_module.html)
+- [Ansible Playbook Guide](https://docs.ansible.com/ansible/latest/playbook_guide/index.html)
+- [Ansible Inventory Guide](https://docs.ansible.com/ansible/latest/inventory_guide/index.html)
+- [Ansible Built-in Modules](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/index.html)
+- [Ansible Galaxy](https://galaxy.ansible.com/)
+- [Ansible Vault](https://docs.ansible.com/ansible/latest/vault_guide/index.html)
+- [Jinja2 Templating in Ansible](https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_templating.html)
+- [Ansible GitHub Repository](https://github.com/ansible/ansible)
+- [Ansible Best Practices](https://docs.ansible.com/ansible/latest/tips_tricks/ansible_tips_tricks.html)
+- [ansible-playbook(1) man page](https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html)

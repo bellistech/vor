@@ -216,3 +216,17 @@ sudo semanage login -a -s sysadm_u admin_user
 - Docker and Podman work with SELinux via the `:z` (shared) and `:Z` (private) volume mount suffixes
 - The `targeted` policy only confines specific daemons; unconfined processes run as `unconfined_t`
 - After changing SELINUX from `disabled` to `enforcing`, a full filesystem relabel is required (can take 10+ minutes)
+
+## References
+
+- [SELinux Project Wiki](https://selinuxproject.org/page/Main_Page)
+- [Red Hat RHEL 9 — Using SELinux](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/using_selinux/)
+- [SELinux Getting Started Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/using_selinux/getting-started-with-selinux_using-selinux)
+- [selinux(8) Man Page](https://man7.org/linux/man-pages/man8/selinux.8.html)
+- [semanage(8) Man Page](https://man7.org/linux/man-pages/man8/semanage.8.html)
+- [restorecon(8) Man Page](https://man7.org/linux/man-pages/man8/restorecon.8.html)
+- [setsebool(8) Man Page](https://man7.org/linux/man-pages/man8/setsebool.8.html)
+- [audit2allow(1) Man Page](https://man7.org/linux/man-pages/man1/audit2allow.1.html)
+- [Arch Wiki — SELinux](https://wiki.archlinux.org/title/SELinux)
+- [Fedora Docs — SELinux](https://docs.fedoraproject.org/en-US/quick-docs/selinux-getting-started/)
+- [Gentoo Wiki — SELinux](https://wiki.gentoo.org/wiki/SELinux)

@@ -230,3 +230,14 @@ sudo fail2ban-client get dbpurgeage
 - On systems with both iptables and nftables, make sure `banaction` matches your active firewall
 - `findtime` and `bantime` accept suffixes: `s` (seconds), `m` (minutes), `h` (hours), `d` (days), `w` (weeks)
 - Aggressive `maxretry=1` on SSH is fine if you only use key auth -- password typos won't be an issue
+
+## References
+
+- [Fail2ban Documentation](https://www.fail2ban.org/wiki/index.php/MANUAL_0_8)
+- [Fail2ban Official Wiki](https://www.fail2ban.org/wiki/index.php/Main_Page)
+- [Fail2ban GitHub Repository](https://github.com/fail2ban/fail2ban)
+- [fail2ban-client(1) Man Page](https://man7.org/linux/man-pages/man1/fail2ban-client.1.html)
+- [fail2ban-jail.conf(5) Man Page](https://man7.org/linux/man-pages/man5/jail.conf.5.html)
+- [Arch Wiki — Fail2ban](https://wiki.archlinux.org/title/Fail2ban)
+- [Ubuntu — Fail2ban Setup](https://help.ubuntu.com/community/Fail2ban)
+- [Red Hat — Using Fail2ban to Secure the Server](https://access.redhat.com/solutions/2115553)

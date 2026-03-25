@@ -168,3 +168,12 @@ ncdu /var/log
 - On minimal servers without ncdu, fall back to `du -hx --max-depth=1 / | sort -rh | head`
 - ncdu loads the full directory tree into memory; for extremely large filesystems (tens of millions of files), memory usage can be significant
 - Press `g` to cycle through graph bar, percentage, and combined views
+
+## References
+
+- [ncdu Official Documentation](https://dev.yorhel.nl/ncdu)
+- [ncdu Man Page](https://dev.yorhel.nl/ncdu/man)
+- [ncdu Changelog](https://dev.yorhel.nl/ncdu/changes)
+- [du(1) Man Page](https://man7.org/linux/man-pages/man1/du.1.html)
+- [Arch Wiki — Disk Usage Display](https://wiki.archlinux.org/title/List_of_applications#Disk_usage_display)
+- [ncdu GitHub Repository](https://code.blicky.net/yorhel/ncdu)

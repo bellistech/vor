@@ -162,3 +162,15 @@ journalctl -u backup.service
 - `Type=oneshot` in the service unit is required for tasks that run and exit (scripts, backups, etc.).
 - Timer accuracy is 1 minute by default; set `AccuracySec=1s` if you need second-level precision.
 - Advantages over cron: output goes to the journal automatically, resource limits via `MemoryMax`/`CPUQuota`, dependency ordering, and no mail surprises.
+
+## References
+
+- [man systemd.timer(5)](https://man7.org/linux/man-pages/man5/systemd.timer.5.html)
+- [man systemd.time(7) — Calendar Events](https://man7.org/linux/man-pages/man7/systemd.time.7.html)
+- [man systemd.service(5)](https://man7.org/linux/man-pages/man5/systemd.service.5.html)
+- [man systemctl(1) — list-timers](https://man7.org/linux/man-pages/man1/systemctl.1.html)
+- [systemd.timer Documentation](https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html)
+- [systemd Calendar Events Syntax](https://www.freedesktop.org/software/systemd/man/latest/systemd.time.html#Calendar%20Events)
+- [Arch Wiki — Systemd/Timers](https://wiki.archlinux.org/title/Systemd/Timers)
+- [Red Hat — Using systemd Timer Units](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-system-services-with-systemctl_configuring-basic-system-settings)
+- [Ubuntu — systemd Timers](https://manpages.ubuntu.com/manpages/noble/man5/systemd.timer.5.html)

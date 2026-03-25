@@ -139,3 +139,15 @@ useradd -m -u 10042 -s /bin/bash -G developers deploy
 - `-r` for system users picks a UID below 1000 (or below `SYS_UID_MAX` in `/etc/login.defs`).
 - Always set `-s /usr/sbin/nologin` for service accounts to prevent interactive login.
 - Check defaults with `useradd -D` and change them with `useradd -D -s /bin/bash`.
+
+## References
+
+- [man useradd(8)](https://man7.org/linux/man-pages/man8/useradd.8.html)
+- [man adduser(8)](https://man7.org/linux/man-pages/man8/adduser.8.html)
+- [man userdel(8)](https://man7.org/linux/man-pages/man8/userdel.8.html)
+- [man passwd(5) — /etc/passwd](https://man7.org/linux/man-pages/man5/passwd.5.html)
+- [man login.defs(5)](https://man7.org/linux/man-pages/man5/login.defs.5.html)
+- [man useradd defaults — /etc/default/useradd](https://man7.org/linux/man-pages/man8/useradd.8.html)
+- [Arch Wiki — Users and Groups](https://wiki.archlinux.org/title/Users_and_groups)
+- [Red Hat — Adding Users](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings)
+- [Ubuntu — AddUsersHowto](https://help.ubuntu.com/community/AddUsersHowto)

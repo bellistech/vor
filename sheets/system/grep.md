@@ -169,3 +169,14 @@ grep -rc "error" /var/log/ | grep -v ':0$'
 - `--color=auto` only colorizes when output is a terminal; safe to put in an alias.
 - `grep -r` follows symlinks on some versions; use `grep -r --no-dereference` to avoid loops.
 - For large codebases, `ripgrep` (`rg`) is dramatically faster than `grep -r` and respects `.gitignore`.
+
+## References
+
+- [man grep(1)](https://man7.org/linux/man-pages/man1/grep.1.html)
+- [man regex(7)](https://man7.org/linux/man-pages/man7/regex.7.html)
+- [GNU Grep Manual](https://www.gnu.org/software/grep/manual/grep.html)
+- [GNU Grep — Regular Expressions](https://www.gnu.org/software/grep/manual/grep.html#Regular-Expressions)
+- [GNU Grep — Performance](https://www.gnu.org/software/grep/manual/grep.html#Performance)
+- [Arch Wiki — grep](https://wiki.archlinux.org/title/grep)
+- [Ubuntu Manpage — grep](https://manpages.ubuntu.com/manpages/noble/man1/grep.1.html)
+- [ripgrep (rg) — Faster Alternative](https://github.com/BurntSushi/ripgrep)

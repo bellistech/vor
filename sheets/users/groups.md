@@ -159,3 +159,16 @@ usermod -g developers deploy
 - `newgrp` opens a new shell with the changed primary group. It does not modify the existing session.
 - A user's primary group cannot be deleted. Change it first with `usermod -g`.
 - Files in `/etc/group` and `/etc/gshadow` should be edited with `vigr` and `vigr -s` respectively, not directly.
+
+## References
+
+- [man groupadd(8)](https://man7.org/linux/man-pages/man8/groupadd.8.html)
+- [man groupmod(8)](https://man7.org/linux/man-pages/man8/groupmod.8.html)
+- [man groupdel(8)](https://man7.org/linux/man-pages/man8/groupdel.8.html)
+- [man groups(1)](https://man7.org/linux/man-pages/man1/groups.1.html)
+- [man group(5) — /etc/group](https://man7.org/linux/man-pages/man5/group.5.html)
+- [man gshadow(5) — /etc/gshadow](https://man7.org/linux/man-pages/man5/gshadow.5.html)
+- [man gpasswd(1)](https://man7.org/linux/man-pages/man1/gpasswd.1.html)
+- [Arch Wiki — Users and Groups](https://wiki.archlinux.org/title/Users_and_groups)
+- [Red Hat — Managing User Groups](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/managing-users-and-groups_configuring-basic-system-settings)
+- [Ubuntu — User Management](https://help.ubuntu.com/community/AddUsersHowto)

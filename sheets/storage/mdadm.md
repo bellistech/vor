@@ -226,3 +226,14 @@ cat /sys/block/md0/md/mismatch_cnt      # should be 0
 - Use `--assume-clean` only for new arrays with no data; skipping initial sync on existing data risks inconsistency
 - Hot spares automatically replace failed disks, reducing exposure time significantly
 - The `mdmonitor` service sends email alerts on failure; always configure `MAILADDR` in production
+
+## References
+
+- [mdadm(8) Man Page](https://man7.org/linux/man-pages/man8/mdadm.8.html)
+- [mdadm.conf(5) Man Page](https://man7.org/linux/man-pages/man5/mdadm.conf.5.html)
+- [md(4) Man Page — Linux Software RAID](https://man7.org/linux/man-pages/man4/md.4.html)
+- [Linux RAID Wiki](https://raid.wiki.kernel.org/)
+- [Kernel MD (RAID) Documentation](https://www.kernel.org/doc/html/latest/admin-guide/md.html)
+- [Arch Wiki — RAID](https://wiki.archlinux.org/title/RAID)
+- [Red Hat RHEL 9 — Managing RAID](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_storage_devices/managing-raid_managing-storage-devices)
+- [Ubuntu — Software RAID](https://ubuntu.com/server/docs/about-raid)

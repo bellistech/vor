@@ -210,3 +210,16 @@ sudo xfs_metadump /dev/sdb1 metadata.dump
 - `xfsdump` supports multi-level incremental backups (levels 0-9), unlike generic tools
 - XFS allocates space in extents and uses delayed allocation by default, which improves performance for streaming writes
 - The `allocsize` mount option pre-allocates space for write-heavy workloads; `64m` is a good starting point for large sequential writes
+
+## References
+
+- [XFS Wiki](https://xfs.wiki.kernel.org/)
+- [Kernel XFS Documentation](https://www.kernel.org/doc/html/latest/filesystems/xfs/)
+- [mkfs.xfs(8) Man Page](https://man7.org/linux/man-pages/man8/mkfs.xfs.8.html)
+- [xfs_repair(8) Man Page](https://man7.org/linux/man-pages/man8/xfs_repair.8.html)
+- [xfs_growfs(8) Man Page](https://man7.org/linux/man-pages/man8/xfs_growfs.8.html)
+- [xfs_info(8) Man Page](https://man7.org/linux/man-pages/man8/xfs_info.8.html)
+- [xfsdump(8) Man Page](https://man7.org/linux/man-pages/man8/xfsdump.8.html)
+- [xfs(5) Man Page](https://man7.org/linux/man-pages/man5/xfs.5.html)
+- [Arch Wiki — XFS](https://wiki.archlinux.org/title/XFS)
+- [Red Hat RHEL 9 — Managing XFS File Systems](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/managing_file_systems/getting-started-with-an-xfs-file-system_managing-file-systems)

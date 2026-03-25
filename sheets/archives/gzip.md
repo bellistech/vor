@@ -108,3 +108,13 @@ gzip -dr /var/log/old/
 - Compression levels 1-6 are fast with diminishing returns. 7-9 are significantly slower for marginal improvement.
 - `gzip` only compresses single files. To compress a directory, use `tar czf` to bundle and compress in one step.
 - `.gz` files include a CRC32 checksum. Use `gzip -t` to verify integrity after transfer.
+
+## References
+
+- [GNU Gzip Manual](https://www.gnu.org/software/gzip/manual/)
+- [gzip(1) Man Page](https://man7.org/linux/man-pages/man1/gzip.1.html)
+- [zcat(1) Man Page](https://man7.org/linux/man-pages/man1/zcat.1.html)
+- [zgrep(1) Man Page](https://man7.org/linux/man-pages/man1/zgrep.1.html)
+- [pigz (Parallel gzip)](https://zlib.net/pigz/)
+- [RFC 1952 -- GZIP File Format Specification](https://datatracker.ietf.org/doc/html/rfc1952)
+- [zlib Library](https://zlib.net/)

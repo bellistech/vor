@@ -254,3 +254,15 @@ Later keys override merged keys:
 - `|` (literal) keeps newlines. `>` (folded) joins lines. Add `-` to strip trailing newline.
 - Multi-document files use `---` as separator. Tools like `kubectl apply -f` handle them natively.
 - Use a YAML linter (`yamllint`) to catch indentation errors before they reach production.
+
+## References
+
+- [YAML 1.2.2 Specification](https://yaml.org/spec/1.2.2/) -- full language specification
+- [YAML 1.1 Specification](https://yaml.org/spec/1.1/) -- older spec still used by many parsers
+- [YAML Schema Index](https://yaml.org/type/) -- core, JSON, and failsafe schema type definitions
+- [YAML Ain't Markup Language (yaml.org)](https://yaml.org/) -- official site, links, and resources
+- [yamllint](https://yamllint.readthedocs.io/) -- linter for YAML files (configurable rules)
+- [yq (Go)](https://github.com/mikefarah/yq) -- jq-like YAML/JSON/XML processor
+- [PyYAML Documentation](https://pyyaml.org/wiki/PyYAMLDocumentation) -- Python YAML library
+- [YAML Multiline Strings](https://yaml-multiline.info/) -- interactive guide to block scalars and flow scalars
+- [StrictYAML](https://hitchdev.com/strictyaml/) -- type-safe YAML subset that disables dangerous features

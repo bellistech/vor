@@ -173,3 +173,17 @@ brew test ripgrep                      # run formula tests
 - `brew services` manages launchd plists -- services persist across reboots unless started with `run`.
 - `brew deps --tree --installed` shows the full dependency tree of everything installed.
 - Avoid `sudo brew`. Homebrew is designed to run as your user. If it asks for sudo, something is misconfigured.
+
+## References
+
+- [Homebrew Documentation](https://docs.brew.sh/)
+- [Homebrew FAQ](https://docs.brew.sh/FAQ)
+- [Homebrew Cask Usage](https://docs.brew.sh/How-to-Use-Homebrew-Cask-Upgrades)
+- [Homebrew Bundle (Brewfile)](https://github.com/Homebrew/homebrew-bundle)
+- [Homebrew Services](https://github.com/Homebrew/homebrew-services)
+- [Homebrew Taps (Third-Party Repos)](https://docs.brew.sh/Taps)
+- [Homebrew Formula Cookbook](https://docs.brew.sh/Formula-Cookbook)
+- [Homebrew on Linux](https://docs.brew.sh/Homebrew-on-Linux)
+- [Homebrew Core Formulae](https://formulae.brew.sh/)
+- [Homebrew GitHub Repository](https://github.com/Homebrew/brew)
+- [brew(1) Man Page](https://docs.brew.sh/Manpage)

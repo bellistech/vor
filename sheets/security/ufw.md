@@ -188,3 +188,13 @@ sudo ufw route allow in on eth0 out on wg0
 - Docker bypasses UFW by default (writes its own iptables rules); use `ufw-docker` or manage Docker's iptables separately
 - `ufw reset` deletes all rules and disables the firewall -- useful for starting fresh
 - Rules persist across reboots automatically when UFW is enabled
+
+## References
+
+- [Ubuntu UFW Documentation](https://help.ubuntu.com/community/UFW)
+- [ufw(8) Man Page](https://man7.org/linux/man-pages/man8/ufw.8.html)
+- [ufw-framework(8) Man Page](https://man7.org/linux/man-pages/man8/ufw-framework.8.html)
+- [Ubuntu Server — Firewall (UFW)](https://ubuntu.com/server/docs/firewalls)
+- [Arch Wiki — Uncomplicated Firewall](https://wiki.archlinux.org/title/Uncomplicated_Firewall)
+- [Debian Wiki — Uncomplicated Firewall](https://wiki.debian.org/Uncomplicated%20Firewall%20%28ufw%29)
+- [UFW GitHub Repository](https://launchpad.net/ufw)

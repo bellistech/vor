@@ -169,3 +169,14 @@ ssh -i ~/.ssh/tunnel_key -L 8080:target:80 -N -f user@bastion
 - ProxyJump (`-J`) is simpler than ProxyCommand and supports chaining
 - SSH tunnels are encrypted end-to-end between your machine and the SSH server — traffic beyond the server is not encrypted by SSH
 - Kill a backgrounded tunnel: `ssh -S /path/to/socket -O exit user@host` or find the PID with `ps aux | grep ssh`
+
+## References
+
+- [OpenSSH Official Manual Pages](https://www.openssh.com/manual.html)
+- [man ssh — SSH Client](https://man7.org/linux/man-pages/man1/ssh.1.html)
+- [man ssh_config — SSH Client Configuration](https://man7.org/linux/man-pages/man5/ssh_config.5.html)
+- [man sshd_config — SSH Server Configuration](https://man7.org/linux/man-pages/man5/sshd_config.5.html)
+- [RFC 4253 — The Secure Shell (SSH) Transport Layer Protocol](https://www.rfc-editor.org/rfc/rfc4253)
+- [RFC 4254 — The Secure Shell (SSH) Connection Protocol (Port Forwarding)](https://www.rfc-editor.org/rfc/rfc4254)
+- [OpenSSH — SSH Tunneling/Port Forwarding](https://www.openssh.com/features.html)
+- [Arch Wiki — OpenSSH Tunneling](https://wiki.archlinux.org/title/OpenSSH#Tunneling)

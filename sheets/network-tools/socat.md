@@ -207,3 +207,13 @@ socat TCP6-LISTEN:8080,reuseaddr,fork TCP6:target:80
 - `socat` can bridge any two address types — TCP to Unix socket, serial to TCP, file to UDP, etc.
 - The `SYSTEM:` address runs commands through `/bin/sh`; `EXEC:` runs them directly (no shell)
 - For persistent services, run socat under systemd or supervisord rather than in a shell
+
+## References
+
+- [socat Official Documentation](http://www.dest-unreach.org/socat/doc/socat.html)
+- [socat Man Page (HTML)](http://www.dest-unreach.org/socat/doc/socat.html)
+- [socat — Address Types Reference](http://www.dest-unreach.org/socat/doc/socat-addresstypes.html)
+- [socat Source Repository](http://www.dest-unreach.org/socat/)
+- [man socat](https://man7.org/linux/man-pages/man1/socat.1.html)
+- [Ncat Users' Guide — socat Alternative](https://nmap.org/ncat/guide/)
+- [Arch Wiki — socat Examples](https://wiki.archlinux.org/title/Socat)

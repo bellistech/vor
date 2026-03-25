@@ -299,3 +299,17 @@ nix store optimise                         # hard-link identical files
 - Pin `nixpkgs` to a specific commit or release branch for reproducible builds.
 - `nix why-depends /nix/store/...-A /nix/store/...-B` shows why package A depends on B.
 - NixOS rollback is instant: just select a previous generation from the bootloader.
+
+## References
+
+- [Nix Manual](https://nixos.org/manual/nix/stable/)
+- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+- [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/)
+- [Nix Package Search](https://search.nixos.org/packages)
+- [NixOS Options Search](https://search.nixos.org/options)
+- [Nix Flakes Reference](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix3-flake)
+- [Nix Language Overview](https://nixos.org/manual/nix/stable/language/)
+- [Nixpkgs GitHub Repository](https://github.com/NixOS/nixpkgs)
+- [Nix GitHub Repository](https://github.com/NixOS/nix)
+- [nix.dev — Community Tutorials](https://nix.dev/)
+- [Home Manager — User Dotfile Management](https://github.com/nix-community/home-manager)

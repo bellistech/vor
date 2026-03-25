@@ -198,3 +198,16 @@ docker compose up -d --scale worker=3   # run 3 worker instances
 - Named volumes persist across `down`; use `down -v` only when you want a clean slate.
 - `docker compose run` creates a new container; `docker compose exec` attaches to an existing one.
 - Use `restart: unless-stopped` for services that should survive host reboots.
+
+## References
+
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [Compose File Reference (v3)](https://docs.docker.com/reference/compose-file/)
+- [Compose CLI Reference](https://docs.docker.com/reference/cli/docker/compose/)
+- [docker compose up](https://docs.docker.com/reference/cli/docker/compose/up/)
+- [Networking in Compose](https://docs.docker.com/compose/how-tos/networking/)
+- [Environment Variables in Compose](https://docs.docker.com/compose/how-tos/environment-variables/)
+- [Using Profiles in Compose](https://docs.docker.com/compose/how-tos/profiles/)
+- [Compose Watch (Live Reload)](https://docs.docker.com/compose/how-tos/file-watch/)
+- [Compose Build Specification](https://docs.docker.com/reference/compose-file/build/)
+- [Docker Compose GitHub Repository](https://github.com/docker/compose)

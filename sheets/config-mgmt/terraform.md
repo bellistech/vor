@@ -248,3 +248,17 @@ terraform graph | dot -Tpng > graph.png
 - `terraform plan -destroy` previews what `destroy` would remove without actually destroying.
 - `count` and `for_each` are not interchangeable. Prefer `for_each` for named resources since `count` uses numeric indexes that shift on removal.
 - Store sensitive outputs with `sensitive = true` to hide them from plan output.
+
+## References
+
+- [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
+- [Terraform CLI Reference](https://developer.hashicorp.com/terraform/cli)
+- [Terraform Language (HCL) Reference](https://developer.hashicorp.com/terraform/language)
+- [Terraform Provider Registry](https://registry.terraform.io/browse/providers)
+- [Terraform Module Registry](https://registry.terraform.io/browse/modules)
+- [Terraform State Management](https://developer.hashicorp.com/terraform/language/state)
+- [Terraform Backend Configuration](https://developer.hashicorp.com/terraform/language/backend)
+- [Terraform Built-in Functions](https://developer.hashicorp.com/terraform/language/functions)
+- [Terraform Import](https://developer.hashicorp.com/terraform/cli/import)
+- [Terraform GitHub Repository](https://github.com/hashicorp/terraform)
+- [OpenTofu — Open-source Terraform Fork](https://github.com/opentofu/opentofu)

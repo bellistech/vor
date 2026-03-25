@@ -349,3 +349,16 @@ confirm "Delete all logs?" || exit 0
 - getopts only handles single-character options. For long options, parse manually or use `getopt` (GNU).
 - Always use `read -r` to prevent backslash interpretation.
 - `shellcheck` is the single best tool for catching shell scripting bugs. Install it and run it on every script.
+
+## References
+
+- [POSIX Shell Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) -- portable shell command language
+- [POSIX Utilities](https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html) -- standard utility index (test, printf, etc.)
+- [Bash Reference Manual](https://www.gnu.org/software/bash/manual/) -- GNU Bash reference
+- [Dash (POSIX sh)](https://manpages.debian.org/dash) -- lightweight POSIX shell man page
+- [ShellCheck](https://www.shellcheck.net/) -- static analysis tool for shell scripts
+- [ShellCheck Wiki](https://www.shellcheck.net/wiki/) -- explanations for every ShellCheck warning
+- [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls) -- common shell scripting mistakes
+- [Bash FAQ](https://mywiki.wooledge.org/BashFAQ) -- practical answers to common questions
+- [Google Shell Style Guide](https://google.github.io/styleguide/shellguide.html) -- conventions for production shell scripts
+- [man test](https://man7.org/linux/man-pages/man1/test.1.html) -- conditional expressions and file tests

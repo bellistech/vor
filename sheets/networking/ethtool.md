@@ -170,3 +170,13 @@ ethtool --set-eee eth0 eee off        # disable EEE (reduces latency jitter)
 - EEE can add microseconds of latency on idle-to-active transitions; disable for latency-sensitive workloads
 - Changes made with `ethtool` are not persistent; use `udev` rules, `networkd`, or `/etc/network/interfaces` `pre-up` for persistence
 - RSS queue count should generally match the number of CPU cores for optimal interrupt distribution
+
+## References
+
+- [man ethtool](https://man7.org/linux/man-pages/man8/ethtool.8.html)
+- [Linux Kernel — Ethtool Netlink Interface](https://www.kernel.org/doc/html/latest/networking/ethtool-netlink.html)
+- [Linux Kernel — Network Device Driver Documentation](https://www.kernel.org/doc/html/latest/networking/netdevices.html)
+- [Linux Kernel — Scaling in the Linux Networking Stack (RSS/RPS/RFS)](https://www.kernel.org/doc/html/latest/networking/scaling.html)
+- [Linux Kernel — Segmentation Offloads](https://www.kernel.org/doc/html/latest/networking/segmentation-offloads.html)
+- [ethtool Source Repository](https://git.kernel.org/pub/scm/network/ethtool/ethtool.git/)
+- [Red Hat — Configuring Ethernet Interface Settings with ethtool](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/configuring_and_managing_networking/configuring-an-ethernet-connection_configuring-and-managing-networking)

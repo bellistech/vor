@@ -140,3 +140,13 @@ scp ~/.ssh/id_ed25519.pub user@host:~/.ssh/authorized_keys
 - Wildcards in remote paths are expanded by the remote shell: `scp user@host:~/logs/*.log .`
 - `scp` copies files through your local machine even for remote-to-remote; use `-3` to be explicit about this
 - Use `~/.ssh/config` to avoid repeating `-P`, `-i`, and usernames on every command
+
+## References
+
+- [man scp](https://man7.org/linux/man-pages/man1/scp.1.html)
+- [man ssh](https://man7.org/linux/man-pages/man1/ssh.1.html)
+- [man ssh_config](https://man7.org/linux/man-pages/man5/ssh_config.5.html)
+- [OpenSSH Official Manual Pages](https://www.openssh.com/manual.html)
+- [OpenSSH — SCP Deprecation Notice (SFTP Protocol Backend)](https://www.openssh.com/txt/release-9.0)
+- [man sftp — Recommended Replacement](https://man7.org/linux/man-pages/man1/sftp.1.html)
+- [man rsync — Alternative for Large Transfers](https://man7.org/linux/man-pages/man1/rsync.1.html)

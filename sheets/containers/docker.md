@@ -185,3 +185,17 @@ docker cp ./config.yaml web:/etc/myapp/config.yaml
 - Containers on the same user-defined network can resolve each other by container name.
 - `docker inspect` output is JSON; pipe through `jq` for complex queries.
 - `HEALTHCHECK` in Dockerfile lets Docker track container health beyond "process running".
+
+## References
+
+- [Docker Documentation](https://docs.docker.com/)
+- [Docker CLI Reference](https://docs.docker.com/reference/cli/docker/)
+- [Dockerfile Reference](https://docs.docker.com/reference/dockerfile/)
+- [Docker Build — Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
+- [Docker Networking Overview](https://docs.docker.com/engine/network/)
+- [Docker Storage — Volumes](https://docs.docker.com/engine/storage/volumes/)
+- [Docker Hub](https://hub.docker.com/)
+- [Docker Engine API Reference](https://docs.docker.com/engine/api/)
+- [Docker Security Best Practices](https://docs.docker.com/build/building/best-practices/)
+- [Moby Project (Docker Engine Source)](https://github.com/moby/moby)
+- [docker(1) man page](https://man7.org/linux/man-pages/man1/docker.1.html)

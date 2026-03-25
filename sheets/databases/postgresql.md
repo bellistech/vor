@@ -219,3 +219,18 @@ pg_restore -U postgres --clean --if-exists -d mydb backup.dump
 - `VACUUM ANALYZE` updates statistics and reclaims space. Autovacuum handles most cases.
 - `pg_stat_activity` is your first stop for debugging slow queries and connection issues.
 - Use `GIN` indexes for JSONB containment queries (`@>`) and array membership.
+
+## References
+
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/current/)
+- [PostgreSQL SQL Commands](https://www.postgresql.org/docs/current/sql-commands.html)
+- [PostgreSQL Data Types](https://www.postgresql.org/docs/current/datatype.html)
+- [PostgreSQL Indexes](https://www.postgresql.org/docs/current/indexes.html)
+- [psql Reference](https://www.postgresql.org/docs/current/app-psql.html)
+- [pg_dump Reference](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [PostgreSQL EXPLAIN Usage](https://www.postgresql.org/docs/current/using-explain.html)
+- [PostgreSQL Configuration (postgresql.conf)](https://www.postgresql.org/docs/current/runtime-config.html)
+- [PostgreSQL System Catalogs](https://www.postgresql.org/docs/current/catalogs.html)
+- [PostgreSQL JSON Functions](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL Wiki](https://wiki.postgresql.org/)
+- [PostgreSQL GitHub Mirror](https://github.com/postgres/postgres)

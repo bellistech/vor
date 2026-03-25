@@ -237,3 +237,14 @@ awk -F, -v OFS='\t' '{$1=$1; print}' data.csv
 - Arrays in awk are associative (hash maps). They are always string-keyed.
 - `OFMT` controls default number formatting for print. Use `printf` for explicit control.
 - `-v var=value` passes shell variables into awk. For dynamic values: `awk -v threshold="$THRESH" '$3 > threshold'`.
+
+## References
+
+- [GNU AWK Manual (GAWK)](https://www.gnu.org/software/gawk/manual/) -- complete gawk reference
+- [man gawk](https://man7.org/linux/man-pages/man1/gawk.1.html) -- gawk man page
+- [POSIX awk Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/awk.html) -- portable awk behavior
+- [The AWK Programming Language (book)](https://awk.dev/) -- by Aho, Weinberger, and Kernighan (2nd edition)
+- [AWK One-Liners Explained](https://catonmat.net/awk-one-liners-explained-part-one) -- practical recipes with explanations
+- [mawk](https://invisible-island.net/mawk/mawk.html) -- fast awk interpreter (default on Debian/Ubuntu)
+- [GNU AWK Built-in Functions](https://www.gnu.org/software/gawk/manual/html_node/Built_002din.html) -- string, math, I/O, and time functions
+- [GAWK Extensions](https://www.gnu.org/software/gawk/manual/html_node/Extension-Samples.html) -- loadable extensions for gawk
