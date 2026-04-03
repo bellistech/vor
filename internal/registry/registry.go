@@ -11,6 +11,7 @@ import (
 // Registry holds all loaded cheatsheets.
 type Registry struct {
 	sheets     map[string]*Sheet
+	details    map[string]*Sheet
 	byCategory map[string][]*Sheet
 	all        []*Sheet
 	categories []string
@@ -18,9 +19,57 @@ type Registry struct {
 
 // New creates a Registry from one or more fs.FS sources.
 // Later sources override earlier ones (custom overrides embedded).
+// NewWithDetails creates a Registry with both sheets and detail sources.
+func NewWithDetails(sheetSources []fs.FS, detailSources []fs.FS) (*Registry, error) {
+	r, err := New(sheetSources...)
+	if err != nil {
+		return nil, err
+	}
+	for _, fsys := range detailSources {
+		err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, walkErr error) error {
+			if walkErr != nil {
+				return walkErr
+			}
+			if d.IsDir() || !strings.HasSuffix(path, ".md") {
+				return nil
+			}
+			data, readErr := fs.ReadFile(fsys, path)
+			if readErr != nil {
+				return fmt.Errorf("read %s: %w", path, readErr)
+			}
+			cleaned := strings.TrimPrefix(path, "detail/")
+			category := filepath.Dir(cleaned)
+			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
+			sheet := ParseSheet(name, category, string(data))
+			r.details[name] = sheet
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+	return r, nil
+}
+
+// GetDetail returns a detail sheet by name, or nil.
+func (r *Registry) GetDetail(name string) *Sheet {
+	return r.details[strings.ToLower(name)]
+}
+
+// HasDetail returns true if a detail exists for the named topic.
+func (r *Registry) HasDetail(name string) bool {
+	return r.details[strings.ToLower(name)] != nil
+}
+
+// DetailCount returns the number of loaded detail sheets.
+func (r *Registry) DetailCount() int {
+	return len(r.details)
+}
+
 func New(sources ...fs.FS) (*Registry, error) {
 	r := &Registry{
 		sheets:     make(map[string]*Sheet),
+		details:    make(map[string]*Sheet),
 		byCategory: make(map[string][]*Sheet),
 	}
 

@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with **200 embedded cheatsheets** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, shell completions. Better than man pages — real examples, clear explanations, official references, instantly searchable.
+Single-binary Go CLI with **200 embedded cheatsheets** and **200 deep-dive theory pages** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
 
 ## Install
 
@@ -31,6 +31,19 @@ cs --count                # show statistics with per-category bar chart
 ```
 
 Fuzzy matching is built in — `cs kube` finds kubernetes, `cs lv` finds lvm.
+
+### Deep Dive Mode
+
+```bash
+# Show the theory, math, and internals behind any topic
+cs -d bgp                     # BGP peering formula, convergence, dampening decay
+cs -d tcp                     # window math, congestion control, RTT estimation
+cs -d postgresql              # query planner cost model, B-tree splits, MVCC
+cs -d kubernetes              # scheduler scoring, Raft consensus, HPA formula
+cs -d tls                     # handshake state machine, ECDHE math, cipher suites
+```
+
+Every topic has a companion deep dive with formulas, worked examples, complexity analysis, and engineering tradeoffs.
 
 ### Built-in Tools
 
