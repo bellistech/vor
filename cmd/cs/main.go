@@ -228,17 +228,24 @@ func doShow(reg *registry.Registry, name string) {
 
 	// Then check if it's a category
 	if reg.IsCategory(name) {
+		width := render.TermWidth()
+		nameW := 22
+		pad := 4
+		descMax := width - nameW - pad
+		if descMax < 20 {
+			descMax = 20
+		}
 		sheets := reg.ByCategory(name)
 		var sb strings.Builder
-		sb.WriteString(fmt.Sprintf("# %s\n\n", name))
+		sb.WriteString(fmt.Sprintf("\033[1;32m%s\033[0m\n\n", name))
 		for _, s := range sheets {
 			desc := s.Description
-			if len(desc) > 70 {
-				desc = desc[:67] + "..."
+			if len(desc) > descMax {
+				desc = desc[:descMax-3] + "..."
 			}
-			sb.WriteString(fmt.Sprintf("  %-22s %s\n", s.Name, desc))
+			sb.WriteString(fmt.Sprintf("  %-*s %s\n", nameW, s.Name, desc))
 		}
-		render.Output(sb.String())
+		render.PlainOutput(sb.String())
 		return
 	}
 
