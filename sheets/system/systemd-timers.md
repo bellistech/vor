@@ -8,7 +8,6 @@ Systemd timers replace cron with better logging, dependency management, and reso
 
 ```bash
 # /etc/systemd/system/backup.service
-cat <<'EOF'
 [Unit]
 Description=Daily backup job
 
@@ -18,14 +17,12 @@ ExecStart=/usr/local/bin/backup.sh
 User=deploy
 StandardOutput=journal
 StandardError=journal
-EOF
 ```
 
 ### Timer Unit (the schedule)
 
 ```bash
 # /etc/systemd/system/backup.timer
-cat <<'EOF'
 [Unit]
 Description=Run backup daily at 2am
 
@@ -35,7 +32,6 @@ Persistent=true
 
 [Install]
 WantedBy=timers.target
-EOF
 ```
 
 ### Enable the Timer

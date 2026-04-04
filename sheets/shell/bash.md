@@ -195,10 +195,8 @@ while read -r line; do
 done < <(find . -name "*.go")
 
 # here document
-cat <<EOF
 Hello $name
 Today is $(date)
-EOF
 
 # here string
 grep "error" <<< "$log_output"

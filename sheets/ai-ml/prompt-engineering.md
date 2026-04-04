@@ -26,7 +26,7 @@ Rules:
 
 Output format:
 - Use Markdown with H2 for endpoints, H3 for subsections
-- Code blocks with language annotation (```python, ```bash)
+- Code blocks with language annotation (python, bash)
 - Tables for parameter lists
 
 Tone: Professional, concise, technically precise."""

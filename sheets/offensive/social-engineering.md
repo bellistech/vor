@@ -219,7 +219,6 @@ Key Metrics:
 # Configured at mail server; public key in DNS TXT record
 
 # DMARC — policy for SPF/DKIM failures
-cat <<'EOF'
 DMARC record (_dmarc.target.com TXT):
   v=DMARC1; p=reject; rua=mailto:dmarc@target.com;
   ruf=mailto:dmarc-forensic@target.com; pct=100;
@@ -230,10 +229,8 @@ Policies:
   p=reject   Block delivery (goal)
 
 Ramp-up: none (2 weeks) → quarantine (4 weeks) → reject
-EOF
 
 # Additional technical defenses
-cat <<'EOF'
 1. Email gateway / secure email gateway (SEG)
    - URL rewriting and time-of-click analysis
    - Attachment sandboxing
@@ -254,7 +251,6 @@ cat <<'EOF'
    - Render web content in isolated container
    - Prevent credential entry on unknown domains
    - Strip active content from email links
-EOF
 ```
 
 ### Organizational Controls
@@ -269,7 +265,6 @@ EOF
 ## Incident Response for Social Engineering
 ### Response Playbook
 ```bash
-cat <<'EOF'
 Phase 1: Detection and Triage (0-30 minutes)
   - User reports phishing email
   - SOC analyst validates the report
@@ -305,7 +300,6 @@ Phase 5: Lessons Learned (1 week)
   - Adjust training if specific weakness exploited
   - Report metrics to management
   - Update phishing simulation templates
-EOF
 ```
 
 ## Tips

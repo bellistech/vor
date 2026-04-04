@@ -222,11 +222,10 @@ ps aux | grep root
 ./inject -p <host_pid> /path/to/payload.so
 
 # Or use /proc/<pid>/mem to write shellcode
-python3 << 'EOF'
+# Python script:
 import ctypes
 # Open /proc/<target_pid>/mem, seek to code section, overwrite with shellcode
 # (simplified — full exploit requires ELF parsing and RIP-relative addressing)
-EOF
 
 # Process information disclosure
 cat /proc/<host_pid>/maps        # memory layout

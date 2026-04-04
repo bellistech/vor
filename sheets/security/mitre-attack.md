@@ -140,8 +140,6 @@ PYEOF
 # Lazarus (G0032) - North Korea, financial + destructive
 # APT41 (G0096) - Chinese, dual espionage + financial
 # FIN7 (G0046)  - Financial crime, POS malware
-
-PYEOF
 ```
 
 ## Detection Engineering with ATT&CK
@@ -291,8 +289,6 @@ print(f"Gap: {len(gap)} techniques")
 print(f"\nTop uncovered techniques:")
 for t in sorted(gap)[:15]:
     print(f"  {t}")
-PYEOF
-
 PYEOF
 ```
 

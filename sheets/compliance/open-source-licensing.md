@@ -187,7 +187,6 @@ Direction: Permissive code can flow INTO copyleft projects,
 ### Standard Expressions
 ```bash
 # SPDX (Software Package Data Exchange) license expressions
-cat <<'EOF'
 Simple identifier:
   SPDX-License-Identifier: MIT
   SPDX-License-Identifier: Apache-2.0
@@ -212,7 +211,6 @@ Package metadata (package.json):
 
 SPDX license list: https://spdx.org/licenses/
   ~500 licenses with standardized identifiers
-EOF
 ```
 
 ## Contributor Agreements

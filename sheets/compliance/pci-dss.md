@@ -46,7 +46,6 @@ Goal 6: Maintain an Information Security Policy
 ### Cardholder Data Environment (CDE)
 ```bash
 # Scoping categories for PCI DSS assessment
-cat <<'EOF'
 Scope Categories:
 
 1. CDE Systems (always in scope):
@@ -75,13 +74,11 @@ Sensitive Authentication Data (SAD) — NEVER store after authorization:
   Full Track Data:   Magnetic stripe / chip equivalent
   CAV2/CVC2/CVV2:   Card verification values
   PIN / PIN Block:   Personal identification numbers
-EOF
 ```
 
 ### Network Segmentation
 ```bash
 # Network segmentation reduces PCI scope
-cat <<'EOF'
 Segmentation Methods:
   - Firewalls with deny-all default rules
   - VLANs with ACLs (VLANs alone are NOT sufficient)
@@ -99,7 +96,6 @@ Segmentation Benefits:
   - Reduces assessment scope and cost
   - Limits blast radius of a compromise
   - Simplifies compliance maintenance
-EOF
 ```
 
 ## Self-Assessment Questionnaires (SAQ)
@@ -174,7 +170,6 @@ Merchant Levels (Visa):
 ### Acceptable Methods
 ```bash
 # PAN protection methods per PCI DSS v4.0
-cat <<'EOF'
 Rendering PAN unreadable:
   1. One-way hashes (SHA-256 with salt, bcrypt, Argon2)
      - Original PAN cannot be recovered
@@ -203,14 +198,12 @@ Key Management Requirements (Req 3.6, 3.7):
   - Split knowledge and dual control for manual key operations
   - Prevent unauthorized substitution of keys
   - Retire/replace keys at end of crypto period
-EOF
 ```
 
 ## Vulnerability Scanning and Pen Testing (Requirement 11)
 ### ASV Scanning
 ```bash
 # ASV scan requirements
-cat <<'EOF'
 Approved Scanning Vendor (ASV) Scans — Req 11.3.2:
   Frequency:    Quarterly external vulnerability scans
   Scope:        All externally-facing systems in CDE scope
@@ -233,13 +226,11 @@ Penetration Testing — Req 11.4:
                 Every 12 months (merchants)
   Methodology:  Industry-accepted (PTES, OWASP, NIST SP 800-115)
   Findings:     Remediate and retest all exploitable vulnerabilities
-EOF
 ```
 
 ## Logging and Monitoring (Requirement 10)
 ### Required Log Events
 ```bash
-cat <<'EOF'
 Events that MUST be logged (Req 10.2):
   10.2.1  All individual user accesses to cardholder data
   10.2.1.1 All individual access to PAN with business justification
@@ -269,7 +260,6 @@ File Integrity Monitoring (Req 10.5.1 / 11.5.2):
   - Alert on unauthorized modification
   - Perform comparisons at least weekly
   - Tools: OSSEC, Tripwire, AIDE, Samhain
-EOF
 ```
 
 ## Compensating Controls

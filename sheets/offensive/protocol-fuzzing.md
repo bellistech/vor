@@ -17,7 +17,7 @@ using tools like Boofuzz, Peach Fuzzer, and Scapy.
 ```bash
 # Field overflow — exceed expected sizes
 # Integer fields: set to 0, 1, MAX-1, MAX, MAX+1
-python3 << 'EOF'
+# Python script:
 import struct
 # 2-byte length field mutations
 mutations = [
@@ -36,10 +36,9 @@ string_mutations = [
     b'%s%s%s%s%s',                # format string
     b'\xff' * 100,                # non-ASCII
 ]
-EOF
 
 # Version confusion — send unexpected protocol versions
-python3 << 'EOF'
+# Python script:
 # HTTP version mutations
 version_mutations = [
     b'HTTP/0.9',       # ancient version
@@ -51,23 +50,21 @@ version_mutations = [
     b'HTTP/',          # incomplete
     b'JUNK/1.1',       # wrong protocol
 ]
-EOF
 
 # Truncation — send partial messages
-python3 << 'EOF'
+# Python script:
 # Send progressively truncated packets
 full_packet = b'\x01\x02\x03\x04\x05\x06\x07\x08'
 for i in range(len(full_packet)):
     truncated = full_packet[:i]
     # send(truncated)  — each truncation tests bounds checking
-EOF
 ```
 
 ### CRC and Checksum Manipulation
 
 ```bash
 # CRC collision — valid checksum with mutated payload
-python3 << 'EOF'
+# Python script:
 import binascii
 
 def crc32_forge(data, target_crc, offset):
@@ -90,14 +87,13 @@ def fuzz_checksum(packet, checksum_offset, checksum_size):
     # Zero checksum
     mutations.append(('zero_crc', zero_checksum(packet)))
     return mutations
-EOF
 ```
 
 ### Bit-Level Mutations
 
 ```bash
 # Bit flipping across protocol headers
-python3 << 'EOF'
+# Python script:
 def bitflip_mutator(data, header_len):
     """Flip each bit in protocol header one at a time"""
     mutations = []
@@ -119,7 +115,6 @@ def byte_mutator(data, header_len):
             mutated[idx] = val
             mutations.append(bytes(mutated))
     return mutations
-EOF
 ```
 
 ---
@@ -130,7 +125,7 @@ EOF
 
 ```bash
 # Stateful protocol fuzzer skeleton
-python3 << 'EOF'
+# Python script:
 import socket
 import time
 
@@ -168,14 +163,13 @@ class StatefulFuzzer:
                 self.log_crash(mutation, e)
             finally:
                 self.sock.close()
-EOF
 ```
 
 ### Protocol State Machine
 
 ```bash
 # Define protocol state machine for fuzzing
-python3 << 'EOF'
+# Python script:
 from enum import Enum, auto
 
 class ProtocolState(Enum):
@@ -211,7 +205,6 @@ def generate_state_confusion_tests(current_state, all_messages):
     """Generate messages that are invalid for the current state"""
     valid_messages = transitions.get(current_state, {}).keys()
     return [msg for msg in all_messages if msg not in valid_messages]
-EOF
 ```
 
 ---
@@ -225,7 +218,7 @@ EOF
 pip install boofuzz
 
 # Basic TCP protocol fuzzer
-python3 << 'EOF'
+# Python script:
 from boofuzz import *
 
 def main():
@@ -257,14 +250,13 @@ def main():
 
 if __name__ == "__main__":
     main()
-EOF
 ```
 
 ### Multi-Stage Boofuzz Session
 
 ```bash
 # Multi-stage protocol with dependencies
-python3 << 'EOF'
+# Python script:
 from boofuzz import *
 
 session = Session(
@@ -306,14 +298,13 @@ session.connect(s_get("handshake"), s_get("auth"))
 session.connect(s_get("auth"), s_get("command"))
 
 session.fuzz()
-EOF
 ```
 
 ### Boofuzz Process Monitoring
 
 ```bash
 # Monitor target process for crashes
-python3 << 'EOF'
+# Python script:
 from boofuzz import *
 
 # Process monitor (runs on target machine)
@@ -337,7 +328,6 @@ session = Session(
         ],
     ),
 )
-EOF
 ```
 
 ---
@@ -348,7 +338,7 @@ EOF
 
 ```bash
 # Define custom protocol layer and fuzz it
-python3 << 'EOF'
+# Python script:
 from scapy.all import *
 import random
 
@@ -397,14 +387,13 @@ base = CustomProto(version=1, msg_type=1, session_id=0x41414141, payload=b"test_
 for i in range(10000):
     mutated = mutate_packet(base)
     send(IP(dst="target.local")/TCP(dport=9999)/Raw(mutated), verbose=0)
-EOF
 ```
 
 ### Protocol-Aware Scapy Fuzzing
 
 ```bash
 # Fuzz specific protocol fields with Scapy's fuzz()
-python3 << 'EOF'
+# Python script:
 from scapy.all import *
 
 # DNS fuzzing
@@ -435,7 +424,6 @@ class SmartFuzzer:
                 mutated = bytearray(raw)
                 struct.pack_into('>H', mutated, offset, length & 0xffff)
                 send(IP(dst=self.target)/TCP(dport=self.port)/Raw(bytes(mutated)), verbose=0)
-EOF
 ```
 
 ---
@@ -446,7 +434,7 @@ EOF
 
 ```bash
 # Grammar-based protocol message generation
-python3 << 'EOF'
+# Python script:
 import random
 import struct
 
@@ -502,7 +490,6 @@ grammar = ProtocolGrammar()
 for i in range(10000):
     msg = grammar.generate()
     # send to target
-EOF
 ```
 
 ---
@@ -516,7 +503,7 @@ EOF
 tcpdump -i eth0 -w corpus_capture.pcap host target.local
 
 # Extract protocol payloads from PCAP
-python3 << 'EOF'
+# Python script:
 from scapy.all import rdpcap
 import os
 
@@ -529,14 +516,13 @@ for i, pkt in enumerate(packets):
             with open(f'corpus/pkt_{i:06d}.bin', 'wb') as f:
                 f.write(payload)
 print(f"Extracted {i+1} payloads")
-EOF
 
 # Minimize corpus (remove redundant inputs)
 # AFL-style: keep only inputs that trigger new coverage
 afl-cmin -i corpus/ -o corpus_min/ -- ./target_parser @@
 
 # Create seed files from protocol specification
-python3 << 'EOF'
+# Python script:
 import struct
 # Generate edge-case seed files from spec
 seeds = {
@@ -549,7 +535,6 @@ seeds = {
 for name, data in seeds.items():
     with open(f'corpus/{name}.bin', 'wb') as f:
         f.write(data)
-EOF
 ```
 
 ---
@@ -601,7 +586,7 @@ llvm-cov show ./fuzz_target -instr-profile=merged.profdata \
 
 ```bash
 # Deduplicate crashes by stack trace
-python3 << 'EOF'
+# Python script:
 import os
 import subprocess
 import hashlib
@@ -626,7 +611,6 @@ print(f"Total crashes: {sum(len(v) for v in unique_crashes.values())}")
 print(f"Unique crashes: {len(unique_crashes)}")
 for h, files in unique_crashes.items():
     print(f"  {h}: {len(files)} instances - {files[0]}")
-EOF
 
 # ASan crash analysis
 ASAN_OPTIONS=detect_leaks=0:print_legend=0 ./target_parser crash_input
@@ -654,7 +638,7 @@ afl-tmin -i crash_input -o crash_minimized -- ./target_parser @@
 ./fuzzer -minimize_crash=1 -exact_artifact_path=minimized crash_input
 
 # Manual binary search minimization
-python3 << 'EOF'
+# Python script:
 import subprocess
 
 def crashes(data):
@@ -676,7 +660,6 @@ while len(data) > 1:
 with open('crash_minimized.bin', 'wb') as f:
     f.write(bytes(data))
 print(f"Minimized: {len(data)} bytes")
-EOF
 ```
 
 ---

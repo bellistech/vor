@@ -199,10 +199,8 @@ grub-mkpasswd-pbkdf2
 # Enter password, copy the hash
 
 # Add to /etc/grub.d/40_custom
-cat <<'GRUB'
 set superusers="admin"
 password_pbkdf2 admin grub.pbkdf2.sha512.10000.<hash>
-GRUB
 
 # Restrict specific entries (in menuentry)
 menuentry "Secure Kernel" --users admin {

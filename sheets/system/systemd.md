@@ -96,7 +96,6 @@ systemctl daemon-reload
 
 ```bash
 # /etc/systemd/system/myapp.service
-cat <<'EOF'
 [Unit]
 Description=My Application
 After=network.target
@@ -113,7 +112,6 @@ Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
-EOF
 ```
 
 ## Timers

@@ -91,16 +91,13 @@ tail -f /var/log/pihole.log | grep "0.0.0.0"
 
 # Response Policy Zone (RPZ) with BIND
 # /etc/bind/named.conf.local
-cat <<'EOF'
 zone "rpz.local" {
     type master;
     file "/etc/bind/db.rpz.local";
     allow-query { none; };
 };
-EOF
 
 # /etc/bind/db.rpz.local
-cat <<'EOF'
 $TTL 60
 @ IN SOA localhost. admin.localhost. (1 3600 900 604800 60)
 @ IN NS localhost.
@@ -108,7 +105,6 @@ $TTL 60
 malicious-domain.com CNAME .     ; NXDOMAIN response
 *.malicious-domain.com CNAME .   ; Wildcard block
 badsite.com A 127.0.0.1          ; Redirect to localhost
-EOF
 ```
 
 ## Network Segmentation
@@ -319,12 +315,10 @@ dig +cd +dnssec example.com    # check with CD flag
 
 # Enable DNSSEC validation in resolver
 # /etc/unbound/unbound.conf
-cat <<'EOF'
 server:
     auto-trust-anchor-file: "/var/lib/unbound/root.key"
     val-clean-additional: yes
     val-permissive-mode: no
-EOF
 
 # 802.1X port-based authentication (wpa_supplicant for wired)
 cat <<'EOF' > /etc/wpa_supplicant/wpa_supplicant-eth0.conf
@@ -393,7 +387,6 @@ sudo iptables -A INPUT -m state --state INVALID -j DROP
 sudo iptables -A INPUT -f -j DROP
 
 # Nftables equivalent (modern replacement for iptables)
-cat <<'EOF'
 table inet filter {
     chain input {
         type filter hook input priority 0; policy drop;
@@ -404,7 +397,6 @@ table inet filter {
         icmp type echo-request limit rate 1/second burst 4 packets accept
     }
 }
-EOF
 
 # Monitor connection states during attack
 ss -s

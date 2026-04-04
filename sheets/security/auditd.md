@@ -306,7 +306,6 @@ sudo ausearch -k sudo_usage -i
 
 ```bash
 # Audit log configuration in /etc/audit/auditd.conf
-cat <<'EOF'
 # Key settings in /etc/audit/auditd.conf
 log_file = /var/log/audit/audit.log
 log_format = ENRICHED
@@ -319,7 +318,6 @@ admin_space_left = 50
 admin_space_left_action = SUSPEND
 disk_full_action = SUSPEND
 disk_error_action = SUSPEND
-EOF
 ```
 
 ### Remote Logging
@@ -327,30 +325,24 @@ EOF
 ```bash
 # Configure audispd to send logs to remote syslog
 # /etc/audit/plugins.d/syslog.conf (or /etc/audisp/plugins.d/syslog.conf)
-cat <<'EOF'
 active = yes
 direction = out
 path = builtin_syslog
 type = builtin
 args = LOG_INFO
 format = string
-EOF
 
 # For dedicated audit log forwarding with audisp-remote
 # /etc/audit/plugins.d/au-remote.conf
-cat <<'EOF'
 active = yes
 direction = out
 path = /sbin/audisp-remote
 type = always
-EOF
 
 # /etc/audit/audisp-remote.conf
-cat <<'EOF'
 remote_server = audit-collector.example.com
 port = 60
 transport = tcp
-EOF
 ```
 
 ## Tips
