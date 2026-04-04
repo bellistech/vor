@@ -929,6 +929,10 @@ X                      # discard changes (checkout)
 - Use `:Inspect` to see which highlight groups apply at the cursor -- essential for theme debugging.
 - Gitsigns `on_attach` is the cleanest place to define per-buffer git keymaps.
 
+## See Also
+
+- vim, lua, tmux, git, regex, bash
+
 ## References
 
 - [Neovim Documentation](https://neovim.io/doc/) -- built-in help and user manual

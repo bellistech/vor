@@ -257,6 +257,18 @@ IP indicators decay fast (infrastructure rotates); file hashes remain useful lon
 | $V \times T \times C$ | Linear scaling | Retention cost |
 | $e^{-\lambda t}$ decay | Exponential | IOC relevance |
 
+## Prerequisites
+
+- statistics (baseline, standard deviation), regular expressions, entropy, time series
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Pattern search (regex) | O(n * m) | O(m) |
+| Baseline computation | O(n) | O(w) |
+| Entropy calculation | O(n) | O(k) |
+
 ---
 
 *Log analysis transforms raw event streams into security intelligence — the mathematics of baselining, entropy, and correlation convert millions of events per day into the handful of alerts that matter, separating signal from noise at machine speed.*

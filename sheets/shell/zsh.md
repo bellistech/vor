@@ -225,6 +225,10 @@ bindkey -L
 - `RPROMPT` sets a right-aligned prompt -- great for git branch or timestamps.
 - `hash -d proj=~/projects` creates a named directory: `cd ~proj`.
 
+## See Also
+
+- bash, shell-scripting, tmux, regex, vim, git
+
 ## References
 
 - [Zsh Documentation](https://zsh.sourceforge.io/Doc/) -- official manual (all sections)

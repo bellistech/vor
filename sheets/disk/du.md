@@ -137,6 +137,13 @@ du -sh .
 - On macOS/BSD, use `-d` instead of `--max-depth` and note that `--exclude` is a GNU extension
 - For interactive exploration, `ncdu` is significantly faster and more user-friendly than repeated `du` commands
 
+## See Also
+
+- df
+- ncdu
+- find
+- lsof
+
 ## References
 
 - [du(1) Man Page](https://man7.org/linux/man-pages/man1/du.1.html)

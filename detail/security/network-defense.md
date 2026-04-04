@@ -233,6 +233,10 @@ This is a **vertex cover / set cover** problem — NP-hard in general, but heuri
 | Rule shadowing $\supseteq$ | Set containment | Firewall optimization |
 | Vertex cover | Graph theory | Sensor placement |
 
+## Prerequisites
+
+- graph theory, topology, segmentation, traffic analysis
+
 ---
 
 *Network defense is the art of topology — segmentation reduces blast radius, monitoring increases detection probability, and traffic analysis reveals attacks hiding in encrypted streams. The mathematics quantify each layer's contribution to overall security posture.*

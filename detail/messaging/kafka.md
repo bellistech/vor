@@ -239,3 +239,16 @@ $$T_{e2e} = T_{linger} + T_{batch\_fill} + T_{compress} + T_{network} + T_{broke
 ---
 
 *Every `kafka-topics --describe`, `kafka-consumer-groups --describe`, and broker metric reflects these internals — a distributed commit log where partition count is the fundamental unit of parallelism.*
+
+## Prerequisites
+
+- Distributed systems fundamentals (replication, leader election)
+- Log-structured storage concepts (append-only, segments)
+- Consumer group and partition assignment models
+- Networking basics (TCP, throughput estimation)
+
+## Complexity
+
+- **Beginner:** Topic creation, basic produce/consume
+- **Intermediate:** Partition sizing, replication factor tuning, consumer lag monitoring
+- **Advanced:** ISR shrink/expand modeling, log compaction overhead, exactly-once transactional semantics

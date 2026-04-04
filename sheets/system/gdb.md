@@ -295,6 +295,10 @@ set auto-load safe-path /home/user/project
 - Use `signal 0` to continue without delivering a signal when stopped by one.
 - GDB supports Python scripting for custom commands: `python print(gdb.parse_and_eval("x"))`.
 
+## See Also
+
+- strace, valgrind, perf, kernel, bpftrace
+
 ## References
 
 - [man gdb(1)](https://man7.org/linux/man-pages/man1/gdb.1.html)

@@ -227,6 +227,14 @@ redis-cli DEBUG SLEEP 0                    # test connectivity
 - Set `maxmemory` and `maxmemory-policy` (e.g., `allkeys-lru`) to prevent OOM.
 - Pub/Sub messages are fire-and-forget. If a subscriber is disconnected, messages are lost. Use Streams for durable messaging.
 
+## See Also
+
+- postgresql
+- mysql
+- sqlite
+- kafka
+- nats
+
 ## References
 
 - [Redis Documentation](https://redis.io/docs/)

@@ -241,6 +241,10 @@ Force refresh: `nscd -i passwd` or `sss_cache -U`.
 | Lock mechanism | `!` prefix on hash | String operation |
 | Password lock date | $set + max\_days + inactive$ | Date arithmetic |
 
+## Prerequisites
+
+- set theory (group membership), file ownership, UID/GID mapping, /etc/passwd and /etc/shadow formats, filesystem operations
+
 ---
 
 *usermod is the scalpel of user management — precise modifications to a running account. But every cut has consequences: changing a UID orphans files, changing groups revokes access, and moving a home breaks symlinks. Measure twice, usermod once.*

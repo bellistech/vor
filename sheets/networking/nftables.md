@@ -189,6 +189,10 @@ iptables-save | iptables-restore-translate    # translate full ruleset
 - `nft describe tcp dport` shows valid types and ranges for any selector
 - iptables compatibility layer (`iptables-nft`) lets old scripts work with nftables kernel backend
 
+## See Also
+
+- iptables, ip, tcpdump, ufw, firewalld
+
 ## References
 
 - [nftables Wiki](https://wiki.nftables.org/)

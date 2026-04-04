@@ -219,3 +219,16 @@ For most configurations ($R < 100$, $M < 5$): effectively constant time.
 ---
 
 *Every Caddy request flows through these calculations — automatic HTTPS via ACME, HTTP/2 multiplexing, and smart load balancing, all configured in a Caddyfile that reads more like English than config syntax.*
+
+## Prerequisites
+
+- TLS/SSL certificate concepts (CA, CSR, chain of trust)
+- HTTP/2 protocol basics (multiplexing, streams, HPACK)
+- ACME protocol (Let's Encrypt challenge types)
+- Reverse proxy concepts (upstream, health checks, load balancing)
+
+## Complexity
+
+- **Beginner:** Automatic HTTPS, static file serving, basic reverse proxy
+- **Intermediate:** Handle/route directives, matchers, custom TLS, load balancing policies
+- **Advanced:** ACME certificate lifecycle math, HTTP/2 stream multiplexing, rate limiter token bucket internals

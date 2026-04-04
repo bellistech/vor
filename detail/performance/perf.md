@@ -261,6 +261,10 @@ $$\%mispredicted = \frac{branch\text{-}misses}{branches} \times 100$$
 | File size | $samples \times (40 + depth \times 8)$ | Storage |
 | Branch cost | $miss\_rate \times pipeline\_penalty$ | Microarchitecture |
 
+## Prerequisites
+
+- sampling theory, statistics (confidence intervals), CPU microarchitecture, hardware performance counters, cache hierarchy
+
 ---
 
 *perf is a statistical microscope powered by hardware counters. Every sample is a random snapshot, and the profile emerges from thousands of snapshots — like a pointillist painting where each dot is placed by the CPU itself.*

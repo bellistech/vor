@@ -225,6 +225,10 @@ $$\text{Header overhead (SR)}: O = 4 \times H \quad \text{(H = hops in stack)}$$
 | $P + V + T$ | Summation | Label requirement |
 | $N \times F$ vs $N$ | Linear vs constant | State scaling |
 
+## Prerequisites
+
+- graph theory, linear scaling, binary arithmetic
+
 ---
 
 *MPLS turned the internet's routing problem inside out — instead of every router making an independent forwarding decision, the ingress router makes one decision and encodes it as a label stack. The math of label space, stack depth, and bandwidth reservation governs how service providers move petabytes per day.*

@@ -226,6 +226,20 @@ Pattern `e` matches ~13% of characters (English text). Pattern `xq` matches ~0.0
 | Backtracking | $O(2^N)$ worst case | Exponential search |
 | I/O bound | $bytes / bandwidth$ | Throughput model |
 
+## Prerequisites
+
+- automata theory, finite state machines, regular expressions, string matching algorithms, computational complexity
+
+## Complexity
+
+| Algorithm | Time Complexity | Notes |
+|:---|:---|:---|
+| NFA simulation | $O(N \times m)$ | N = input, m = pattern states |
+| DFA matching | $O(N)$ | After $O(2^m)$ build time |
+| Boyer-Moore | $O(N/m)$ average | Skip-based literal search |
+| Aho-Corasick | $O(N + M + Z)$ | Multi-pattern, Z = matches |
+| Backtracking (PCRE) | $O(2^N)$ worst case | Exponential with backreferences |
+
 ---
 
 *grep is automata theory made executable — every regex you write is compiled to a finite state machine and run against your data in linear time (unless you use backreferences, then all bets are off).*

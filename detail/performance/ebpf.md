@@ -263,6 +263,21 @@ Kernel BTF: typically 2-5 MB for ~50,000 types.
 | JIT speedup | $T_{interp} / T_{JIT} \approx 5-30\times$ | Performance ratio |
 | Tail call depth | Max 33 programs | Chaining limit |
 
+## Prerequisites
+
+- virtual machines, static analysis, DAG verification, hash tables, ring buffers, JIT compilation, kernel internals
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|:---|:---|:---|
+| Verifier pass | $O(V \times S \times C)$ | V=vertices, S=states, C=conditions |
+| Hash map lookup | $O(1)$ average | Per-CPU or shared |
+| Array map access | $O(1)$ | Direct index |
+| Ring buffer write | $O(1)$ | Lock-free single producer |
+| JIT compilation | $O(N_{insn})$ | One-time per program load |
+| Tail call dispatch | $O(1)$ | Array index jump |
+
 ---
 
 *eBPF is a verified virtual machine: every program must pass a static safety proof before the kernel will execute it. The verifier's DAG exploration guarantees termination, the JIT eliminates interpretation overhead, and the map types provide kernel-safe data structures with known complexity bounds.*

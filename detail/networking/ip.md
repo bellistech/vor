@@ -254,6 +254,10 @@ $$10.0.0.1 \in VRF_A \neq 10.0.0.1 \in VRF_B$$
 | $H(\text{5-tuple}) \mod \sum w$ | Hash/modular | Path selection |
 | $N_{ns} \times M_{per\_ns}$ | Product | Namespace memory |
 
+## Prerequisites
+
+- binary arithmetic, subnetting, bitwise operations, routing table structure
+
 ---
 
 *The `ip` command replaced ifconfig, route, arp, and tunnel with a single tool that speaks directly to the kernel via netlink. Every container on every Linux host uses `ip` commands (or their API equivalent) to set up networking — it's the foundation layer that everything else builds on.*

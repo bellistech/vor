@@ -262,6 +262,10 @@ This is why Helgrind is very slow for many-threaded programs.
 | Cache miss rate | $misses / refs$ | Ratio |
 | Race detection | Vector clock $O(N_{threads}^2)$ | Quadratic per sync |
 
+## Prerequisites
+
+- dynamic binary instrumentation, memory layout, shadow memory, cache hierarchy, thread synchronization, vector clocks
+
 ---
 
 *Valgrind trades time for certainty. Its 10-30x slowdown is the price of checking every single memory access against a shadow model — and for the bugs it catches (use-after-free, buffer overflows, uninitialized reads), that price is trivial compared to the cost of shipping them.*

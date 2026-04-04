@@ -223,3 +223,16 @@ $$\text{Write BW (RAID5, partial)} = \frac{\text{Per-Disk BW}}{2} \quad (\text{r
 ---
 
 *Every `mdadm --create`, `mdadm --detail`, and `/proc/mdstat` progress bar is governed by these formulas — simple arithmetic with life-or-death implications for your data.*
+
+## Prerequisites
+
+- RAID level concepts (mirroring, striping, parity)
+- Linux block device fundamentals (partitions, device files)
+- Basic probability for failure rate calculations (MTTF/MTBF)
+- Disk I/O concepts (sequential vs random, read vs write penalties)
+
+## Complexity
+
+- **Beginner:** RAID 1 mirror creation, basic monitoring
+- **Intermediate:** RAID 5/6 sizing, rebuild time estimation, spare management
+- **Advanced:** Multi-disk failure probability modeling, URE risk during rebuild, nested RAID performance analysis

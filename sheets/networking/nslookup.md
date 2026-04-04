@@ -132,6 +132,10 @@ nslookup example.com 8.8.8.8 2>/dev/null | awk '/^Address:/{print $2}' | tail -1
 - Some DNS servers refuse `type=ANY` queries (RFC 8482) — query specific types instead
 - On Windows, `nslookup` is often the only DNS tool available, making it essential to know
 
+## See Also
+
+- dig, dns, curl, mtr, ipv4
+
 ## References
 
 - [man nslookup](https://man7.org/linux/man-pages/man1/nslookup.1.html)

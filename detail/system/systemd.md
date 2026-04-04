@@ -246,6 +246,19 @@ The critical chain is the **bottleneck** — optimizing any unit not on this pat
 | Restart limits | $burst / interval$ | Token bucket |
 | Journal sizing | $max\_use / daily\_rate$ | Capacity planning |
 
+## Prerequisites
+
+- graph theory, topological sorting, directed acyclic graphs, process lifecycle, cgroups, resource scheduling
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|:---|:---|:---|
+| Boot ordering (topological sort) | $O(V + E)$ | V = units, E = dependencies |
+| Dependency resolution | $O(V + E)$ | Graph traversal |
+| Socket activation lookup | $O(1)$ | Hash table by port/path |
+| Unit file parsing | $O(L)$ | L = total lines across unit files |
+
 ---
 
 *systemd is a graph scheduler, a resource allocator, and a supervision engine — all running the same proportional-share and rate-limiting math the kernel uses internally.*

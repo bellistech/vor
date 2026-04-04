@@ -279,3 +279,16 @@ $$\text{allowed}(s, d) = \begin{cases}
 ---
 
 *Kubernetes is a distributed systems textbook running in production — Raft consensus, bin packing heuristics, feedback control loops, and probabilistic load balancing all working together to keep your pods running.*
+
+## Prerequisites
+
+- Container fundamentals (Docker or containerd)
+- Linux networking (iptables, bridges, DNS)
+- Distributed systems concepts (consensus, CAP theorem)
+- YAML and basic API concepts (REST, gRPC)
+
+## Complexity
+
+- Beginner: deploying pods, services, and deployments with kubectl
+- Intermediate: resource QoS, HPA, RBAC, network policies, Helm
+- Advanced: scheduler internals, etcd Raft tuning, custom controllers, iptables/IPVS load balancing math

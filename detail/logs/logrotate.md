@@ -268,6 +268,10 @@ For 10 nginx log files with 100 ms reload: $1000ms$ vs $100ms$.
 | Rotation frequency | $\max(1/period, growth/threshold)$ | Trigger rate |
 | Compression savings | $1 - 1/ratio$ | Percentage |
 
+## Prerequisites
+
+- capacity planning, compression ratios, filesystem management, cron scheduling, log management
+
 ---
 
 *logrotate is capacity planning in a config file. Every directive — rotate count, size threshold, compression — is a parameter in the storage equation, and getting it wrong means either running out of disk at 3 AM or losing critical audit logs.*

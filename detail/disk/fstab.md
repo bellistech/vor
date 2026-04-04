@@ -215,3 +215,16 @@ $$\text{Total} = 60 \times (2^4 - 1) = 60 \times 15 = 900 \text{ seconds} = 15 \
 ---
 
 *Every line in /etc/fstab is parsed by mount(8) at boot — six whitespace-separated fields that determine how your entire storage topology is assembled.*
+
+## Prerequisites
+
+- mount command and filesystem types
+- Block device identification (UUID, LABEL, device paths)
+- Filesystem mount options (rw, noatime, etc.)
+- systemd mount unit basics
+
+## Complexity
+
+- **Beginner:** Adding entries for local partitions
+- **Intermediate:** NFS/CIFS network mounts, mount option tuning, systemd automount
+- **Advanced:** Mount dependency ordering, initramfs requirements, degraded boot scenarios

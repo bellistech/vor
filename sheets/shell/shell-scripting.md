@@ -350,6 +350,10 @@ confirm "Delete all logs?" || exit 0
 - Always use `read -r` to prevent backslash interpretation.
 - `shellcheck` is the single best tool for catching shell scripting bugs. Install it and run it on every script.
 
+## See Also
+
+- bash, zsh, awk, sed, make, regex
+
 ## References
 
 - [POSIX Shell Specification](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html) -- portable shell command language

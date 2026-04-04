@@ -156,6 +156,10 @@ strace -fp $(pgrep my_server) -e trace=futex,poll,epoll_wait
 - On newer kernels, `perf trace` is a lower-overhead alternative for syscall tracing.
 - `ltrace` is the equivalent for library calls (e.g., `ltrace -e malloc ./my_program`).
 
+## See Also
+
+- lsof, gdb, perf, bpftrace, ps, kernel
+
 ## References
 
 - [man strace(1)](https://man7.org/linux/man-pages/man1/strace.1.html)

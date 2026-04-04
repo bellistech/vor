@@ -265,6 +265,10 @@ CGO_ENABLED=0 go build -o myapp .     # static binary (no cgo)
 - `sync.Once` is the safest way to do one-time initialization in concurrent code.
 - `go vet` catches common mistakes (printf format errors, unreachable code). Run it alongside tests.
 
+## See Also
+
+- c, rust, python, make, json, docker
+
 ## References
 
 - [Go Documentation](https://go.dev/doc/) -- getting started, tutorials, and guides

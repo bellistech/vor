@@ -291,3 +291,16 @@ Containers achieve ~21x higher density.
 ---
 
 *Vagrant turns "it works on my machine" into "it works on every developer's machine" — box versioning ensures reproducibility, multi-machine networking simulates production topology, and synced folder performance determines whether your development experience is pleasant or painful.*
+
+## Prerequisites
+
+- Virtualization basics (VirtualBox, libvirt, or Hyper-V)
+- Ruby syntax fundamentals (for Vagrantfile)
+- Networking concepts (port forwarding, private/public networks)
+- Basic provisioning (shell scripts or Ansible)
+
+## Complexity
+
+- Beginner: init, up, ssh, destroy lifecycle
+- Intermediate: multi-machine setups, provisioners, synced folders, snapshots
+- Advanced: custom box creation, provider-specific tuning, NFS performance, plugin development

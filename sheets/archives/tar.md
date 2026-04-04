@@ -152,6 +152,14 @@ tar cf - /var/data/ | pv | gzip > backup.tar.gz
 - Compression comparison: `gzip` is fastest, `xz` has the best ratio, `zstd` is the best balance of speed and ratio.
 - `-p` (preserve permissions) is on by default when running as root but not as a regular user.
 
+## See Also
+
+- gzip
+- xz
+- zip
+- 7z
+- rsync
+
 ## References
 
 - [GNU Tar Manual](https://www.gnu.org/software/tar/manual/)

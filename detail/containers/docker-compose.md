@@ -270,3 +270,16 @@ $$S_{context} = S_{total} - S_{ignored}$$
 ---
 
 *Docker Compose turns a YAML file into a running distributed system — the dependency graph, network topology, and resource accounting happen automatically, but understanding the math lets you optimize startup time, resource usage, and I/O performance.*
+
+## Prerequisites
+
+- Docker fundamentals (images, containers, volumes, networks)
+- YAML syntax
+- Basic networking (DNS resolution, port mapping)
+- Understanding of service dependencies and health checks
+
+## Complexity
+
+- Beginner: single-file compose with two or three services
+- Intermediate: multi-file overrides, health checks, profiles, scaling
+- Advanced: DAG-aware startup optimization, production resource planning, macOS I/O tuning

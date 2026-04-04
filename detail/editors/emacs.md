@@ -335,3 +335,10 @@ Font-lock works by:
 ---
 
 *Emacs' extensibility principle is absolute: if something happens in Emacs, a Lisp function did it, and you can replace that function. This is not a plugin API — it's the editor itself. The cost is complexity and a learning curve. The reward is an editor that adapts to you completely, not one that you adapt to.*
+
+## Prerequisites
+
+- Emacs Lisp (Elisp) fundamentals (functions, macros, hooks)
+- Buffer and window model (frames, buffers, windows, point, mark)
+- Key binding system (keymaps, prefix keys, minor/major modes)
+- Package management (MELPA, use-package, straight.el)

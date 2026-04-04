@@ -293,6 +293,14 @@ kitchen list          # show status
 - `chef-client -o 'recipe[nginx]'` overrides the run list for a single run.
 - Data bag secrets should never be committed to version control.
 
+## See Also
+
+- ansible
+- puppet
+- salt
+- terraform
+- vagrant
+
 ## References
 
 - [Chef Documentation](https://docs.chef.io/)

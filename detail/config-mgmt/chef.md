@@ -257,3 +257,16 @@ $$T_{bounded} = \lceil \frac{P \times S}{C} \rceil \times \max_{batch} T_{batch}
 ---
 
 *Chef's Ruby DSL hides significant complexity — attribute precedence resolution, run list expansion, cookbook dependency solving, and search-based discovery all execute on every 30-minute converge cycle.*
+
+## Prerequisites
+
+- Ruby fundamentals (DSL-based configuration)
+- Linux system administration (packages, services, files)
+- Client-server architecture (Chef Server, Chef Client)
+- Understanding of idempotent operations
+
+## Complexity
+
+- Beginner: basic resources, recipes, knife bootstrap
+- Intermediate: cookbooks, attributes, roles, data bags, environments, Test Kitchen
+- Advanced: attribute precedence algebra, dependency solving, search-based discovery, custom resources, Policyfiles

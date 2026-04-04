@@ -232,6 +232,18 @@ SOA serial number format (YYYYMMDDnn) allows 100 changes per day before rolling 
 | $H^{n}(\text{name}\|\text{salt})$ | Iterated hash | NSEC3 computation |
 | $\Delta R \times S_{avg}$ | Delta calculation | IXFR transfer sizing |
 
+## Prerequisites
+
+- tree data structures, caching algorithms, TTL arithmetic
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Recursive resolution | O(d) | O(cache size) |
+| Cache lookup | O(1) avg | O(n) |
+| Zone transfer (AXFR) | O(n) | O(n) |
+
 ---
 
 *DNS resolves billions of queries per day, and the math behind caching, TTLs, and DNSSEC chain validation determines whether your browser loads a page in 50 ms or 500 ms.*

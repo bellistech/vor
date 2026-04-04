@@ -306,6 +306,10 @@ awk '/pattern/ {print $0}' file    # ERE by default
 - POSIX classes like `[:alpha:]` are locale-aware; `\w` and `[a-z]` are not.
 - Test regex interactively at regex101.com (supports PCRE, Python, Go, Java).
 
+## See Also
+
+- sed, awk, grep, jq, python, javascript
+
 ## References
 
 - [Regular-Expressions.info](https://www.regular-expressions.info/) -- comprehensive tutorial and reference

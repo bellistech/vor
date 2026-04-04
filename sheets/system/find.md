@@ -188,6 +188,10 @@ find / -path /proc -prune -o -path /sys -prune -o -type f -name "*.conf" -print
 - Put `-maxdepth` and `-mindepth` before other predicates -- find processes left-to-right.
 - On macOS, `-regex` uses basic regex by default; use `-E` for extended regex.
 
+## See Also
+
+- grep, lsof, bash, strace
+
 ## References
 
 - [man find(1)](https://man7.org/linux/man-pages/man1/find.1.html)

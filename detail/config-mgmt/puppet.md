@@ -269,3 +269,16 @@ $$\text{Fleet convergence} = \frac{|\{n : \text{Changed}(n) = 0 \text{ AND } \te
 ---
 
 *Puppet's catalog is a graph — the compiler builds it, the agent topologically sorts it, the reporter measures convergence. Every 30-minute cycle, this graph-theoretic machinery ensures thousands of nodes match their declared state.*
+
+## Prerequisites
+
+- Linux system administration (packages, services, users, files)
+- Puppet DSL syntax (declarative, Ruby-influenced)
+- Client-server architecture concepts (certificates, TLS)
+- Understanding of directed acyclic graphs
+
+## Complexity
+
+- Beginner: basic resources (package, service, file), puppet apply
+- Intermediate: classes, modules, Hiera, node definitions, environments
+- Advanced: catalog compilation internals, resource graph optimization, PuppetDB queries, convergence metrics

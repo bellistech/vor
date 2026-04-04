@@ -266,3 +266,16 @@ $$\text{order} = \text{toposort}(G) \quad \text{(dependencies before dependents)
 ---
 
 *Ansible's power is in its simplicity — SSH, idempotent modules, and YAML. But underneath, it's applying set theory to inventory, function theory to convergence, and graph algorithms to role dependencies.*
+
+## Prerequisites
+
+- SSH key-based authentication
+- Linux system administration (packages, services, files)
+- YAML syntax
+- Basic Python (for custom modules and filters)
+
+## Complexity
+
+- Beginner: ad-hoc commands, simple playbooks, static inventory
+- Intermediate: roles, Jinja2 templates, vault, dynamic inventory, handlers
+- Advanced: parallel execution tuning, connection multiplexing, custom modules, idempotency proofs

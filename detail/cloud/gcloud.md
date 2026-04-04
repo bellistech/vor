@@ -273,3 +273,16 @@ $$C_{egress} = 1000 \times 0.12 = \$120.00/\text{month}$$
 ---
 
 *Every `gcloud` command hits a project-scoped, quota-limited API endpoint. GCP's per-second billing and automatic sustained-use discounts reward infrastructure that runs continuously, while the additive-only IAM model keeps permissions simple at the cost of less granular denial.*
+
+## Prerequisites
+
+- GCP account and project hierarchy (org, folder, project)
+- OAuth2 authentication concepts
+- REST API fundamentals
+- Basic understanding of GCP services (Compute, GKE, Cloud Storage)
+
+## Complexity
+
+- Beginner: auth setup, Compute Engine instances, Cloud Storage operations
+- Intermediate: IAM bindings, GKE cluster management, Cloud Run, named configurations
+- Advanced: per-second billing optimization, sustained-use discount modeling, quota management, batch API

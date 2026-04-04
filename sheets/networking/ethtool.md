@@ -171,6 +171,10 @@ ethtool --set-eee eth0 eee off        # disable EEE (reduces latency jitter)
 - Changes made with `ethtool` are not persistent; use `udev` rules, `networkd`, or `/etc/network/interfaces` `pre-up` for persistence
 - RSS queue count should generally match the number of CPU cores for optimal interrupt distribution
 
+## See Also
+
+- ip, ethernet, tcpdump, ss, netstat
+
 ## References
 
 - [man ethtool](https://man7.org/linux/man-pages/man8/ethtool.8.html)

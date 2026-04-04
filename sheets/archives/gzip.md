@@ -109,6 +109,13 @@ gzip -dr /var/log/old/
 - `gzip` only compresses single files. To compress a directory, use `tar czf` to bundle and compress in one step.
 - `.gz` files include a CRC32 checksum. Use `gzip -t` to verify integrity after transfer.
 
+## See Also
+
+- tar
+- xz
+- zip
+- 7z
+
 ## References
 
 - [GNU Gzip Manual](https://www.gnu.org/software/gzip/manual/)

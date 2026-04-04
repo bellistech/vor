@@ -211,3 +211,16 @@ $$\text{Space Saved per Tiny File} = 4 \text{ KiB (one block)} - \text{File Size
 ---
 
 *Every `btrfs subvolume snapshot`, `btrfs balance`, and `btrfs scrub` is walking these B-trees — a COW filesystem where nothing is ever overwritten in place.*
+
+## Prerequisites
+
+- B-tree data structure fundamentals
+- Copy-on-write semantics and reference counting
+- Linux block device and partition concepts
+- Basic RAID level understanding for multi-device setups
+
+## Complexity
+
+- **Beginner:** Filesystem creation, subvolumes, snapshots
+- **Intermediate:** RAID profiles, balance operations, compression tuning
+- **Advanced:** B-tree node splitting analysis, COW amplification modeling, chunk allocation internals

@@ -255,6 +255,10 @@ Merkle tree depth at 10 billion entries: $\lceil \log_2(10^{10}) \rceil = 34$ le
 | Shamir sharing | Polynomial interpolation | Key ceremony quorum |
 | Validity risk | Geometric probability | Certificate lifetime |
 
+## Prerequisites
+
+- graph theory (DAGs), modular arithmetic, digital signatures, hash functions
+
 ---
 
 *Every browser on the planet executes this graph traversal and cryptographic verification hundreds of times per day — the invisible PKI backbone that makes internet trust possible.*

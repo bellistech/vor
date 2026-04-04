@@ -481,6 +481,15 @@ python windows-exploit-suggester.py --database 2024-01-01-mssb.xlsx --systeminfo
 
 ---
 
+## See Also
+
+- recon
+- lateral-movement
+- metasploit
+- password-attacks
+- web-attacks
+- burpsuite
+
 ## References
 
 - [GTFOBins](https://gtfobins.github.io/)

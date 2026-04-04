@@ -229,3 +229,16 @@ $$\text{Effective Write IOPS} = \frac{\text{Raw IOPS}}{\text{Write Penalty}}$$
 ---
 
 *Every `lvcreate`, `lvextend`, and `pvmove` you run is executing these extent calculations in the device-mapper kernel subsystem.*
+
+## Prerequisites
+
+- Linux block device fundamentals (partitions, device files)
+- Basic understanding of filesystems (ext4, xfs)
+- Familiarity with fdisk or parted for disk partitioning
+- Root/sudo access for volume management
+
+## Complexity
+
+- **Beginner:** Creating PVs, VGs, and LVs with basic sizing
+- **Intermediate:** Online resizing, snapshots, thin provisioning
+- **Advanced:** RAID LVs, pvmove migration planning, multi-path environments

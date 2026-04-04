@@ -327,3 +327,15 @@ $$A_{dual\_RE} = 1 - (1 - A)^2 = 1 - (0.0001)^2 = 0.99999999$$
 ---
 
 *Junos enforces discipline through its commit model — you cannot apply an invalid configuration. The RE/PFE separation means a routing protocol crash never takes down forwarding, and the ASIC-based PFE processes packets at line rate with deterministic latency. This is the math running on every Juniper router in the world.*
+
+## Prerequisites
+
+- Routing engine (RE) vs packet forwarding engine (PFE) separation
+- Commit-based configuration model (candidate, active, rollback)
+- Route preference hierarchy and policy framework
+
+## Complexity
+
+- **Beginner:** CLI navigation (set/delete/show/commit), interface config, static routes, rescue config
+- **Intermediate:** Routing policy, firewall filters, OSPF/BGP, commit confirmed, rollback, routing instances
+- **Advanced:** PFE microcode and ASIC forwarding internals, MEMORY trie structure, CoS scheduler math, RE/PFE sync protocols

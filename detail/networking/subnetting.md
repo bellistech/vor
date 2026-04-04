@@ -234,6 +234,17 @@ $$\text{Moving } k \text{ bits: multiply or divide by } 2^k$$
 | $2^{\lceil\log_2(H+2)\rceil} - (H+2)$ | Waste calculation | Utilization analysis |
 | $2^{(n-p)}$ | Exponent | Subnet count |
 
+## Prerequisites
+
+- binary arithmetic, powers of two, logarithms, bitwise AND/OR
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Longest prefix match | O(W) | O(n * W) |
+| CIDR aggregation | O(n log n) | O(n) |
+
 ---
 
 *Subnetting is the most frequently tested networking skill because it combines binary arithmetic, logarithmic thinking, and constrained optimization into problems that reveal whether you truly understand how IP addressing works at the bit level.*

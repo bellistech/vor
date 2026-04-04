@@ -225,6 +225,10 @@ At 1 million packets/sec: $11 \times 10^6 = 11$ MB/s saved in header overhead.
 | $2^{62}$ packet numbers | Exponent | Unique packet identification |
 | $2^{160}$ connection IDs | Exponent | Connection ID space |
 
+## Prerequisites
+
+- finite state machines, exponential functions, modular arithmetic, cryptography fundamentals
+
 ---
 
 *QUIC is what TCP would look like if redesigned with 40 years of internet experience. Every design decision — merged handshakes, independent streams, monotonic packet numbers — is a mathematical optimization against the latency and correctness problems that TCP accumulated over decades.*

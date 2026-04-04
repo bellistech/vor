@@ -244,3 +244,15 @@ Average credential reuse in enterprise: 15-30% of systems share at least one cre
 ---
 
 *Metasploit transforms exploitation from ad-hoc scripting into systematic engineering — each exploit is a probability calculation, each payload is a size optimization, and each pivot extends the attack graph deeper into the target network.*
+
+## Prerequisites
+
+- Exploit development fundamentals (buffer overflows, ROP, shellcode)
+- Payload encoding and evasion techniques
+- Network pivoting and session management
+
+## Complexity
+
+- **Beginner:** Using existing exploits, payload generation (msfvenom), Meterpreter basics, auxiliary scanners
+- **Intermediate:** Multi-handler setup, post-exploitation modules, pivoting (autoroute), custom resource scripts, database integration
+- **Advanced:** Exploit reliability probability, payload size constraint optimization, encoder chain selection, NOP sled sizing, evasion vs detection trade-offs

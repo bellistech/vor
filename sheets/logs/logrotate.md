@@ -297,6 +297,10 @@ cat /var/lib/logrotate/status               # last rotation times
 - `maxage 90` automatically removes rotated files older than 90 days, acting as a cleanup mechanism.
 - logrotate runs via cron (usually `/etc/cron.daily/logrotate`). Check that cron is running if rotation stops happening.
 
+## See Also
+
+- rsyslog, journalctl, cron, systemd-timers
+
 ## References
 
 - [man logrotate(8)](https://man7.org/linux/man-pages/man8/logrotate.8.html)

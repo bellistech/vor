@@ -209,6 +209,10 @@ Disadvantages: no parallel streams, no UDP bandwidth control, no statistics.
 | $\min(R_{in}, R_{out})$ | Minimum | Relay throughput |
 | $P_{end} - P_{start} + 1$ | Range | Port count |
 
+## Prerequisites
+
+- socket programming concepts, TCP/UDP fundamentals, port numbering
+
 ---
 
 *Netcat's power is its simplicity — it's a raw socket with stdin/stdout. Every other network tool adds abstraction layers; nc strips them away, giving you direct access to the TCP/UDP byte stream. When you need to debug at the socket level, nc is the scalpel.*

@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with 200 embedded markdown cheatsheets across 32 categories. Built-in calculator and subnet calculator, fuzzy search, shell completions. Better than man pages.
+Single-binary Go CLI with 200 embedded markdown cheatsheets and 200 deep-dive theory pages across 32 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification.
 
 ## Build
 
@@ -14,26 +14,33 @@ make fmt            # gofmt -s -w .
 
 ## Architecture
 
-- `sheets.go` — root-level `go:embed sheets/*/*.md`
-- `internal/registry/` — Sheet struct, parsing, search, filtering, fuzzy match (prefix → substring → Levenshtein)
+- `sheets.go` — root-level `go:embed sheets/*/*.md` + `go:embed detail/*/*.md`
+- `internal/registry/` — Sheet struct (with SeeAlso, Prerequisites, Complexity fields), parsing, search, filtering, fuzzy match, Related(), SeeAlsoCoverage()
 - `internal/render/` — glamour terminal rendering, TTY detection, pager, PlainOutput for piping
 - `internal/custom/` — user overlay sheets from `~/.config/cs/sheets/`
-- `internal/calc/` — expression calculator (arithmetic, hex/oct/bin, bitwise ops)
-- `internal/subnet/` — CIDR subnet calculator
-- `cmd/cs/main.go` — CLI entry point, stdlib `flag`
+- `internal/calc/` — expression calculator (arithmetic, hex/oct/bin, bitwise ops, unit-aware: KB/MB/GB/Gbps/ms)
+- `internal/subnet/` — CIDR subnet calculator (IPv4 + IPv6)
+- `internal/bookmarks/` — bookmark management (`~/.config/cs/bookmarks.json`)
+- `internal/verify/` — math verification for detail pages (parses expressions, evaluates via calc)
+- `internal/tui/` — interactive TUI (bubbletea + bubbles, category browser, fuzzy filter, content viewer)
+- `cmd/cs/main.go` — CLI entry point, stdlib `flag`, REST API server
 - `sheets/<category>/<topic>.md` — 200 embedded cheatsheets across 32 categories
+- `detail/<category>/<topic>.md` — 200 deep-dive theory/math pages
 
 ## Adding Sheets
 
 1. Create `sheets/<category>/<topic>.md`
 2. Format: H1 = title, one-liner, H2 = sections, H3 = subsections, bash code blocks
-3. Include `## References` section with official docs, RFCs, man pages
-4. Rebuild: `make build`
+3. Include `## See Also` with related topic names
+4. Include `## References` section with official docs, RFCs, man pages
+5. Optionally create `detail/<category>/<topic>.md` for deep dive
+6. Rebuild: `make build`
 
 ## Conventions
 
-- Go 1.24, minimal deps (glamour + x/term)
+- Go 1.24, deps: glamour, x/term, bubbletea, bubbles
 - No zerolog — simple stderr for errors
 - No cobra — stdlib flag
 - Build flags: `-trimpath -s -w`
 - Version injection: `-X main.version=$(VERSION)`
+- REST API uses stdlib net/http (no external router)

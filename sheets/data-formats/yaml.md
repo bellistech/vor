@@ -255,6 +255,10 @@ Later keys override merged keys:
 - Multi-document files use `---` as separator. Tools like `kubectl apply -f` handle them natively.
 - Use a YAML linter (`yamllint`) to catch indentation errors before they reach production.
 
+## See Also
+
+- json, toml, xml, jq, ansible, kubernetes
+
 ## References
 
 - [YAML 1.2.2 Specification](https://yaml.org/spec/1.2.2/) -- full language specification

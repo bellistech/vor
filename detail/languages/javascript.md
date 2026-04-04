@@ -291,3 +291,10 @@ Default: 1-8 MB per semi-space. Small size → frequent minor GC → low pause t
 ---
 
 *JavaScript's performance story is about predictability: keep your types stable (monomorphic ICs), avoid deoptimization (consistent shapes), and understand the event loop (microtasks before macrotasks). The engine does the rest.*
+
+## Prerequisites
+
+- Event loop and asynchronous programming (callbacks, promises, microtasks)
+- Prototypal inheritance and object model
+- Closures, scoping rules, and execution contexts
+- JIT compilation basics (inline caches, hidden classes, deoptimization)

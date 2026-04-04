@@ -273,3 +273,17 @@ $$\text{Max Memory} = \text{work\_mem} \times \text{max\_connections} \times \te
 ---
 
 *Every `EXPLAIN ANALYZE`, `pg_stat_user_tables`, and `pg_class.relpages` query exposes these cost calculations — a mathematical optimizer that has been refined over 30+ years to turn SQL into efficient disk I/O plans.*
+
+## Prerequisites
+
+- SQL fundamentals (queries, joins, indexes)
+- B-tree index structure concepts
+- MVCC (Multi-Version Concurrency Control) basics
+- Cost-based query optimization principles
+- Basic statistics (histograms, selectivity estimation)
+
+## Complexity
+
+- **Beginner:** EXPLAIN output reading, basic index selection
+- **Intermediate:** Cost model tuning, buffer pool sizing, VACUUM mechanics
+- **Advanced:** Join order optimization combinatorics, selectivity estimation with histograms, TOAST page overhead modeling

@@ -272,6 +272,10 @@ git submodule deinit vendor/lib        # unregister
 - `git switch` and `git restore` are the modern replacements for `git checkout` -- they split its overloaded behavior.
 - `git worktree` lets you work on multiple branches simultaneously without stashing or cloning again.
 
+## See Also
+
+- bash, vim, make, shell-scripting, github-actions, ssh
+
 ## References
 
 - [Git Documentation](https://git-scm.com/doc) -- official docs, book, and videos

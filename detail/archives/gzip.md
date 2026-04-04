@@ -205,3 +205,15 @@ $$\text{Decompress Speed} \approx 3-5\times \text{Compress Speed (same level)}$$
 ---
 
 *Every `gzip -6`, `zlib.compress()`, and HTTP `Content-Encoding: gzip` header runs this algorithm — LZ77 + Huffman coding in a 32 KiB sliding window, the same algorithm that compresses most of the internet's traffic.*
+
+## Prerequisites
+
+- Lempel-Ziv (LZ77) sliding window concept
+- Huffman coding (variable-length prefix codes)
+- CRC32 checksums for integrity verification
+
+## Complexity
+
+- **Beginner:** Compress/decompress single files, compression levels 1-9
+- **Intermediate:** Piping via zcat/zgrep, parallel gzip (pigz), HTTP content encoding
+- **Advanced:** DEFLATE algorithm internals, LZ77 match finding, Huffman tree construction, zlib window sizing

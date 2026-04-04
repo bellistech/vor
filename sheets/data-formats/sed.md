@@ -251,6 +251,10 @@ sed -f commands.sed file.txt
 - sed processes line by line. For multi-line operations, use `N` to pull the next line into the pattern space.
 - For complex transformations, consider `awk` or `perl -pe` instead of fighting with hold space.
 
+## See Also
+
+- awk, regex, grep, bash, jq, shell-scripting
+
 ## References
 
 - [GNU Sed Manual](https://www.gnu.org/software/sed/manual/) -- complete reference for GNU sed

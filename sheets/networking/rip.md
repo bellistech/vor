@@ -176,6 +176,10 @@ vtysh -c "show ip rip" | grep " 16 "
 - RIP is still found in legacy embedded systems, industrial networks, and some ISP CPE where simplicity outweighs performance.
 - When migrating away from RIP, run OSPF alongside with higher administrative distance first, then remove RIP once validated.
 
+## See Also
+
+- ospf, bgp, is-is, ip, subnetting
+
 ## References
 
 - [RFC 2453 — RIP Version 2](https://www.rfc-editor.org/rfc/rfc2453)

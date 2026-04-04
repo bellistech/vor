@@ -262,3 +262,15 @@ On an average Docker deployment, there is roughly a **50% chance** that at least
 ---
 
 *Privilege escalation is a probability calculation — the attacker surveys all vectors and needs only ONE to succeed, while the defender must block ALL of them. This fundamental asymmetry is why defense in depth (patching + SUID reduction + capabilities + MAC + audit) is the only viable strategy.*
+
+## Prerequisites
+
+- Linux permission model (UID/GID, SUID/SGID bits, sticky bit)
+- Linux capabilities and capability bitmasks
+- Kernel address space layout (KASLR, stack canaries, SMEP/SMAP)
+
+## Complexity
+
+- **Beginner:** SUID binary discovery, sudo misconfigurations, writable /etc/passwd, cron job abuse
+- **Intermediate:** Linux capabilities exploitation, PATH hijacking, shared library injection, container escapes
+- **Advanced:** Kernel exploit development, KASLR bypass math, stack canary brute-force probability, race condition timing windows

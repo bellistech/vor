@@ -228,3 +228,15 @@ $$T_{lto\_pass} \approx 0.5-2 \times T_{compile}$$
 ---
 
 *Every `cargo build`, `cargo update`, and `Cargo.lock` reflects these algorithms — a build system and package manager that solves version constraints, parallelizes compilation across the dependency DAG, and caches incremental results.*
+
+## Prerequisites
+
+- Rust compilation model (crates, editions, codegen units)
+- SemVer dependency resolution
+- DAG-based build parallelism (compilation units and linking)
+
+## Complexity
+
+- **Beginner:** New projects, build/run/test, add dependencies
+- **Intermediate:** Features, workspaces, profiles (dev/release), cross-compilation, clippy/fmt
+- **Advanced:** Dependency solver internals, incremental compilation, LTO optimization, build timing analysis

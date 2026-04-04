@@ -199,6 +199,14 @@ docker compose up -d --scale worker=3   # run 3 worker instances
 - `docker compose run` creates a new container; `docker compose exec` attaches to an existing one.
 - Use `restart: unless-stopped` for services that should survive host reboots.
 
+## See Also
+
+- docker
+- podman
+- kubernetes
+- helm
+- containerd
+
 ## References
 
 - [Docker Compose Documentation](https://docs.docker.com/compose/)

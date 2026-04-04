@@ -225,6 +225,10 @@ $$\text{Length} = \begin{cases} L & \text{if } L \leq 127 \text{ (short form, 1 
 | ASN.1 TLV | Structural encoding | Certificate format |
 | ECDH scalar multiply | Elliptic curve algebra | Key agreement |
 
+## Prerequisites
+
+- modular arithmetic, elliptic curve algebra, ASN.1 encoding, hash functions
+
 ---
 
 *OpenSSL translates abstract cryptographic mathematics into concrete byte operations — every `openssl genrsa`, `openssl req`, and `openssl s_client` invocation executes the exact algorithms described here.*

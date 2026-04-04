@@ -265,6 +265,10 @@ Random art visualization (OpenSSH `VisualHostKey`) maps the fingerprint to a 17x
 | SHA-256 fingerprint | Collision-resistant hash | Key verification |
 | Agent forwarding | Trust delegation chain | (Anti-pattern) |
 
+## Prerequisites
+
+- modular arithmetic, key exchange algorithms, hash functions, finite fields
+
 ---
 
 *Every `ssh user@host` invocation executes this entire cryptographic stack — key exchange, authentication, encryption, and channel setup — in under 500ms, establishing a mathematically verified secure tunnel.*

@@ -171,6 +171,14 @@ helm diff upgrade my-nginx bitnami/nginx -f values-prod.yaml   # using helm-diff
 - Use `helm list --failed` to find botched releases that need cleanup.
 - `helm uninstall --keep-history` lets you inspect or rollback a deleted release; without it, the history is gone.
 
+## See Also
+
+- kubernetes
+- docker
+- terraform
+- github-actions
+- gitlab-ci
+
 ## References
 
 - [Helm Documentation](https://helm.sh/docs/)

@@ -276,3 +276,10 @@ Visually identical characters from different scripts:
 ---
 
 *Unicode is not "ASCII but bigger." It's a complex system of encoding (UTF-8/16/32), equivalence (normalization), ordering (collation), segmentation (grapheme clusters), and security (homograph detection). Getting "string length" right requires specifying which of the three lengths you mean. Getting "string equality" right requires specifying a normalization form. Getting "string sorting" right requires specifying a locale.*
+
+## Prerequisites
+
+- ASCII and character encoding history
+- Binary encoding schemes (variable-width vs fixed-width)
+- Normalization forms (NFC, NFD, NFKC, NFKD)
+- Locale-aware string operations (collation, segmentation, case folding)

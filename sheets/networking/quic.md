@@ -364,6 +364,10 @@ server {
 - QUIC encrypts almost everything, including packet numbers and most of the header. This makes it resistant to middlebox ossification (the problem where middleboxes break when TCP options change) but also makes it opaque to network monitoring tools. Use qlog for visibility.
 - Connection migration only works when the server uses connection IDs for routing. If you are behind a load balancer, it must either be QUIC-aware (route by CID) or terminate QUIC at the LB.
 
+## See Also
+
+- tcp, udp, tls, curl, nmap
+
 ## References
 
 - [RFC 9000 — QUIC: A UDP-Based Multiplexed and Secure Transport](https://www.rfc-editor.org/rfc/rfc9000)

@@ -233,3 +233,15 @@ $$\text{Amplification} = \frac{\text{Response Size}}{\text{Query Size}}$$
 ---
 
 *Every `named-checkzone`, `rndc reload`, and `dig` query runs through BIND's red-black tree lookup and caching layer — a DNS server that has been the reference implementation since 1988.*
+
+## Prerequisites
+
+- DNS protocol fundamentals (query types, record types, recursion vs iteration)
+- Red-black tree and trie data structures for zone lookup
+- Cryptographic signing (DNSSEC, RRSIG, DNSKEY)
+
+## Complexity
+
+- **Beginner:** Zone file format, record types (A, AAAA, CNAME, MX, NS), dig/nslookup queries
+- **Intermediate:** DNSSEC signing, views, ACLs, rndc management, split-horizon DNS
+- **Advanced:** Red-black tree lookup internals, cache sizing math, NSEC3 zone walking resistance, response rate limiting

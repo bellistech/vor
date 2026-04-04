@@ -209,3 +209,16 @@ $$\text{Configurable up to} = 2^{20} = 1,048,576$$
 ---
 
 *Every `mount`, `umount`, and `/proc/mounts` read interacts with the VFS mount tree — a kernel data structure that defines how your entire storage hierarchy is assembled into a single directory tree.*
+
+## Prerequisites
+
+- Linux filesystem hierarchy (FHS)
+- Block device and partition concepts
+- VFS (Virtual File System) layer basics
+- Filesystem types (ext4, xfs, btrfs, nfs, tmpfs)
+
+## Complexity
+
+- **Beginner:** Mounting/unmounting local filesystems
+- **Intermediate:** Mount namespaces, bind mounts, propagation types
+- **Advanced:** VFS mount tree internals, namespace isolation, mount ID relationships

@@ -273,6 +273,15 @@ config.disksize.size = "50GB"
 - Use `vagrant package --output mybox.box` to export a running VM as a reusable box.
 - NFS synced folders are significantly faster than VirtualBox shared folders for large codebases.
 
+## See Also
+
+- packer
+- ansible
+- docker
+- lxd
+- terraform
+- puppet
+
 ## References
 
 - [Vagrant Documentation](https://developer.hashicorp.com/vagrant/docs)

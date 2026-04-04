@@ -170,6 +170,10 @@ grep -rc "error" /var/log/ | grep -v ':0$'
 - `grep -r` follows symlinks on some versions; use `grep -r --no-dereference` to avoid loops.
 - For large codebases, `ripgrep` (`rg`) is dramatically faster than `grep -r` and respects `.gitignore`.
 
+## See Also
+
+- find, bash, journalctl, strace, lsof
+
 ## References
 
 - [man grep(1)](https://man7.org/linux/man-pages/man1/grep.1.html)

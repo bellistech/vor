@@ -257,6 +257,10 @@ A 6-sample moving average at 10-minute intervals smooths over 1 hour, revealing 
 | Confidence interval | $\bar{x} \pm 1.96\sigma/\sqrt{n}$ | Statistics |
 | Peak ratio | $peak / mean$ | Burstiness measure |
 
+## Prerequisites
+
+- statistics, finite differences, standard deviation, confidence intervals, time-series analysis, capacity planning
+
 ---
 
 *sar is the only tool that remembers yesterday. While vmstat and iostat show you the present, sar shows you the history — and history, with the right formulas, predicts the future.*

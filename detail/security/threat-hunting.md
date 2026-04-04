@@ -231,6 +231,10 @@ $$\text{Anomalous chain} = \{(h_1, h_2, h_3) : (h_1, h_3) \notin A_{historical}\
 | Graph degree $d(h)$ | Graph theory | Lateral movement |
 | Kill chain product | Independence product | Detection gap |
 
+## Prerequisites
+
+- Bayesian reasoning, statistical analysis, kill chain models, hypothesis testing
+
 ---
 
 *Threat hunting is the mathematical complement to automated detection — where SIEM rules catch known patterns, hunting uses Bayesian reasoning and statistical analysis to find the threats that signatures miss, closing the gap between automated detection and actual adversary presence.*

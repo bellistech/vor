@@ -337,3 +337,10 @@ YAML tags like `!!python/object/apply:os.system` can execute code in unsafe pars
 ---
 
 *YAML's power — comments, anchors, multi-line strings, implicit typing — is also its danger. The specification is 80 pages long. Most YAML bugs come from implicit type resolution (quote your strings), indentation errors (use a linter), or unsafe deserialization (use safe loaders). When simplicity matters more than features, use JSON or TOML.*
+
+## Prerequisites
+
+- Data serialization concepts (schema, typing, interchange)
+- Indentation-sensitive parsing
+- Anchors, aliases, and merge key semantics
+- Unicode and encoding fundamentals

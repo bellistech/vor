@@ -274,6 +274,14 @@ sudo ceph auth get client.myapp
 - BlueStore is the only production-ready backend since Nautilus; FileStore is deprecated
 - CRUSH rules control data placement across failure domains; always verify rules match your physical topology
 
+## See Also
+
+- zfs
+- lvm
+- btrfs
+- mdadm
+- kubernetes
+
 ## References
 
 - [Ceph Documentation](https://docs.ceph.com/)

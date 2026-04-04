@@ -125,6 +125,10 @@ dmesg -T | grep segfault
 - `dmesg -c` both displays AND clears the buffer -- useful for isolating messages from a specific action.
 - On systems with systemd, `journalctl -k` is an alternative that supports the same time filtering as journalctl.
 
+## See Also
+
+- journalctl, kernel, sysctl, systemd, rsyslog
+
 ## References
 
 - [man dmesg(1)](https://man7.org/linux/man-pages/man1/dmesg.1.html)

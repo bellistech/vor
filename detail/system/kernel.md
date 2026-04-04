@@ -262,6 +262,21 @@ After 300 seconds: load $\approx 9.8$ (approaching 10).
 | Load average | $EMA$ with decay $e^{-\Delta t / \tau}$ | Exponential smoothing |
 | Context switch | $\Sigma(save + TLB + cache)$ | Additive cost model |
 
+## Prerequisites
+
+- operating systems, process lifecycle, virtual memory, scheduling theory, probability, exponential moving averages
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|:---|:---|:---|
+| CFS pick-next | $O(\log N)$ | Red-black tree lookup |
+| CFS enqueue/dequeue | $O(\log N)$ | Red-black tree insert/delete |
+| Page fault (minor) | $O(1)$ | Page table walk |
+| Page fault (major) | $O(1) + I/O$ | Disk read required |
+| OOM scoring | $O(N_{procs})$ | Linear scan of all tasks |
+| Load average update | $O(1)$ | Fixed EMA computation |
+
 ---
 
 *Every scheduling decision, every page reclaim, every OOM kill — the kernel is solving optimization problems thousands of times per second with these formulas.*

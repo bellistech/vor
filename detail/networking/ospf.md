@@ -268,6 +268,18 @@ For a network with 100,000 external routes redistributed into OSPF, a stub area 
 | $L / 1800$ | Rate calculation | LSA refresh overhead |
 | $4 \times T_{hello}$ | Linear multiplier | Dead interval |
 
+## Prerequisites
+
+- graph theory, shortest path algorithms, linear algebra
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| SPF (Dijkstra) | O(n log n) | O(n) |
+| LSA flooding | O(n) | O(n) |
+| Route lookup | O(log n) | O(n) |
+
 ---
 
 *Every OSPF router in your network is solving the shortest path problem hundreds of times per day — Dijkstra's 1956 algorithm running on silicon at line rate, rebuilding the forwarding table in milliseconds.*

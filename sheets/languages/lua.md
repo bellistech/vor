@@ -329,6 +329,10 @@ end
 - Lua patterns are not regular expressions; they lack alternation (`|`) and many PCRE features.
 - `nil` removes a key from a table; check existence with `if value ~= nil then`.
 
+## See Also
+
+- c, python, neovim, ruby, javascript, regex
+
 ## References
 
 - [Lua 5.4 Reference Manual](https://www.lua.org/manual/5.4/) -- official language and library reference

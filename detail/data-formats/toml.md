@@ -356,3 +356,10 @@ Each level of nesting extends the table header. At 4+ levels, YAML or JSON may b
 ---
 
 *TOML exists because INI files have no standard, JSON has no comments, and YAML has 80 pages of specification with implicit type coercion that turns your country code into a boolean. TOML trades expressiveness for predictability — what you write is what you get, every time, in every parser.*
+
+## Prerequisites
+
+- Hash table data structure (key-value mapping)
+- Data serialization and configuration file concepts
+- Type systems in configuration (strings, integers, floats, datetimes, arrays, tables)
+- Comparison with INI, JSON, and YAML tradeoffs

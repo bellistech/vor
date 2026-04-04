@@ -140,6 +140,10 @@ useradd -m -u 10042 -s /bin/bash -G developers deploy
 - Always set `-s /usr/sbin/nologin` for service accounts to prevent interactive login.
 - Check defaults with `useradd -D` and change them with `useradd -D -s /bin/bash`.
 
+## See Also
+
+- usermod, passwd, groups, sudo
+
 ## References
 
 - [man useradd(8)](https://man7.org/linux/man-pages/man8/useradd.8.html)

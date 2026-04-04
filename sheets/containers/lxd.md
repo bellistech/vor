@@ -186,6 +186,14 @@ lxc delete webserver --force               # delete running instance
 - For VMs, add `--vm` to launch. VMs support non-Linux guests and hardware passthrough.
 - `lxc exec` runs as root by default; use `-- su - username` for non-root shells.
 
+## See Also
+
+- docker
+- containerd
+- cloud-init
+- vagrant
+- podman
+
 ## References
 
 - [LXD Documentation](https://documentation.ubuntu.com/lxd/)

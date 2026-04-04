@@ -214,3 +214,16 @@ $$\text{Connections with keepalive} = \frac{\text{Requests/sec}}{\text{Requests 
 ---
 
 *Every `nginx -s reload`, `stub_status`, and access log line reflects these event loop calculations — a server that handles 10,000+ concurrent connections per worker process through non-blocking I/O and efficient memory management.*
+
+## Prerequisites
+
+- TCP/IP networking (sockets, ports, connections)
+- HTTP protocol basics (methods, headers, status codes)
+- Linux process model (workers, file descriptors, signals)
+- Event-driven I/O concepts (epoll, non-blocking sockets)
+
+## Complexity
+
+- **Beginner:** Static file serving, basic proxy_pass, server blocks
+- **Intermediate:** Load balancing algorithms, SSL termination, rate limiting, caching
+- **Advanced:** epoll event loop internals, worker_connections tuning, upstream connection pooling, buffer sizing math

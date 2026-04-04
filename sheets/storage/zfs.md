@@ -247,6 +247,15 @@ sudo zfs get userused@alice tank/data
 - Snapshots are free until data diverges; they only consume space as blocks change
 - `zpool scrub` is not a backup; it verifies on-disk integrity but does not protect against catastrophic loss
 
+## See Also
+
+- btrfs
+- lvm
+- ceph
+- mdadm
+- ext4
+- xfs
+
 ## References
 
 - [OpenZFS Documentation](https://openzfs.github.io/openzfs-docs/)

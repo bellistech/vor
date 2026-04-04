@@ -268,3 +268,16 @@ $$|J_{total}| \leq 256 \quad \text{per workflow run}$$
 ---
 
 *GitHub Actions turns YAML into a distributed job scheduler — matrix products generate the test matrix, DAG analysis determines the critical path, and OS multipliers determine the bill. Understanding these formulas is the difference between a 5-minute pipeline and a 50-minute one.*
+
+## Prerequisites
+
+- Git fundamentals (branches, tags, pull requests)
+- YAML syntax
+- Basic CI/CD concepts (build, test, deploy)
+- GitHub repository structure and permissions
+
+## Complexity
+
+- Beginner: simple workflows with checkout and run steps, trigger events
+- Intermediate: matrix builds, artifacts, secrets, environments, reusable workflows
+- Advanced: Cartesian product optimization, critical path analysis, composite actions, self-hosted runners, cost modeling

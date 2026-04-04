@@ -201,6 +201,10 @@ $$T_{total} = T_{BFD\_detect} + T_{protocol\_notify} + T_{SPF/recalc} + T_{FIB\_
 | $T \times (1 - J)$ | Random scaling | Jitter adjustment |
 | $T_{BFD} + T_{notify} + T_{SPF} + T_{FIB}$ | Summation | Total convergence |
 
+## Prerequisites
+
+- interval arithmetic, exponential backoff, state machines
+
 ---
 
 *BFD does one thing and does it with mathematical precision: detect failures in milliseconds. It replaced the coarse timers of routing protocols with a dedicated heartbeat, cutting network convergence from tens of seconds to hundreds of milliseconds.*

@@ -202,6 +202,10 @@ $$M[s, o] = \text{permissions of subject } s \text{ on object } o$$
 | Access matrix | 2D Boolean array | ACL vs capability model |
 | Effective perms | Set union minus deny | Windows NTFS |
 
+## Prerequisites
+
+- set theory, Boolean algebra, permission bitmasks, inheritance models
+
 ---
 
 *ACLs transform the simple question "can user X access file Y?" into a formal set-theoretic computation — evaluated billions of times per second across every filesystem operation on every multi-user system.*

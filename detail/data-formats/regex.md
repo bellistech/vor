@@ -255,3 +255,20 @@ Lookaheads can be implemented with automata (intersection of regular languages i
 ---
 
 *The gap between "regex" in theory (regular languages, linear time) and "regex" in practice (backreferences, exponential backtracking) is vast. Every catastrophic backtracking CVE, every ReDoS attack, exploits this gap. Know which engine you're using and whether it guarantees linear time.*
+
+## Prerequisites
+
+- Formal language theory (regular languages, context-free languages)
+- Finite automata (DFA, NFA, NFA-to-DFA conversion)
+- Backtracking algorithms and their failure modes
+- Character encoding (ASCII, Unicode character classes)
+
+## Complexity
+
+| Operation | Engine | Time Complexity | Notes |
+|---|---|---|---|
+| Match (no backrefs) | DFA (RE2, Go) | O(n) | Linear time guaranteed |
+| Match (no backrefs) | NFA (PCRE) | O(n) typical, O(2^n) worst | Backtracking can be exponential |
+| Match (with backrefs) | PCRE/Perl | O(2^n) worst | Backreferences make the problem NP-hard |
+| NFA construction | Thompson | O(m) | m = pattern length |
+| DFA construction | Subset construction | O(2^m) worst | Exponential state explosion possible |

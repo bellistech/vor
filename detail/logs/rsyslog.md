@@ -286,6 +286,10 @@ At 100K messages/day: $100000 \times 500 = 50 MB/day$.
 | Batch efficiency | $N_{batch} / T_{batch}$ | Amortization |
 | Daily storage | $messages/day \times output\_size$ | Capacity planning |
 
+## Prerequisites
+
+- queuing theory, pipeline throughput, syslog protocol (RFC 5424), TCP/UDP networking, capacity planning
+
 ---
 
 *rsyslog is a message router with queuing semantics. Every message follows a path through filters and actions, and the throughput is determined by the narrowest pipe in the pipeline. Size your queues for bursts, batch your writes for throughput, and filter early to reduce downstream load.*

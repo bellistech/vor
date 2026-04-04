@@ -108,6 +108,13 @@ xz -tv data.bin.xz
 - `xz` is the standard for kernel tarballs and package distribution where compression ratio matters more than speed.
 - For a balance of speed and ratio, consider `zstd` instead -- it compresses faster than gzip with ratios approaching xz.
 
+## See Also
+
+- tar
+- gzip
+- zip
+- 7z
+
 ## References
 
 - [XZ Utils Home Page](https://tukaani.org/xz/)

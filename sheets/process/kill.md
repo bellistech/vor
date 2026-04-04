@@ -149,6 +149,10 @@ kill -USR1 $(cat /var/run/myapp.pid)
 - SIGHUP to a shell session kills all child processes. For daemons, SIGHUP conventionally means "reload config."
 - `kill -0 PID` sends no signal but checks if the process exists (exit code 0 = alive).
 
+## See Also
+
+- ps, htop, nice, lsof, strace
+
 ## References
 
 - [man kill(1)](https://man7.org/linux/man-pages/man1/kill.1.html)

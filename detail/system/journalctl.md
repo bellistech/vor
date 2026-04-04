@@ -246,6 +246,10 @@ $$space\_freed = current\_size - target\_size$$
 | Availability | $MTBF / (MTBF + MTTR)$ | Reliability |
 | Write amplification | $(entry + index) / entry$ | I/O overhead |
 
+## Prerequisites
+
+- hash tables, binary search, structured logging, capacity planning, time-series data
+
 ---
 
 *journalctl is a time-series database disguised as a log viewer. Its binary format trades human readability for queryability — and that tradeoff, properly understood, makes it the most powerful log analysis tool on a systemd system.*

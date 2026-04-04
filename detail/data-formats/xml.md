@@ -333,3 +333,10 @@ Expansion: $10^9$ = 1 billion "lol" strings from ~1KB of input. **Defense:** Lim
 ---
 
 *XML is not a data format — it's a framework for creating data formats. Its verbosity is the cost of self-description. Its complexity enables schema validation, namespace composition, and Turing-complete transformation. When you need these features (document markup, enterprise integration, protocol specifications), nothing else provides them. When you don't, use JSON.*
+
+## Prerequisites
+
+- Tree-structured document models (DOM, SAX, StAX)
+- Namespaces and schema validation (DTD, XSD, RELAX NG)
+- XPath expressions and XSLT transformations
+- Character encoding and entity references

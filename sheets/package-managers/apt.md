@@ -161,6 +161,14 @@ apt-get changelog nginx                # view package changelog
 - `apt purge` removes config files; `apt remove` does not. Use `purge` for a clean uninstall.
 - For unattended upgrades, install `unattended-upgrades` and configure `/etc/apt/apt.conf.d/50unattended-upgrades`.
 
+## See Also
+
+- dnf
+- brew
+- pip
+- npm
+- cargo
+
 ## References
 
 - [apt(8) Man Page](https://manpages.debian.org/bookworm/apt/apt.8.en.html)

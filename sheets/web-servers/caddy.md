@@ -334,6 +334,14 @@ caddy file-server --root /var/www/html --listen :8080
 - Caddy stores certificates in `~/.local/share/caddy/` (or `$XDG_DATA_HOME/caddy/`).
 - Use `tls internal` for internal services to get self-signed certs without Let's Encrypt.
 
+## See Also
+
+- nginx
+- haproxy
+- html
+- css
+- prometheus
+
 ## References
 
 - [Caddy Documentation](https://caddyserver.com/docs/)

@@ -526,6 +526,10 @@ alert http any any -> any any (msg:"Webshell upload"; \
 
 ---
 
+## See Also
+
+- network-defense, log-analysis, threat-hunting, nmap, tcpdump
+
 ## References
 
 - [Suricata Documentation](https://docs.suricata.io/)

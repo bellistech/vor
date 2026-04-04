@@ -301,3 +301,10 @@ The `:g` (global) command is essentially `grep` + `ed command` — it was the or
 ---
 
 *Vim's design is a language, not a list of shortcuts. The operator-motion grammar is its central innovation — it means that learning one new operator or one new motion multiplies your capabilities, not adds to them. This is why experienced Vim users are faster: they're not remembering 500 bindings, they're composing 50 primitives.*
+
+## Prerequisites
+
+- Modal editing concepts (normal, insert, visual, command-line modes)
+- Operator-motion grammar (verbs, nouns, modifiers)
+- Regular expressions (Vim regex dialect)
+- Terminal emulator basics and key sequence handling

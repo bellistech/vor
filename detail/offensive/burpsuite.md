@@ -230,3 +230,15 @@ $$\text{Brute force} = 2^{32} = 4.3 \times 10^9 \text{ (feasible in seconds)}$$
 ---
 
 *Burp Suite transforms web security testing from manual experimentation into systematic coverage — the Intruder's combinatorial attack types, Scanner's automated payload library, and Collaborator's out-of-band detection together cover the full attack surface of a web application.*
+
+## Prerequisites
+
+- HTTP request/response interception (proxy model)
+- Web application attack surface (parameters, headers, cookies)
+- Combinatorial testing (Intruder attack types: sniper, battering ram, pitchfork, cluster bomb)
+
+## Complexity
+
+- **Beginner:** Proxy interception, Repeater manual testing, Target scope, HTTP history browsing
+- **Intermediate:** Intruder attack types, Scanner configuration, match/replace rules, session handling, macro recording
+- **Advanced:** Intruder payload combinatorics, Scanner crawl graph coverage, Collaborator out-of-band detection timing, extension API (Montoya) for custom checks

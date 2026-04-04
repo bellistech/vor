@@ -235,3 +235,16 @@ $$\text{Defrag Improvement} = \frac{\text{Extents Before} - \text{Extents After}
 ---
 
 *Every `mkfs.ext4`, `e2fsck`, and `filefrag` command works with these structures — a 30-year-old design (ext2, 1993) that evolved through extent trees and delayed allocation into the most battle-tested Linux filesystem.*
+
+## Prerequisites
+
+- Inode and block allocation fundamentals
+- Journaling concepts (write-ahead logging)
+- Binary tree structures (extent trees)
+- Disk partitioning basics (fdisk, parted)
+
+## Complexity
+
+- **Beginner:** Filesystem creation, mounting, basic tuning
+- **Intermediate:** Block group layout, journal sizing, reserved block management
+- **Advanced:** Extent tree depth analysis, HTree directory indexing, delayed allocation write amplification

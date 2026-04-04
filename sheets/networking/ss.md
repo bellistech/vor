@@ -127,6 +127,10 @@ ss --sctp -a            # SCTP sockets
 - `ss -i` shows TCP internal state (congestion window, RTT) — invaluable for debugging performance
 - On older systems without `ss`, fall back to `netstat`
 
+## See Also
+
+- netstat, tcp, udp, ip, nftables
+
 ## References
 
 - [man ss](https://man7.org/linux/man-pages/man8/ss.8.html)

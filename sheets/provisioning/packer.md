@@ -279,6 +279,15 @@ build {
 - Use data sources (`data "amazon-ami"`) to dynamically find base images rather than hardcoding AMI IDs.
 - Chain post-processors in a `post-processors` block (plural) to create a pipeline.
 
+## See Also
+
+- terraform
+- ansible
+- vagrant
+- docker
+- cloud-init
+- aws-cli
+
 ## References
 
 - [Packer Documentation](https://developer.hashicorp.com/packer/docs)

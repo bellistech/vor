@@ -110,6 +110,10 @@ usermod -c "Deploy Service Account" deploy
 - `usermod -e 1` (epoch day 1) effectively disables the account immediately.
 - Changes take effect on next login, not for currently active sessions.
 
+## See Also
+
+- useradd, passwd, groups, sudo
+
 ## References
 
 - [man usermod(8)](https://man7.org/linux/man-pages/man8/usermod.8.html)

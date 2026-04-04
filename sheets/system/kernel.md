@@ -641,6 +641,10 @@ dkms status
 - Use `udev` rules to persist `/sys` changes — `tmpfiles.d` works too but udev is more flexible
 - The `isolcpus` boot parameter is permanent per boot; use `cset` for dynamic CPU shielding
 
+## See Also
+
+- systemd, sysctl, dmesg, grub, perf, ebpf
+
 ## References
 
 - [Kernel Parameters Documentation](https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameters.html)

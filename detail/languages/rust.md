@@ -290,3 +290,10 @@ Exactly five things:
 ---
 
 *Rust's guarantee is not "your program has no bugs." It's "your program has no undefined behavior." Everything else — logic errors, deadlocks, memory leaks — is still your problem. But the class of bugs that corrupt memory, enable RCE, and crash production? Those are gone at compile time.*
+
+## Prerequisites
+
+- Ownership, borrowing, and lifetime concepts
+- Type theory (algebraic data types, trait-based polymorphism, generics)
+- Memory models (stack vs heap, RAII, zero-cost abstractions)
+- Concurrency safety (Send/Sync traits, data race prevention)

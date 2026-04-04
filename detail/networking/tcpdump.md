@@ -228,6 +228,10 @@ $$\approx 10 + 50 + 5 + 500 = 565 \text{ ns (to terminal)}$$
 | $C_{size} \times W_{count}$ | Product | Rotation disk usage |
 | $R_{packets} \times S_{output}$ | Product | Output data rate |
 
+## Prerequisites
+
+- binary arithmetic, bitwise operations, packet structure, BPF filter expressions
+
 ---
 
 *tcpdump is the ground truth of network debugging — it shows you exactly what's on the wire, bit by bit. The BPF filter engine is so fundamental that it evolved into eBPF, which now powers everything from firewalls to observability to container networking.*

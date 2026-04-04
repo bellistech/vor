@@ -255,6 +255,10 @@ Minimal configuration format that maps clearly to a hash table, used by Cargo, p
 - TOML has native datetime support, unlike JSON and YAML.
 - Use `taplo` or `toml-sort` for formatting and validating TOML files.
 
+## See Also
+
+- json, yaml, rust, python, xml, ini
+
 ## References
 
 - [TOML Specification (v1.0)](https://toml.io/en/v1.0.0) -- full language specification

@@ -247,6 +247,10 @@ cargo bench                                # run benchmarks
 - `impl From<X> for Y` enables the `?` operator and `.into()` conversions automatically.
 - `Vec`, `HashMap`, and `String` allocate on the heap. Slices (`&[T]`, `&str`) are just views.
 
+## See Also
+
+- c, go, toml, make, cargo, typescript
+
 ## References
 
 - [The Rust Book](https://doc.rust-lang.org/book/) -- official tutorial and guide

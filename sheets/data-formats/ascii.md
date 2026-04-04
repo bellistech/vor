@@ -142,6 +142,10 @@ cat -A file.txt             # Shows $ at line ends too
 - CR+LF (0x0D 0x0A) is the Windows line ending; LF (0x0A) alone is Unix; CR (0x0D) alone is classic Mac.
 - Printable characters span exactly 95 positions: 32 (space) through 126 (~).
 
+## See Also
+
+- unicode, c, bash, regex, vim
+
 ## References
 
 - [man ascii](https://man7.org/linux/man-pages/man7/ascii.7.html) -- ASCII character set man page

@@ -241,6 +241,10 @@ Total CIS audit event volume: ~15,000-50,000 events/day on a typical server.
 | Process tree | Directed tree (DAG) | Attack reconstruction |
 | Serial ordering | Total order | Timeline correlation |
 
+## Prerequisites
+
+- system call interface, rule matching, queue theory, log correlation
+
 ---
 
 *auditd transforms every system call into a court-admissible record — the mathematics of rule matching, queue management, and storage planning determine whether your audit trail is comprehensive or overwhelmed.*

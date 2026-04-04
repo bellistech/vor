@@ -162,6 +162,13 @@ rsync --list-only user@host:/remote/  # list remote directory
 - `--dry-run` (`-n`) is your safety net — always use it with `--delete` the first time
 - For very large file sets, `--info=progress2` is much more useful than `--progress`
 
+## See Also
+
+- scp
+- sftp
+- ssh-tunneling
+- tar
+
 ## References
 
 - [rsync Official Documentation](https://rsync.samba.org/documentation.html)

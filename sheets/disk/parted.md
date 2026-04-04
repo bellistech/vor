@@ -145,6 +145,15 @@ sudo parted /dev/sdb rescue 1MiB 100GiB
 - `parted` does not format partitions; after creating them, use `mkfs.ext4`, `mkfs.xfs`, etc.
 - GPT reserves the first and last 34 sectors (17 KiB) for the partition table and backup; start at 1MiB
 
+## See Also
+
+- fdisk
+- lvm
+- mount
+- fstab
+- ext4
+- xfs
+
 ## References
 
 - [GNU Parted Manual](https://www.gnu.org/software/parted/manual/)

@@ -202,6 +202,10 @@ Each instance maps a set of VLANs to a spanning tree topology.
 | $2^{48}$ | Exponent | MAC address space |
 | $20 + 2(15) = 50$ sec | Summation | STP convergence |
 
+## Prerequisites
+
+- binary arithmetic, frame timing, collision probability
+
 ---
 
 *Ethernet's journey from a 2.94 Mbps shared coax cable to 800 Gbps full-duplex switched fabric is a story told in math — from collision probability to forwarding rate calculations to the scaling limits that drove VXLAN's creation.*

@@ -241,6 +241,15 @@ tail -f /var/log/nginx/error.log
 - `nginx -T` prints the full merged config, invaluable for debugging includes.
 - The `map` directive is more efficient than multiple `if` blocks for variable-based routing.
 
+## See Also
+
+- haproxy
+- caddy
+- html
+- css
+- prometheus
+- grafana
+
 ## References
 
 - [nginx Documentation](https://nginx.org/en/docs/)

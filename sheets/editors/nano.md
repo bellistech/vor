@@ -172,6 +172,10 @@ nano -Y sh file.txt                    # force syntax highlighting type
 - Use `nano +N file` to open a file at a specific line -- useful from compiler error output.
 - The `-w` flag prevents line wrapping, which is important when editing config files.
 
+## See Also
+
+- vim, emacs, bash, regex, shell-scripting
+
 ## References
 
 - [GNU nano Documentation](https://www.nano-editor.org/docs.php) -- official docs and FAQ

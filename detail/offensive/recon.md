@@ -252,3 +252,15 @@ $$\text{Risk}(a) = \text{Exposure}(a) \times \text{Criticality}(a) \times \text{
 ---
 
 *Reconnaissance determines the outcome of every engagement — thorough enumeration reveals the one vulnerable service among thousands, the one leaked credential among millions of data points, and the one misconfiguration that grants initial access. The mathematics of combinatorial search and information theory guide this process from noise to signal.*
+
+## Prerequisites
+
+- TCP/IP port scanning mechanics (SYN, connect, UDP)
+- DNS enumeration and zone transfer concepts
+- OSINT correlation and information entropy
+
+## Complexity
+
+- **Beginner:** Nmap basic scans, whois, DNS lookups, Google dorking, Shodan searches
+- **Intermediate:** Service fingerprinting, subdomain brute-forcing, certificate transparency, API enumeration, timing-based detection evasion
+- **Advanced:** Port scan combinatorics, banner grab entropy analysis, OSINT graph correlation, scan rate optimization vs IDS detection thresholds

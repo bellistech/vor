@@ -120,6 +120,10 @@ btop
 - `htop -C` starts without color (useful for screen readers or monochrome terminals).
 - btop is the modern successor with GPU, disk, and network panels but is not installed by default.
 
+## See Also
+
+- ps, vmstat, iostat, strace, lsof, kill
+
 ## References
 
 - [man htop(1)](https://man7.org/linux/man-pages/man1/htop.1.html)

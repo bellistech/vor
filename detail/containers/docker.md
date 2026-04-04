@@ -233,3 +233,16 @@ This is why containers should write to volumes, not the container filesystem.
 ---
 
 *Every `docker run` invocation creates 7 namespaces, configures cgroup limits, prepares an overlay mount, and sets up a veth pair — all in under 500ms. The math governs what you pay for that isolation.*
+
+## Prerequisites
+
+- Linux process model (fork, exec, PID)
+- Filesystem basics (mount points, inodes)
+- Networking fundamentals (IP, bridges, NAT, iptables)
+- Basic understanding of cgroups and namespaces
+
+## Complexity
+
+- Beginner: pulling images, running containers, basic Dockerfile
+- Intermediate: multi-stage builds, networking, volumes, compose
+- Advanced: overlay2 internals, cgroup tuning, custom runtimes, security profiles

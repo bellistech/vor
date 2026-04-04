@@ -127,6 +127,10 @@ EOF
 - The output of at jobs is mailed to the user. Redirect to a file or `/dev/null` to avoid mail.
 - `at -c <job>` shows the full environment and commands that will run -- useful for debugging.
 
+## See Also
+
+- cron, systemd-timers, bash, kill
+
 ## References
 
 - [man at(1)](https://man7.org/linux/man-pages/man1/at.1.html)

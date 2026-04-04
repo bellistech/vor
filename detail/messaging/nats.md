@@ -224,3 +224,16 @@ Adds O(1) per mapped subject to routing.
 ---
 
 *Every `nats sub`, `nats pub`, and `nats stream info` reflects these internals — a messaging system designed for simplicity where subject-based trie routing delivers microsecond latencies at millions of messages per second.*
+
+## Prerequisites
+
+- Pub/sub messaging patterns
+- Trie data structure concepts (subject-based routing)
+- Raft consensus basics (for JetStream)
+- Networking fundamentals (TCP, latency)
+
+## Complexity
+
+- **Beginner:** Core pub/sub, request/reply patterns
+- **Intermediate:** JetStream stream/consumer configuration, cluster sizing
+- **Advanced:** Subject trie routing performance modeling, Raft quorum overhead, flow control backpressure analysis

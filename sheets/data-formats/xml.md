@@ -268,6 +268,10 @@ xmlstarlet el data.xml                         # list element paths
 - Prefer JSON for APIs and data exchange. XML remains dominant in enterprise, SOAP, and document-centric workflows.
 - Comments use `<!-- text -->` and cannot be nested.
 
+## See Also
+
+- json, yaml, html, regex, xpath, sed
+
 ## References
 
 - [W3C XML 1.0 Specification](https://www.w3.org/TR/xml/) -- Extensible Markup Language (Fifth Edition)

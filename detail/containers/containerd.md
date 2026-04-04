@@ -202,3 +202,16 @@ Kubernetes uses the namespace `k8s.io`; Docker uses `moby`. They share the same 
 ---
 
 *containerd sits beneath Kubernetes on every major cloud provider — its shim architecture and content-addressable storage are the foundation that makes container orchestration possible.*
+
+## Prerequisites
+
+- Linux process model (PID, process trees, signals)
+- OCI image and runtime specifications
+- Content-addressable storage concepts (SHA-256 hashing)
+- Understanding of Kubernetes CRI (for CRI plugin usage)
+
+## Complexity
+
+- Beginner: pulling images and running containers via nerdctl
+- Intermediate: namespace isolation, snapshot drivers, garbage collection
+- Advanced: shim architecture, CRI plugin internals, custom snapshot drivers, content store optimization

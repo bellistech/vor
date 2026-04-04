@@ -274,6 +274,10 @@ For 100 services: nftables is ~100x faster per packet.
 | Rich rule evaluation | Sequential predicate | Complex filtering |
 | nftables sets | Hash-based matching | High-performance lookup |
 
+## Prerequisites
+
+- zone-based set theory, rule ordering, service mapping
+
 ---
 
 *firewalld is a zone-based abstraction over nftables/iptables — it translates human-readable service definitions into kernel-level packet filtering rules, evaluated millions of times per second at near-zero latency through connection tracking and hash-based set matching.*

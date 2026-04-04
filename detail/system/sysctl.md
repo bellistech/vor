@@ -255,6 +255,10 @@ Each ARP entry: ~256 bytes. At 10,000 entries: $\approx 2.5 \text{ MB}$.
 | Swap tendency | $mapped\_ratio + swappiness$ | Memory management |
 | ARP cache | $active\_neighbors \times 1.5$ | Network neighbor table |
 
+## Prerequisites
+
+- kernel internals, TCP/IP networking, virtual memory, bandwidth-delay product, connection tracking
+
 ---
 
 *sysctl is the control plane for kernel behavior. Every parameter has a formula behind it, and the right value depends on your workload's mathematics — not on blog posts that say "just set it to X."*

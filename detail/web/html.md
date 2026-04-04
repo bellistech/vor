@@ -232,3 +232,15 @@ $$\text{Compression Ratio}_{HTML} \approx 5-10\times \text{ (gzip/brotli)}$$
 ---
 
 *Every browser tab executes this pipeline — parse HTML into DOM, build CSSOM, merge into render tree, layout, paint, composite — a process that happens in under 16ms to maintain 60fps interaction.*
+
+## Prerequisites
+
+- Tree data structures (nodes, depth, traversal)
+- Basic graph theory (DOM as a tree, accessibility tree)
+- Network fundamentals (HTTP requests, resource loading)
+
+## Complexity
+
+- **Beginner:** DOM tree structure, element counting, basic parsing
+- **Intermediate:** Resource loading waterfall, preload/defer/async timing, reflow cost
+- **Advanced:** Parser state machine, speculative parsing, accessibility tree construction, critical rendering path optimization

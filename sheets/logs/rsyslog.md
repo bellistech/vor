@@ -247,6 +247,10 @@ logger -p auth.warning "Auth test"
 - `rsyslogd -N1` validates config but does not catch runtime issues. Watch `/var/log/syslog` after restart.
 - Rate limiting is on by default (`$SystemLogRateLimitInterval`). Disable for high-volume apps with `$SystemLogRateLimitInterval 0`.
 
+## See Also
+
+- logrotate, journalctl, systemd, dmesg, auditd
+
 ## References
 
 - [man rsyslogd(8)](https://man7.org/linux/man-pages/man8/rsyslogd.8.html)

@@ -318,6 +318,15 @@ winrs -r:10.0.0.5 -u:DOMAIN\admin -p:Pass123 "cmd /c whoami"
 
 ---
 
+## See Also
+
+- privilege-escalation
+- password-attacks
+- metasploit
+- recon
+- ssh-tunneling
+- socat
+
 ## References
 
 - [GTFOBins](https://gtfobins.github.io/)

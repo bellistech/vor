@@ -185,6 +185,10 @@ curl --retry 3 --retry-all-errors https://example.com  # retry on any error
 - Environment variable `CURL_CA_BUNDLE` sets the default CA cert path
 - On macOS, system curl supports `--apple-ssl` backend; Homebrew curl uses OpenSSL
 
+## See Also
+
+- wget, dns, tls, openssl, dig
+
 ## References
 
 - [curl Official Documentation](https://curl.se/docs/)

@@ -265,6 +265,10 @@ Alert thresholds:
 | ECDSA size savings | Linear scaling | Bandwidth optimization |
 | CT Merkle depth $\log_2 n$ | Logarithmic | Proof size |
 
+## Prerequisites
+
+- certificate lifecycle, exponential retry, ACME protocol state machine
+
 ---
 
 *Certbot transforms the manual, error-prone process of certificate management into a mathematically robust automation — the 30-day renewal window with 60 retry attempts makes certificate expiration a virtually impossible failure mode.*

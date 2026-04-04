@@ -270,6 +270,14 @@ echo "enable server app_servers/app1" | socat stdio /var/run/haproxy/admin.sock
 - `haproxy -d -f haproxy.cfg` runs in debug mode (foreground, verbose) for troubleshooting.
 - The stats page at `/stats` is the fastest way to see backend health and traffic distribution.
 
+## See Also
+
+- nginx
+- caddy
+- prometheus
+- grafana
+- socat
+
 ## References
 
 - [HAProxy Documentation](https://docs.haproxy.org/)

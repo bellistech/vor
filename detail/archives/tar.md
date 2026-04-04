@@ -206,3 +206,15 @@ Larger blocking factor = fewer I/O operations = faster on tape and HDD.
 ---
 
 *Every `tar czf`, `tar xf`, and `tar tf` operates on this 512-byte block format — a 1979 design for magnetic tape that became the universal archival format for Unix systems because its simplicity enables streaming.*
+
+## Prerequisites
+
+- File system concepts (inodes, permissions, ownership, symlinks)
+- Binary data alignment (block sizes, padding)
+- Octal number representation (tar headers use octal)
+
+## Complexity
+
+- **Beginner:** Create/extract archives, compression flags (-z, -j, -J)
+- **Intermediate:** Incremental backups, exclude patterns, --strip-components, piping over SSH
+- **Advanced:** 512-byte block structure internals, POSIX.1-2001 (pax) extended headers, sparse file handling

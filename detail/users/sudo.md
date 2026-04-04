@@ -247,6 +247,10 @@ This prevents `PATH=/tmp/evil:$PATH` attacks.
 | Alias expansion | $\sum \|members\|$ | Set union |
 | Risk (NOPASSWD) | $P(compromise) \times impact$ | Risk product |
 
+## Prerequisites
+
+- access control theory, credential caching, probability (brute force), rate limiting, audit logging
+
 ---
 
 *sudo is a policy-cached authentication gateway. Every invocation is a triple check — who are you, what do you want, and did we check your password recently enough? The timestamp cache trades security for convenience, and the timeout value is the quantified measure of that tradeoff.*

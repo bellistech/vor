@@ -398,6 +398,10 @@ gcc -fsanitize=address -g -o program main.c
 - Use `sizeof(var)` instead of `sizeof(type)` to stay correct when the type changes.
 - The `restrict` keyword (C99) tells the compiler pointers do not alias, enabling optimizations.
 
+## See Also
+
+- go, rust, make, python, lua, awk
+
 ## References
 
 - [C Reference (cppreference.com)](https://en.cppreference.com/w/c) -- standard library, language syntax, headers

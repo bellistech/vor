@@ -198,3 +198,16 @@ $$\text{Total} = \text{max\_connections} \times \text{Per-Connection Memory}$$
 ---
 
 *Every `SHOW ENGINE INNODB STATUS`, `EXPLAIN`, and `information_schema.INNODB_BUFFER_POOL_STATS` query reflects these internals — a storage engine where understanding page layout and buffer pool math is the difference between a fast database and a slow one.*
+
+## Prerequisites
+
+- SQL fundamentals (queries, joins, indexes)
+- B+ tree index structures
+- InnoDB storage engine concepts (pages, buffer pool)
+- ACID transaction properties
+
+## Complexity
+
+- **Beginner:** EXPLAIN output reading, basic index usage
+- **Intermediate:** Buffer pool sizing, InnoDB page layout, replication lag estimation
+- **Advanced:** Clustered index overhead modeling, page split analysis, adaptive hash index internals

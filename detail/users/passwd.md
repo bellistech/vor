@@ -243,6 +243,10 @@ $$support\_cost = 0.05 \times 1000 \times 10 = 500 \text{ minutes/month}$$
 | GPU resistance | $CPU\_rate / GPU\_rate$ | Algorithm property |
 | Lockout rate | $P(forget) \times P(tries \geq deny)$ | Probability |
 
+## Prerequisites
+
+- information theory (entropy), cryptographic hash functions, password aging, brute force complexity, key derivation functions
+
 ---
 
 *passwd is where cryptography meets user experience. The hash function's cost parameter determines how long an attacker waits — and how long your users wait. The art is finding the sweet spot where authentication takes milliseconds but cracking takes millennia.*

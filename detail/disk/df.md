@@ -219,3 +219,16 @@ $$\text{Days} = \frac{100}{2} = 50 \text{ days}$$
 ---
 
 *Every `df -h` you run is a statvfs() syscall reading the superblock — a constant-time operation that reports the filesystem's own internal block accounting.*
+
+## Prerequisites
+
+- Filesystem block allocation concepts
+- Inode fundamentals
+- Mount points and filesystem hierarchy
+- Binary vs decimal size units (GiB vs GB)
+
+## Complexity
+
+- **Beginner:** Reading disk usage output, human-readable formatting
+- **Intermediate:** Reserved block accounting, inode exhaustion diagnosis
+- **Advanced:** statvfs() syscall internals, filesystem-specific metadata overhead calculations

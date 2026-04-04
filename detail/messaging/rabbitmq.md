@@ -220,3 +220,16 @@ $$\text{DLQ Storage} = \text{DLQ Rate} \times \text{Avg Size} \times \text{DLQ R
 ---
 
 *Every `rabbitmqctl list_queues`, `rabbitmq-diagnostics memory_breakdown`, and management UI metric reflects these internals — an AMQP broker where queue depth management and memory watermarks are the difference between stable messaging and cascading backpressure.*
+
+## Prerequisites
+
+- AMQP protocol concepts (exchanges, queues, bindings, routing keys)
+- Erlang/OTP process model basics
+- Memory management and flow control
+- Queueing theory fundamentals (arrival rate, service rate)
+
+## Complexity
+
+- **Beginner:** Queue declaration, basic publish/consume
+- **Intermediate:** Exchange routing, memory watermark tuning, prefetch optimization
+- **Advanced:** Queue depth backpressure modeling, quorum queue Raft overhead, lazy queue disk I/O estimation

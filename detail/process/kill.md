@@ -230,6 +230,10 @@ At default 3842 signals: $\approx 480 KB$ per user.
 | Data at risk | $write\_rate \times T_{unflushed}$ | SIGKILL risk |
 | Signal storm | $\lambda \times (T_{overhead} + T_{handler})$ | CPU overhead |
 
+## Prerequisites
+
+- Unix signals, process lifecycle, signal handlers, process groups, kernel signal delivery
+
 ---
 
 *kill is the syscall interface to the kernel's interrupt system for processes. SIGTERM is a request; SIGKILL is an order. The 15-then-9 pattern is a protocol as old as Unix itself, and the timeout between them is the measure of how much you trust the application to clean up after itself.*

@@ -300,6 +300,14 @@ nix store optimise                         # hard-link identical files
 - `nix why-depends /nix/store/...-A /nix/store/...-B` shows why package A depends on B.
 - NixOS rollback is instant: just select a previous generation from the bootloader.
 
+## See Also
+
+- ansible
+- docker
+- vagrant
+- apt
+- brew
+
 ## References
 
 - [Nix Manual](https://nixos.org/manual/nix/stable/)

@@ -204,6 +204,46 @@ func (r *Registry) FindSection(name, section string) (string, error) {
 	return result, nil
 }
 
+// Related returns sheets referenced in a topic's SeeAlso field.
+func (r *Registry) Related(name string) []*Sheet {
+	s := r.Get(name)
+	if s == nil {
+		return nil
+	}
+	var related []*Sheet
+	seen := make(map[string]bool)
+	for _, ref := range s.SeeAlso {
+		if seen[ref] {
+			continue
+		}
+		seen[ref] = true
+		if rs := r.Get(ref); rs != nil {
+			related = append(related, rs)
+		}
+	}
+	return related
+}
+
+// AllNames returns all sheet names sorted.
+func (r *Registry) AllNames() []string {
+	names := make([]string, 0, len(r.all))
+	for _, s := range r.all {
+		names = append(names, s.Name)
+	}
+	return names
+}
+
+// SeeAlsoCoverage returns count of sheets that have See Also sections.
+func (r *Registry) SeeAlsoCoverage() int {
+	count := 0
+	for _, s := range r.all {
+		if len(s.SeeAlso) > 0 {
+			count++
+		}
+	}
+	return count
+}
+
 func findSectionForLine(s *Sheet, line string) string {
 	trimmed := strings.TrimSpace(line)
 	for i := len(s.Sections) - 1; i >= 0; i-- {

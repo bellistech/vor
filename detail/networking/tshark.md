@@ -217,6 +217,10 @@ A "healthy" capture should have:
 | $N_{retrans} / N_{segments}$ | Ratio | Retransmission rate |
 | $N \times F \times S_{field}$ | Product | Extract output size |
 
+## Prerequisites
+
+- protocol dissection, packet structure, filtering expressions
+
 ---
 
 *tshark is the command-line equivalent of an X-ray machine for networks — it decodes over 3,000 protocols down to individual field values, computes conversation and IO statistics, and flags problems automatically. The same dissection engine that powers Wireshark, scriptable and pipeable.*

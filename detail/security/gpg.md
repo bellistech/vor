@@ -249,6 +249,10 @@ $$S_{keyring} = \sum_{k \in \text{keys}} (|k_{pub}| + |\text{signatures on } k|)
 | $\bigcap \text{prefs}$ | Set intersection | Cipher negotiation |
 | CFB + MDC | Stream mode + integrity | Symmetric encryption |
 
+## Prerequisites
+
+- modular arithmetic, prime factorization, hash functions, web of trust (graph theory)
+
 ---
 
 *GPG replaces centralized certificate authorities with a mathematical web of trust — transitive signature chains where each user makes independent trust decisions, creating a resilient, decentralized identity system backed by the same cryptographic primitives as TLS.*

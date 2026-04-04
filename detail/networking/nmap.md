@@ -216,6 +216,18 @@ $$S_{output} = N_{hosts} \times (H_{overhead} + N_{open} \times S_{per\_port})$$
 | $1 - \prod(1 - P_i)$ | Complement probability | Host detection rate |
 | $\text{matching}/\text{total}$ | Ratio | OS fingerprint score |
 
+## Prerequisites
+
+- port scanning theory, TCP/IP flags, probability, service fingerprinting
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| SYN scan (per host) | O(p) | O(p) |
+| Service detection | O(p * s) | O(p) |
+| OS fingerprint | O(1) | O(1) |
+
 ---
 
 *nmap is applied combinatorics meets network forensics — every scan is a search through the (host, port, service) state space, optimized by parallelism, guided by heuristics, and bounded by the timeout math that makes filtered ports the most expensive thing to scan.*

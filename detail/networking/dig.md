@@ -219,6 +219,10 @@ Query at $t=0$: TTL=86400. Query at $t=100$: TTL=86300. This proves the resolver
 | $T_{UDP} + 1.5 \times RTT$ | Summation | TCP fallback cost |
 | $N / P \times T_{query}$ | Division | Parallel query throughput |
 
+## Prerequisites
+
+- DNS record types, query timing, domain hierarchy
+
 ---
 
 *dig is the stethoscope of DNS — every field in its output maps to a protocol behavior, and learning to read the timing, flags, and sections is the difference between guessing at DNS problems and diagnosing them precisely.*

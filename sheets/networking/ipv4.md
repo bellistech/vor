@@ -284,6 +284,10 @@ arping -D -I eth0 192.168.1.10     # DAD (Duplicate Address Detection)
 - `/proc/sys/net/ipv4/conf/all/rp_filter` set to 1 (strict mode) drops packets arriving on unexpected interfaces, preventing IP spoofing but breaking asymmetric routing. Set to 2 (loose mode) if you have multiple paths.
 - When debugging MTU issues, remember that ICMP adds 8 bytes of header and IP adds 20, so `ping -s 1472` tests a 1500-byte packet (1472 + 8 ICMP + 20 IP).
 
+## See Also
+
+- ipv6, subnetting, ipsec, ip, iptables
+
 ## References
 
 - [RFC 791 — Internet Protocol (IPv4)](https://www.rfc-editor.org/rfc/rfc791)

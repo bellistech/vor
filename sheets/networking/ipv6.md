@@ -465,6 +465,10 @@ sudo tcpdump -i eth0 -n 'icmp6 and ip6[40] == 134'
 - For production servers, prefer static addresses or DHCPv6 over SLAAC for predictable addressing.
 - Test IPv6 reachability to the outside world with `ping6 2600::` (Sprint) or `curl -6 https://ipv6.google.com`.
 
+## See Also
+
+- ipv4, subnetting, ip, ipsec, nftables
+
 ## References
 
 - [RFC 8200 — Internet Protocol, Version 6 (IPv6) Specification](https://www.rfc-editor.org/rfc/rfc8200)

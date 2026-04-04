@@ -208,6 +208,14 @@ socat TCP6-LISTEN:8080,reuseaddr,fork TCP6:target:80
 - The `SYSTEM:` address runs commands through `/bin/sh`; `EXEC:` runs them directly (no shell)
 - For persistent services, run socat under systemd or supervisord rather than in a shell
 
+## See Also
+
+- ssh-tunneling
+- haproxy
+- nginx
+- lateral-movement
+- recon
+
 ## References
 
 - [socat Official Documentation](http://www.dest-unreach.org/socat/doc/socat.html)

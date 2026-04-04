@@ -229,6 +229,10 @@ $$\text{ROI}_{IR} = \frac{C_{breach} \times P(\text{breach}) \times \text{risk r
 | $1 - e^{-\lambda t}$ | Exponential CDF | Recurrence probability |
 | ROI ratio | Cost-benefit | IR investment |
 
+## Prerequisites
+
+- timeline analysis, exponential cost growth, probability, forensic chain of custody
+
 ---
 
 *Incident response is a race against an exponential clock — every hour of dwell time multiplies the blast radius and cost. The mathematics prove that investment in detection speed (reducing MTTD) has far greater ROI than investment in prevention alone.*

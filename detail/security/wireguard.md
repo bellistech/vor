@@ -273,6 +273,10 @@ Ratio: WireGuard has ~25x less code than OpenVPN, correlating with fewer vulnera
 | Longest-prefix match | Trie lookup | Cryptokey routing |
 | 2-minute rekey | Time-bounded keys | Forward secrecy |
 
+## Prerequisites
+
+- elliptic curve Diffie-Hellman, symmetric encryption, hash functions, nonce arithmetic
+
 ---
 
 *WireGuard proves that cryptographic protocols can be both simple and secure — its ~4,000 lines implement a formally analyzed protocol with no cipher negotiation, no legacy compatibility baggage, and near-line-rate performance.*

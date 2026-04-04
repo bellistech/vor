@@ -254,3 +254,16 @@ $$\text{Ops/sec (pipeline of } k\text{)} = \frac{k}{\text{RTT} + k \times T_{com
 ---
 
 *Every `INFO memory`, `OBJECT ENCODING`, and `MEMORY USAGE` command exposes these internals — a system where understanding memory allocation classes can save you 50% of your RAM bill.*
+
+## Prerequisites
+
+- Key-value data model concepts
+- Memory allocation fundamentals (jemalloc, fragmentation)
+- Hash tables, skip lists, and sorted set structures
+- Networking basics (TCP connections, event loops)
+
+## Complexity
+
+- **Beginner:** Basic GET/SET operations, data type selection
+- **Intermediate:** Memory optimization with encodings, eviction policies, persistence trade-offs
+- **Advanced:** jemalloc size class modeling, ziplist/listpack overhead analysis, cluster hash slot rebalancing

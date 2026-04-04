@@ -186,6 +186,15 @@ docker cp ./config.yaml web:/etc/myapp/config.yaml
 - `docker inspect` output is JSON; pipe through `jq` for complex queries.
 - `HEALTHCHECK` in Dockerfile lets Docker track container health beyond "process running".
 
+## See Also
+
+- docker-compose
+- podman
+- containerd
+- kubernetes
+- packer
+- lxd
+
 ## References
 
 - [Docker Documentation](https://docs.docker.com/)

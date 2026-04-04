@@ -223,6 +223,15 @@ sudo vgchange -an data_vg               # deactivate all LVs in VG
 - Thin provisioning allows over-commitment but requires monitoring; set up alerts on pool usage
 - `lvm.conf` can restrict which devices LVM scans; useful in multipath or VM environments
 
+## See Also
+
+- zfs
+- btrfs
+- mdadm
+- fdisk
+- parted
+- ext4
+
 ## References
 
 - [LVM2 Documentation](https://sourceware.org/lvm2/)

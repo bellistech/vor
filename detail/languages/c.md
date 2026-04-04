@@ -324,3 +324,10 @@ Low addresses
 ---
 
 *C gives you a machine. The standard tells you which levers are guaranteed to work, which ones might work, and which ones will detach in your hand. Knowing the difference is the entire discipline.*
+
+## Prerequisites
+
+- Computer architecture basics (registers, stack, heap, memory addressing)
+- Number representation (binary, hexadecimal, two's complement)
+- Compilation pipeline (preprocessor, compiler, assembler, linker)
+- Operating system concepts (processes, virtual memory, system calls)

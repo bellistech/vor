@@ -250,6 +250,10 @@ Typical window: 10 seconds. This is why 0-RTT should only carry idempotent reque
 | $1/2^{128}$ | Probability | Forgery resistance |
 | DAG validation | Graph theory | Certificate chain |
 
+## Prerequisites
+
+- elliptic curve algebra, finite fields, modular arithmetic, hash functions, probability
+
 ---
 
 *Every HTTPS connection on the internet executes this exact mathematics — the 1-RTT handshake completes in under 100ms while establishing 128+ bits of security.*

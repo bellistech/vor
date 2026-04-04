@@ -430,6 +430,10 @@ bundle update
 - Prefer keyword arguments for methods with more than two parameters for readability.
 - Ruby 3+ introduced Ractors for parallelism and typed signatures via RBS.
 
+## See Also
+
+- python, javascript, lua, yaml, json, regex
+
 ## References
 
 - [Ruby Documentation](https://www.ruby-lang.org/en/documentation/) -- official guides and resources

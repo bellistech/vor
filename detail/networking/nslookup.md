@@ -192,6 +192,10 @@ $$\text{Complexity needed} = \begin{cases} \text{Low (quick check)} & \rightarro
 | $N_{servers} \times R \times T_{timeout}$ | Product | Worst-case wait |
 | $\arg\min(\text{preference})$ | Minimum selection | MX server choice |
 
+## Prerequisites
+
+- DNS record types, domain hierarchy, basic query resolution
+
 ---
 
 *nslookup is the quick-and-dirty DNS tool that every sysadmin reaches for first. It won't show you DNSSEC chains or query timing, but for the 90% case — "does this name resolve, and to what?" — it's the fastest path from question to answer.*

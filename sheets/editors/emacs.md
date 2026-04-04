@@ -269,6 +269,10 @@ C-h P              describe package
 - Emacs server (`emacs --daemon`, `emacsclient`) gives instant startup for subsequent files.
 - The help system (`C-h`) is comprehensive and self-documenting -- use `C-h k` to learn what any key does.
 
+## See Also
+
+- vim, neovim, tmux, git, regex, bash
+
 ## References
 
 - [GNU Emacs Manual](https://www.gnu.org/software/emacs/manual/) -- complete user manual

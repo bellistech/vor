@@ -197,3 +197,15 @@ $$\text{Part Overhead} = 4 \text{ bytes (signature per part)}$$
 ---
 
 *Every `zip`, `unzip -l`, and `zipinfo` command reads this structure — a 1989 format (Phil Katz, PKZIP) designed for floppy disk distribution that became the universal container for random-access compressed archives.*
+
+## Prerequisites
+
+- DEFLATE compression (same as gzip)
+- Central directory concept (archive metadata index)
+- Cross-platform file attribute handling
+
+## Complexity
+
+- **Beginner:** Create/extract zip archives, recursive directory zipping
+- **Intermediate:** Password protection, split archives, exclude patterns, update/freshen
+- **Advanced:** Central directory vs local header structure, ZIP64 extensions, random-access seeking, ZipCrypto weaknesses

@@ -259,6 +259,10 @@ jq --argjson age 30 '.users[] | select(.age > $age)' data.json
 - `--arg` passes a string variable. `--argjson` passes a JSON value (number, bool, object).
 - Use `env.VAR_NAME` to access environment variables inside jq expressions.
 
+## See Also
+
+- json, yaml, awk, sed, bash, python
+
 ## References
 
 - [jq Manual](https://jqlang.github.io/jq/manual/) -- complete builtin reference

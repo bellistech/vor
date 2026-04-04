@@ -280,6 +280,12 @@ rabbitmqctl set_policy federate-me "^federated\." \
 - Use lazy queues for very large backlogs (stores messages to disk early).
 - Monitor with `rabbitmqctl list_queues name messages consumers` or the management UI.
 
+## See Also
+
+- kafka
+- nats
+- redis
+
 ## References
 
 - [RabbitMQ Documentation](https://www.rabbitmq.com/docs)

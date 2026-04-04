@@ -208,6 +208,10 @@ On slow links, large mtr packets add measurable serialization delay.
 | $\sqrt{V_i^2 - V_{i-1}^2}$ | Variance decomposition | Per-link jitter |
 | $H \times T_{probe}$ | Product | Path discovery time |
 
+## Prerequisites
+
+- statistics (mean, standard deviation), ICMP protocol, TTL mechanics
+
 ---
 
 *mtr is the networking equivalent of a CT scan — it shows you not just that something is wrong, but exactly where in the path the problem lives. The statistics it computes per hop transform raw RTT samples into actionable diagnostics.*

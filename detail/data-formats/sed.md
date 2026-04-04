@@ -338,3 +338,10 @@ Where $C_{\text{cmd}}$ is the per-command cost:
 ---
 
 *sed's power comes from its simplicity: two string buffers, a program counter, and 25 commands. It's the smallest useful text transformation language — smaller than awk, simpler than perl, faster than both for the problems it was designed to solve. The hold space is the key to its non-trivial capabilities: without it, sed could only do line-at-a-time substitution.*
+
+## Prerequisites
+
+- Regular expressions (BRE and ERE syntax)
+- Stream processing and line-oriented text models
+- Pattern space and hold space concepts
+- Shell piping and stdin/stdout conventions

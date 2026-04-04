@@ -258,6 +258,10 @@ If 90% of lookups hit files: $T_{avg} = T_{files} + 0.1 \times T_{sss}$.
 | Group limit | $NGROUPS\_MAX = 65536$ | Kernel constant |
 | Graph density | $|E| / (|U| \times |G|)$ | Bipartite metric |
 
+## Prerequisites
+
+- set theory, bitmask operations, file permission model, ACLs, bipartite graphs
+
 ---
 
 *Groups are the foundation of Unix collaborative access — a set-theoretic model where membership determines capability. Every file access is a set intersection test, every permission a bitmask operation, and every ACL an extension of the same algebra.*

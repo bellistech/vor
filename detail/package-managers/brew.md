@@ -199,3 +199,15 @@ $$\text{Search Order:} \quad \text{homebrew/core} \rightarrow \text{taps (alphab
 ---
 
 *Every `brew install`, `brew upgrade`, and `brew cleanup` navigates these dependency graphs and binary distribution channels — a package manager that made source-based package management practical on macOS by adding binary bottles on top.*
+
+## Prerequisites
+
+- Ruby formula DSL (Homebrew formulae are Ruby scripts)
+- macOS library linking (dylib, rpath, codesigning)
+- Git-based tap system (formulae stored in Git repos)
+
+## Complexity
+
+- **Beginner:** Install/uninstall formulae and casks, update/upgrade, services
+- **Intermediate:** Taps, Brewfile bundles, pinning, keg-only linking, build-from-source
+- **Advanced:** Bottle distribution infrastructure, dependency DAG resolution, formula creation, relocatable binary patching

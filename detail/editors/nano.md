@@ -346,3 +346,10 @@ include "/usr/share/nano/*.nanorc"
 ---
 
 *nano is the editor that doesn't require you to learn an editor. It makes one tradeoff consistently: simplicity over power. This is not a weakness — it's a design that serves millions of users who need to edit a file, not learn a text-manipulation programming language. The on-screen shortcut bar is nano's most important feature: it says "you don't need to memorize anything to use this."*
+
+## Prerequisites
+
+- Terminal basics (keyboard shortcuts, control key conventions)
+- File permissions and ownership concepts
+- Basic regular expressions (for search and replace)
+- Configuration file syntax (.nanorc)

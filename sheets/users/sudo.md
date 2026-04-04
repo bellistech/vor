@@ -166,6 +166,10 @@ journalctl _COMM=sudo
 - `sudo -i` starts a login shell as root (reads root's `.profile`); `sudo -s` starts a non-login shell (keeps your environment).
 - The `Defaults timestamp_timeout=N` directive sets how many minutes sudo caches credentials (default is usually 5-15).
 
+## See Also
+
+- useradd, usermod, passwd, groups, ssh, auditd
+
 ## References
 
 - [man sudo(8)](https://man7.org/linux/man-pages/man8/sudo.8.html)

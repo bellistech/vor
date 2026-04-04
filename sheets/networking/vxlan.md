@@ -221,6 +221,10 @@ bridge fdb show dev vxlan100 | grep -v permanent
 - VXLAN VNI and VLAN are independent namespaces; you map them together on the bridge. Keep a clear mapping document.
 - When using symmetric IRB, the L3 VNI must be consistent across all VTEPs in the same VRF/tenant.
 
+## See Also
+
+- mpls, ethernet, bgp, nftables, iptables
+
 ## References
 
 - [RFC 7348 — VXLAN: A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks](https://www.rfc-editor.org/rfc/rfc7348)

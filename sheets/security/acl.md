@@ -138,6 +138,10 @@ getfacl source.txt | setfacl --set-file=- target.txt
 - `cp -p` and `rsync -A` preserve ACLs; `mv` within the same filesystem preserves them automatically.
 - `chmod` modifies the mask when ACLs are present, which can restrict named user/group permissions unexpectedly.
 
+## See Also
+
+- pam, selinux, apparmor, hardening-linux, auditd
+
 ## References
 
 - [getfacl(1) Man Page](https://man7.org/linux/man-pages/man1/getfacl.1.html)

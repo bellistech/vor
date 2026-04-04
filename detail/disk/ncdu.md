@@ -210,3 +210,15 @@ $$\text{Days to Full} = \frac{\text{Available}}{\text{Growth Rate}}$$
 ---
 
 *ncdu trades memory for interactivity — one O(n) scan builds an in-memory tree that answers unlimited disk usage queries without rescanning, making it the preferred tool for hunting down space hogs.*
+
+## Prerequisites
+
+- Basic du command usage and output interpretation
+- Directory tree traversal concepts
+- Memory vs I/O trade-offs in tree scanning
+
+## Complexity
+
+- **Beginner:** Interactive browsing and deletion
+- **Intermediate:** Export/import for remote scanning, exclusion patterns
+- **Advanced:** Memory consumption modeling for large filesystems, scan time estimation

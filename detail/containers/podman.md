@@ -259,3 +259,16 @@ The 8% gap is mostly: Swarm endpoints, build cache introspection, and some plugi
 ---
 
 *Podman proves that containers don't need a daemon — by making each container a direct child process with user namespace isolation, it achieves better security (rootless by default) and reliability (no SPOF) at the cost of slightly more complex networking.*
+
+## Prerequisites
+
+- Linux user namespaces and UID mapping (/etc/subuid, /etc/subgid)
+- Container fundamentals (images, registries, volumes)
+- systemd service management
+- Networking basics (bridges, port forwarding, slirp4netns)
+
+## Complexity
+
+- Beginner: running containers, building images (Docker-compatible CLI)
+- Intermediate: rootless mode, pods, systemd integration, Quadlet
+- Advanced: UID mapping internals, FUSE overlay performance, Kubernetes YAML generation, pasta networking

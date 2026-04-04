@@ -266,6 +266,10 @@ vault namespace list
 - Set short TTLs on dynamic database credentials to limit blast radius.
 - Use response wrapping for secure secret delivery: `vault kv get -wrap-ttl=5m secret/myapp`.
 
+## See Also
+
+- gpg, openssl, pki, tls, pam
+
 ## References
 
 - [Vault Documentation](https://developer.hashicorp.com/vault/docs)

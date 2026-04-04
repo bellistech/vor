@@ -238,6 +238,10 @@ If any verification fails: boot halts.
 | ESP sizing | $n \times (kernel + initrd) + margin$ | Capacity planning |
 | Boot timing | $\sum stage\_times + timeout$ | Sequential phases |
 
+## Prerequisites
+
+- disk geometry (CHS/LBA), partition tables (MBR/GPT), UEFI/BIOS firmware, filesystem basics, kernel boot process
+
 ---
 
 *GRUB is the bridge between firmware and operating system — a miniature OS that reads filesystems, decompresses kernels, and manages a boot menu, all from a 446-byte bootstrap in sector zero. Every byte of that bootstrap is precious real estate.*

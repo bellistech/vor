@@ -256,6 +256,10 @@ $$T = \frac{10^9}{12.5 \times 10^6} = 80 \text{ seconds}$$
 | Conditional BP cost | $N \times (T_{trap} + T_{eval})$ | Linear in iterations |
 | Remote overhead | $T_{local} + 2 \times RTT$ | Network latency |
 
+## Prerequisites
+
+- computer architecture, memory layout (stack/heap), ptrace, ABI conventions, pointer arithmetic, assembly basics
+
 ---
 
 *GDB is a conversation with the CPU through the lens of ptrace. Every command — break, watch, step, backtrace — maps to hardware features and OS primitives, and understanding that mapping is the difference between debugging and guessing.*

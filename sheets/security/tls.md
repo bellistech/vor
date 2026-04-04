@@ -221,6 +221,10 @@ nmap --script ssl-cert,ssl-heartbleed -p 443 example.com
 - Certificate Transparency (CT) logs are now preferred over pinning for certificate trust.
 - 0-RTT in TLS 1.3 is vulnerable to replay attacks; do not use for non-idempotent requests.
 
+## See Also
+
+- pki, openssl, certbot, ssh, cryptography
+
 ## References
 
 - [RFC 8446 — TLS 1.3](https://www.rfc-editor.org/rfc/rfc8446)

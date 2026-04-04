@@ -174,6 +174,14 @@ brew test ripgrep                      # run formula tests
 - `brew deps --tree --installed` shows the full dependency tree of everything installed.
 - Avoid `sudo brew`. Homebrew is designed to run as your user. If it asks for sudo, something is misconfigured.
 
+## See Also
+
+- apt
+- dnf
+- pip
+- npm
+- cargo
+
 ## References
 
 - [Homebrew Documentation](https://docs.brew.sh/)

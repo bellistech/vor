@@ -264,3 +264,15 @@ $$\text{Smuggling} \iff \text{Frontend interpretation} \neq \text{Backend interp
 ---
 
 *Web attacks exploit the fundamental tension between data and code — every parser boundary is a potential injection point, every trust assumption is a potential bypass, and every protocol ambiguity is a potential desynchronization. Defense requires understanding the grammar of every language the application speaks.*
+
+## Prerequisites
+
+- HTTP protocol (methods, headers, cookies, sessions)
+- Formal language theory (context-free grammars, parser boundaries)
+- Browser security model (same-origin policy, CORS, CSP)
+
+## Complexity
+
+- **Beginner:** Reflected XSS, basic SQL injection, CSRF concepts, directory traversal
+- **Intermediate:** Blind SQL injection, stored XSS, SSRF, deserialization attacks, HTTP request smuggling
+- **Advanced:** Grammar-based injection theory, parser differential attacks, prototype pollution chains, desynchronization timing, WAF bypass combinatorics

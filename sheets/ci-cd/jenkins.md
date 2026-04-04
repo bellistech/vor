@@ -429,6 +429,15 @@ Slack Notification     - send build status to Slack
 - Use `options { disableConcurrentBuilds() }` to prevent parallel runs of the same job.
 - Prefer Declarative pipelines for readability; use Scripted for complex logic.
 
+## See Also
+
+- github-actions
+- gitlab-ci
+- docker
+- kubernetes
+- ansible
+- git
+
 ## References
 
 - [Jenkins Pipeline Documentation](https://www.jenkins.io/doc/book/pipeline/)

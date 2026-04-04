@@ -265,6 +265,10 @@ For 1000 processes: $RSS \approx 5 + 2 = 7 MB$.
 | Self-cost | $(3N + 5) \times T_{read} / interval$ | Overhead |
 | Sampling noise | $\sigma \propto 1/\sqrt{\Delta t}$ | Statistics |
 
+## Prerequisites
+
+- process lifecycle, /proc filesystem, sampling theory, sorting algorithms, CPU scheduling basics
+
 ---
 
 *htop is a real-time operating system dashboard — every number recomputed each cycle, every bar redrawn, every sort re-executed. It's the kernel's vital signs rendered as a TUI, at the cost of a few milliseconds and a megabyte of RAM.*

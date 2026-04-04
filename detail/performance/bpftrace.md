@@ -248,6 +248,10 @@ $$flame\_width(frame) = \frac{\sum count\_with\_frame}{total\_samples}$$
 | Filter selectivity | $rate \times T_{probe} + match \times T_{action}$ | Selective overhead |
 | Stack memory | $n_{stacks} \times depth \times 16$ | Linear |
 
+## Prerequisites
+
+- eBPF architecture, kernel tracepoints, logarithmic histograms, hash maps, probe overhead analysis
+
 ---
 
 *bpftrace is a domain-specific language for kernel instrumentation. Its genius is that every aggregation — count, sum, histogram — runs in O(1) per event inside the kernel, and only the final report crosses the kernel-user boundary. This is what makes million-event-per-second tracing practical.*

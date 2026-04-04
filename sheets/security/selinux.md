@@ -217,6 +217,10 @@ sudo semanage login -a -s sysadm_u admin_user
 - The `targeted` policy only confines specific daemons; unconfined processes run as `unconfined_t`
 - After changing SELINUX from `disabled` to `enforcing`, a full filesystem relabel is required (can take 10+ minutes)
 
+## See Also
+
+- apparmor, acl, pam, hardening-linux, auditd
+
 ## References
 
 - [SELinux Project Wiki](https://selinuxproject.org/page/Main_Page)

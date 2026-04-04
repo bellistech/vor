@@ -186,6 +186,15 @@ sudo dumpe2fs -h /dev/sdb1 | grep -E "Block count|Free blocks|Inode count|Free i
 - `metadata_csum` (enabled by default since e2fsprogs 1.44) adds per-block checksums; older kernels may not support it
 - Journal recovery is automatic on mount; if it fails, `e2fsck` is the next step
 
+## See Also
+
+- xfs
+- btrfs
+- mount
+- fstab
+- lvm
+- fdisk
+
 ## References
 
 - [ext4 Wiki](https://ext4.wiki.kernel.org/)

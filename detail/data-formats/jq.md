@@ -347,3 +347,10 @@ def process:
 ---
 
 *jq is not "grep for JSON" — it's a complete functional programming language specialized for JSON transformation. Its filter-pipe-collect model maps naturally to data transformation pipelines: extract fields, filter records, reshape structures, aggregate values. Master the five core operations (`.`, `.[]`, `|`, `[]`, `{}`) and jq becomes the fastest path from raw JSON to the answer you need.*
+
+## Prerequisites
+
+- JSON structure and syntax
+- Functional programming concepts (map, filter, reduce, pipes)
+- Shell piping and stdin/stdout conventions
+- Path expressions and tree traversal

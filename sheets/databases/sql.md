@@ -390,6 +390,13 @@ FROM employees;
 - Use `COALESCE(column, default)` to handle NULLs in expressions.
 - Syntax varies across databases (MySQL, PostgreSQL, SQLite, SQL Server); always check your target dialect.
 
+## See Also
+
+- postgresql
+- mysql
+- sqlite
+- redis
+
 ## References
 
 - [SQL Standard (ISO 9075)](https://www.iso.org/standard/76583.html)

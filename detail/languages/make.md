@@ -284,3 +284,19 @@ $$\text{Correct build order} \iff \text{single DAG with all edges}$$
 ---
 
 *Make is graph theory applied to build systems. Every correct Makefile is a DAG, every build is a topological sort, and every bug is either a missing edge or a cycle. Understanding this transforms Make from a mysterious incantation file into a formal specification of your build.*
+
+## Prerequisites
+
+- Directed acyclic graphs (DAGs) and topological sorting
+- Shell scripting basics (variable expansion, exit codes)
+- Compilation pipeline (source, object files, linking)
+- File modification timestamps and dependency resolution
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|---|---|---|
+| Dependency resolution | O(V + E) | Topological sort of the build graph |
+| Timestamp comparison | O(1) per target | stat() syscall per file |
+| Full rebuild | O(V + E) | Visits every node and edge once |
+| Incremental build | O(changed + dependents) | Only rebuilds stale targets |

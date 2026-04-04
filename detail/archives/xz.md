@@ -193,3 +193,15 @@ $$\text{Total Memory} = \text{Threads} \times \text{Per-Thread Memory}$$
 ---
 
 *Every `xz -6`, `tar -J`, and Linux kernel `make xzImage` runs this algorithm — LZMA2 in a large dictionary with range coding, trading extreme CPU time during compression for near-optimal file sizes and fast decompression.*
+
+## Prerequisites
+
+- LZMA/LZMA2 dictionary compression concepts
+- Range coding (arithmetic coding variant)
+- Memory management (dictionary size determines RAM usage)
+
+## Complexity
+
+- **Beginner:** Compress/decompress files, keep originals with -k
+- **Intermediate:** Multi-threaded compression (-T0), memory-constrained tuning, integration with tar
+- **Advanced:** LZMA2 dictionary sizing math, BCJ filters for executables, range coder internals, block structure

@@ -214,6 +214,10 @@ $$\text{Lookups saved} = N_{requests} - \lceil \frac{T_{total}}{T_{cache}} \rcei
 | $T_{base} \times 2^{n-1}$ | Exponential backoff | Retry timing |
 | $T_{transfer} + K \times T_{overhead}$ | Linear | Resume overhead |
 
+## Prerequisites
+
+- URL encoding, HTTP protocol state machine, transfer timing
+
 ---
 
 *curl's timing output is the best free diagnostic tool in networking — it decomposes every HTTP transfer into its constituent phases, letting you identify whether the bottleneck is DNS, TLS, the server, or the network. The math is in the measurement.*

@@ -82,3 +82,30 @@ func indexOf(s, sub string) int {
 	}
 	return -1
 }
+
+func TestEvalWithUnits(t *testing.T) {
+	tests := []struct {
+		expr     string
+		wantVal  float64
+		wantUnit string
+	}{
+		{"10GB / 2", 5e9, "data"},
+		{"1KiB", 1024, "data"},
+		{"10Gbps / 8", 1.25e9, "rate"},
+		{"500ms * 2", 1, "time"},
+	}
+
+	for _, tt := range tests {
+		got, err := EvalWithUnits(tt.expr)
+		if err != nil {
+			t.Errorf("EvalWithUnits(%q) error: %v", tt.expr, err)
+			continue
+		}
+		if math.Abs(got.Value-tt.wantVal)/math.Max(1, math.Abs(tt.wantVal)) > 0.001 {
+			t.Errorf("EvalWithUnits(%q) value = %g, want %g", tt.expr, got.Value, tt.wantVal)
+		}
+		if got.Unit != tt.wantUnit {
+			t.Errorf("EvalWithUnits(%q) unit = %q, want %q", tt.expr, got.Unit, tt.wantUnit)
+		}
+	}
+}

@@ -159,6 +159,10 @@ chmod +x /etc/cron.daily/backup
 - Scripts in `/etc/cron.daily/` etc. must not have a `.sh` extension on some systems (run-parts ignores files with dots).
 - Debug with `grep CRON /var/log/syslog` or `journalctl -u cron`.
 
+## See Also
+
+- at, systemd-timers, bash, nice, kill
+
 ## References
 
 - [man crontab(5) — File Format](https://man7.org/linux/man-pages/man5/crontab.5.html)

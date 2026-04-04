@@ -209,6 +209,10 @@ printf '\u00e9\n'                         # same thing (bash 4.4+)
 - Use `//TRANSLIT` with iconv to approximate characters that have no equivalent in the target encoding.
 - When grepping for non-ASCII, use `grep -P '[\x80-\xFF]'` or `grep '[^[:ascii:]]'`.
 
+## See Also
+
+- ascii, python, go, regex, sed, bash
+
 ## References
 
 - [The Unicode Standard](https://www.unicode.org/versions/latest/) -- latest version of the full standard

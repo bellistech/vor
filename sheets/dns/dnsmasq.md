@@ -266,6 +266,14 @@ sudo brew services start dnsmasq
 - `log-queries` is invaluable for debugging but generates a lot of output. Disable in production.
 - dnsmasq reads `/etc/hosts` on startup. Changes to `/etc/hosts` require a SIGHUP or restart.
 
+## See Also
+
+- bind
+- nginx
+- brew
+- recon
+- cisco-ios
+
 ## References
 
 - [Dnsmasq Official Documentation](https://thekelleys.org.uk/dnsmasq/doc.html)

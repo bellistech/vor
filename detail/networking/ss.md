@@ -210,6 +210,10 @@ With tuned buffers (68 KB/conn): ~235,000 connections.
 | $M_{avail} / M_{per\_conn}$ | Division | Max connections |
 | Recv-Q >= Send-Q (LISTEN) | Comparison | Backlog overflow |
 
+## Prerequisites
+
+- socket state machines, queue arithmetic, TCP internals
+
 ---
 
 *ss is the fastest way to understand what your kernel's network stack is doing right now. Every field maps to a kernel data structure, and the TCP extended info gives you live visibility into congestion windows, RTT estimates, and retransmission counts that no other tool exposes as efficiently.*

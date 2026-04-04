@@ -273,3 +273,10 @@ Consequences:
 ---
 
 *Lua's genius is radical simplicity: one data structure (table), one number type (double, or integer+float in 5.3+), one extension mechanism (metatables). The entire source is ~30,000 lines of C. This is not a limitation — it's a design philosophy that makes Lua the most embeddable language ever created.*
+
+## Prerequisites
+
+- Hash table internals (array part vs hash part, resizing)
+- C API fundamentals (stack-based argument passing, FFI)
+- Coroutines and cooperative multitasking
+- Metatables and metamethod dispatch

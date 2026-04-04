@@ -135,6 +135,10 @@ sar -A 1 1
 - `sar -n DEV` is the quickest way to check network throughput historically without having had a monitoring agent running.
 - On RHEL/CentOS the config file is `/etc/sysconfig/sysstat`; on Debian it is `/etc/sysstat/sysstat`.
 
+## See Also
+
+- iostat, vmstat, htop, perf, prometheus
+
 ## References
 
 - [man sar(1)](https://man7.org/linux/man-pages/man1/sar.1.html)

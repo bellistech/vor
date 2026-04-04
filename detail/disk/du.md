@@ -199,3 +199,16 @@ This gives $O(D_1)$ complexity where $D_1$ = number of first-level subdirectorie
 ---
 
 *Every `du -sh` you run triggers a recursive stat() walk of the entire directory tree — a deceptively expensive operation that becomes the bottleneck on filesystems with millions of small files.*
+
+## Prerequisites
+
+- Filesystem tree structure and directory entries
+- stat() syscall and inode metadata
+- Hard links vs symbolic links (impact on reported sizes)
+- Block allocation vs logical file size
+
+## Complexity
+
+- **Beginner:** Summarizing directory sizes
+- **Intermediate:** Apparent size vs disk usage, cross-filesystem traversal
+- **Advanced:** stat() walk performance modeling, inode cache effects, sparse file accounting

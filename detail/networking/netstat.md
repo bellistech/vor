@@ -194,6 +194,10 @@ Port conflicts are detected when two processes try to bind the same (address, po
 | $O(N)$ parsing | Complexity | netstat scaling |
 | $\arg\max(\text{prefix\_len})$ | Longest match | Route selection |
 
+## Prerequisites
+
+- socket state machines, routing table lookups, process identification
+
 ---
 
 *netstat is the legacy tool that everyone still uses because it's everywhere. On modern systems with tens of thousands of connections, ss is 10x faster, but netstat's output format is burned into the muscle memory of every sysadmin who's ever debugged a connection leak at 3 AM.*

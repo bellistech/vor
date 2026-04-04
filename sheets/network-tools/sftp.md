@@ -171,6 +171,13 @@ EOF
 - `!command` executes on the local machine — useful for quick checks without leaving the session
 - Tab completion works in interactive mode for both local and remote paths (OpenSSH implementation)
 
+## See Also
+
+- rsync
+- scp
+- ssh-tunneling
+- tar
+
 ## References
 
 - [man sftp](https://man7.org/linux/man-pages/man1/sftp.1.html)

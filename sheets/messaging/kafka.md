@@ -292,6 +292,13 @@ curl -X POST localhost:8081/compatibility/subjects/my-topic-value/versions/lates
 - For local development, use Docker Compose with Confluent or Redpanda images.
 - Partition count determines max consumer parallelism within a group.
 
+## See Also
+
+- rabbitmq
+- nats
+- redis
+- postgresql
+
 ## References
 
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)

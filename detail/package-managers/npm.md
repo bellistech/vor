@@ -202,3 +202,15 @@ $$\text{Disk Usage (npm)} = \sum_{\text{projects}} \text{node\_modules}_i$$
 ---
 
 *Every `npm install`, `package-lock.json`, and `node_modules/` directory reflects these resolution algorithms — a package manager handling the JavaScript ecosystem's uniquely deep dependency trees with deduplication, caching, and lockfiles.*
+
+## Prerequisites
+
+- SemVer (semantic versioning) and range operators (^, ~)
+- Node.js module resolution algorithm (node_modules traversal)
+- JSON package manifest format (package.json)
+
+## Complexity
+
+- **Beginner:** Install/uninstall packages, run scripts, init projects
+- **Intermediate:** Workspaces, audit, lockfile management, npx, lifecycle hooks
+- **Advanced:** Dependency tree deduplication algorithm, hoisting strategy, arborist internals, registry protocol

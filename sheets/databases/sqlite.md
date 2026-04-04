@@ -256,6 +256,13 @@ sqlite3 mydb.db -header -table "SELECT * FROM users LIMIT 5;"
 - Use `EXPLAIN QUERY PLAN` (not `EXPLAIN`) to see whether queries use indexes.
 - SQLite handles up to ~1TB databases and moderate write loads. For high write concurrency, consider PostgreSQL.
 
+## See Also
+
+- sql
+- postgresql
+- mysql
+- redis
+
 ## References
 
 - [SQLite Documentation](https://www.sqlite.org/docs.html)

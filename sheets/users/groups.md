@@ -160,6 +160,10 @@ usermod -g developers deploy
 - A user's primary group cannot be deleted. Change it first with `usermod -g`.
 - Files in `/etc/group` and `/etc/gshadow` should be edited with `vigr` and `vigr -s` respectively, not directly.
 
+## See Also
+
+- useradd, usermod, passwd, sudo
+
 ## References
 
 - [man groupadd(8)](https://man7.org/linux/man-pages/man8/groupadd.8.html)

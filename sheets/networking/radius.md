@@ -246,6 +246,10 @@ freeradius -C                     # check config and exit
 - For high availability, run two RADIUS servers; most NAS devices support primary/secondary.
 - Log accounting to SQL (`rlm_sql`) for reporting and session tracking at scale.
 
+## See Also
+
+- pam, tls, ssh, ipsec, dns
+
 ## References
 
 - [RFC 2865 — Remote Authentication Dial In User Service (RADIUS)](https://www.rfc-editor.org/rfc/rfc2865)

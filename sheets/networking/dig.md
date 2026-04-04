@@ -143,6 +143,10 @@ dig +json example.com                 # JSON format output
 - On macOS, system `dig` may lag behind; install BIND tools via Homebrew for the latest version
 - For quick lookups where you don't need detail, `host` or `nslookup` are shorter to type
 
+## See Also
+
+- nslookup, dns, curl, mtr, ipv4
+
 ## References
 
 - [dig Man Page](https://man7.org/linux/man-pages/man1/dig.1.html)

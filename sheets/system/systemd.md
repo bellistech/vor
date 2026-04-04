@@ -171,6 +171,10 @@ systemctl list-dependencies --reverse nginx.service
 - `Restart=on-failure` only restarts on non-zero exit; use `Restart=always` for services that should never stay down.
 - `systemctl --user` manages per-user services (e.g. `systemctl --user start syncthing`).
 
+## See Also
+
+- journalctl, systemd-timers, kernel, ps, cron, dmesg
+
 ## References
 
 - [man systemctl(1)](https://man7.org/linux/man-pages/man1/systemctl.1.html)

@@ -219,3 +219,16 @@ $$\text{Total Sectors} = \frac{2 \times 2^{40}}{512} = 4,294,967,296$$
 ---
 
 *Every `fdisk -l`, `gdisk`, and `parted print` reads the first and last sectors of the disk — a 67-sector data structure that maps the entire drive's layout.*
+
+## Prerequisites
+
+- Disk geometry concepts (sectors, cylinders, heads)
+- MBR vs GPT partition table differences
+- Binary arithmetic for sector/byte conversions
+- Root/sudo access for partition management
+
+## Complexity
+
+- **Beginner:** Listing partitions, basic MBR partitioning
+- **Intermediate:** GPT partitioning, alignment calculations, sector arithmetic
+- **Advanced:** CHS-to-LBA conversion, partition table binary format, recovery from corrupted tables

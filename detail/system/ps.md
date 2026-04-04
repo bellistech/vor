@@ -259,6 +259,10 @@ Thread limit: `kernel.threads-max` (default: $\frac{RAM\_pages}{4}$).
 | TIME | $(utime + stime) / CLK\_TCK$ | Total CPU time |
 | ELAPSED | $now - start\_time$ | Wall clock |
 
+## Prerequisites
+
+- process lifecycle, virtual memory, /proc filesystem, CPU scheduling, memory accounting
+
 ---
 
 *ps reads /proc — the kernel's window into its own soul. Every number is a counter or a computation, and they all tell the same story: how much of the machine's finite resources this process has consumed.*

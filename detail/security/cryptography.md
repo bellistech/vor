@@ -270,6 +270,19 @@ $$O\left(\exp\left(1.923 \cdot (\ln p)^{1/3} \cdot (\ln \ln p)^{2/3}\right)\righ
 | Key entropy | Information theory | $H = \log_2(|\mathcal{K}|)$ |
 | GCM tag | Polynomial over $GF(2^{128})$ | GHASH authentication |
 
+## Prerequisites
+
+- number theory, modular arithmetic, finite fields, elliptic curves, probability
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| AES encrypt/decrypt | O(n) | O(1) |
+| RSA key generation | O(k^4) | O(k) |
+| ECDSA sign | O(k^3) | O(k) |
+| SHA-256 hash | O(n) | O(1) |
+
 ---
 
 *Every encrypted message, signed certificate, and secure connection on the internet relies on these exact mathematical structures — finite fields, modular arithmetic, and elliptic curves running at billions of operations per second.*

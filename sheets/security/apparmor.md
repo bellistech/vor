@@ -219,6 +219,10 @@ sudo aa-unconfined --paranoid            # all running processes without profile
 - `Ux` (unconfined execute) defeats the purpose of AppArmor; prefer `Px` or `ix` for child processes
 - On Ubuntu, AppArmor ships with profiles for common services (snap, cups, tcpdump) -- check `aa-status` before writing your own
 
+## See Also
+
+- selinux, acl, pam, hardening-linux, container-security
+
 ## References
 
 - [AppArmor Documentation](https://gitlab.com/apparmor/apparmor/-/wikis/Documentation)

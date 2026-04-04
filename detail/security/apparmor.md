@@ -245,6 +245,10 @@ This is the fundamental tradeoff: path-based is intuitive but fragile under rena
 | Coverage $\%$ | Statistical sampling | Training completeness |
 | Set cover | Combinatorial optimization | Profile minimality |
 
+## Prerequisites
+
+- regular expressions, DFA construction, set theory, path matching
+
 ---
 
 *AppArmor transforms the question "should this program access this file?" into a DFA state transition — compiled once at profile load, evaluated in microseconds at every system call, enforcing the principle of least privilege through mathematical pattern matching.*

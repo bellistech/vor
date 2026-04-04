@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with **200 embedded cheatsheets** and **200 deep-dive theory pages** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
+Single-binary Go CLI with **200 embedded cheatsheets** and **200 deep-dive theory pages** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
 
 ## Install
 
@@ -24,6 +24,7 @@ cs storage                # list all storage-related sheets
 cs lvm extend             # show only the "extend" section
 cs -s lvextend            # search across all sheets
 cs -l                     # list all topics with descriptions
+cs -i                     # interactive TUI browser
 cs --add mysheet.md       # add a custom cheatsheet
 cs --edit lvm             # customize a sheet in $EDITOR
 cs --random               # show a random cheatsheet
@@ -41,23 +42,98 @@ cs -d tcp                     # window math, congestion control, RTT estimation
 cs -d postgresql              # query planner cost model, B-tree splits, MVCC
 cs -d kubernetes              # scheduler scoring, Raft consensus, HPA formula
 cs -d tls                     # handshake state machine, ECDHE math, cipher suites
+cs -d bgp --prereqs           # show prerequisites for a detail page
 ```
 
 Every topic has a companion deep dive with formulas, worked examples, complexity analysis, and engineering tradeoffs.
 
+### Knowledge Graph
+
+```bash
+# Cross-references — discover related topics
+cs --related bgp              # shows ospf, is-is, mpls, tcp, subnetting
+cs --related docker           # shows podman, kubernetes, containerd
+
+# Compare two tools side by side
+cs compare docker podman      # feature comparison table
+cs compare ext4 xfs           # filesystem comparison
+
+# Learning paths — ordered by prerequisites
+cs learn networking           # foundational → advanced topic order
+cs learn databases            # sql → postgresql → redis progression
+```
+
 ### Built-in Tools
 
 ```bash
-# Calculator — arithmetic, hex/oct/bin, bitwise ops
-cs calc "2**10"           # 1024
-cs calc "0xff * 2"        # 510
-cs calc "1<<16"           # 65536
-cs calc help              # show full calculator manual
+# Calculator — arithmetic, hex/oct/bin, units
+cs calc "2**10"               # 1024
+cs calc "0xff * 2"            # 510
+cs calc "1<<16"               # 65536
+cs calc "10GB / 1500bytes"    # unit-aware: 6,666,666 packets
+cs calc "10Gbps / 8"          # 1.25 Gbps
+cs calc help                  # show full calculator manual
 
 # Subnet Calculator — CIDR breakdown
-cs subnet 10.0.0.0/24     # network, broadcast, host range, mask
-cs subnet 172.16.0.0/20   # usable hosts, wildcard, binary mask
-cs subnet help             # show full subnet calculator manual
+cs subnet 10.0.0.0/24         # network, broadcast, host range, mask
+cs subnet 172.16.0.0/20       # usable hosts, wildcard, binary mask
+cs subnet help                # show full subnet calculator manual
+
+# Math Verification — validate formulas in detail pages
+cs verify bgp                 # check worked examples against calculator
+cs verify                     # verify all detail pages (CI-friendly, exit 1 on fail)
+```
+
+### Interactive TUI
+
+```bash
+cs -i                         # launch full-screen interactive browser
+```
+
+Browse categories, fuzzy-filter topics, read sheets and detail pages — all with keyboard navigation (j/k, enter, /, d for detail, esc to go back, q to quit).
+
+### REST API / Daemon Mode
+
+```bash
+cs serve                      # start API on 127.0.0.1:9876
+cs serve 8080                 # custom port
+```
+
+Endpoints:
+- `GET /api/topics` — list all topics
+- `GET /api/topics/:name` — get sheet content (JSON)
+- `GET /api/topics/:name/detail` — get detail page
+- `GET /api/topics/:name/related` — get related topics
+- `GET /api/categories` — list categories
+- `GET /api/search?q=<query>` — search across sheets
+- `GET /api/compare?a=<X>&b=<Y>` — compare two topics
+- `POST /api/calc` — evaluate expression
+- `POST /api/subnet` — subnet calculator
+- `GET /api/verify/:name` — verify detail math
+- `GET /api/stats` — statistics
+- `GET /api/bookmarks` — list bookmarks
+- `POST /api/bookmarks/:name` — toggle bookmark
+
+### Export & Share
+
+```bash
+cs lvm --format markdown      # raw markdown (pipe to pbcopy, wiki, etc.)
+cs lvm --format json          # structured JSON with sections, see_also, etc.
+cs bgp --format json | jq .   # pipe to jq for processing
+```
+
+### Bookmarks
+
+```bash
+cs --star lvm                 # bookmark a topic
+cs --star lvm                 # run again to remove
+cs --starred                  # list all bookmarked topics
+```
+
+### Self-Update
+
+```bash
+cs --update                   # check GitHub for new releases and update
 ```
 
 ## Categories (32)
@@ -97,7 +173,7 @@ cs subnet help             # show full subnet calculator manual
 | web | 2 | css, html |
 | vcs | 1 | git |
 
-Every sheet includes a `## References` section with official documentation, RFCs, man pages, vendor guides, and project wikis.
+Every sheet includes `## References` with official documentation, RFCs, man pages, vendor guides, and project wikis. Every sheet includes `## See Also` cross-references to related topics.
 
 ## Custom Sheets
 
@@ -126,18 +202,22 @@ One-liner explaining what this tool does.
 
 ### Specific Operation
 
-```bash
+` ` `bash
 # Comment explaining the command
 command --flag value
 
 # Another example with real values
 command --option actual-value
-```
+` ` `
 
 ## Tips
 
 - Practical gotcha or important note
 - Performance consideration
+
+## See Also
+
+- related-topic1, related-topic2, related-topic3
 
 ## References
 

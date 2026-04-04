@@ -247,6 +247,10 @@ ping -M do -s 1400 -c 3 10.2.0.1         # send with DF bit set
 - For road warriors, use virtual IP assignment (`rightsourceip` pool) with EAP auth.
 - Keep SA lifetimes aligned between peers to avoid rekeying race conditions.
 
+## See Also
+
+- wireguard, tls, ipv4, ipv6, nftables
+
 ## References
 
 - [RFC 4301 — Security Architecture for the Internet Protocol](https://www.rfc-editor.org/rfc/rfc4301)

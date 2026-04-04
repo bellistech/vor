@@ -232,6 +232,10 @@ vtysh -c "show isis database detail" | grep -i "overload"
 - System ID in the NET is typically encoded from the loopback IP for easy identification (e.g., 10.0.0.1 becomes 0100.0000.0001).
 - IS-IS hello padding can be disabled to save bandwidth, but keep it enabled initially to detect MTU mismatches.
 
+## See Also
+
+- ospf, bgp, bfd, mpls, ecmp
+
 ## References
 
 - [RFC 1195 — Use of OSI IS-IS for Routing in TCP/IP and Dual Environments](https://www.rfc-editor.org/rfc/rfc1195)

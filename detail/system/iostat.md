@@ -219,6 +219,10 @@ For trending (minute-scale): use `iostat -x 60`.
 | Hockey stick | $W \to \infty$ as $\rho \to 1$ | Queuing theory |
 | Write amplification | $physical / logical$ | Storage physics |
 
+## Prerequisites
+
+- queuing theory, Little's Law, utilization metrics, block device I/O, probability distributions
+
 ---
 
 *iostat is queuing theory applied to hardware. The hockey-stick curve — latency exploding as utilization approaches 100% — is not a bug; it's a mathematical certainty. Keep your disks below 70% utilization, or learn to love the curve.*

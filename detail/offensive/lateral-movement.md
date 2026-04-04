@@ -260,3 +260,15 @@ The path reduction alone is modest, but the credential isolation prevents T2 →
 ---
 
 *Lateral movement is the core of every breach — initial compromise grants a foothold, but lateral movement turns a single compromised workstation into domain-wide access. The mathematics show that dense credential graphs make this trivial, while tiered administration and per-hop detection make it detectable and containable.*
+
+## Prerequisites
+
+- Graph theory (adjacency, reachability, BFS/DFS traversal)
+- Windows authentication protocols (NTLM, Kerberos, credential caching)
+- Network segmentation and trust boundaries
+
+## Complexity
+
+- **Beginner:** Pass-the-hash, RDP pivoting, PSExec, SSH key reuse
+- **Intermediate:** Kerberos ticket attacks (golden/silver tickets), WMI/WinRM lateral movement, token impersonation, credential dumping
+- **Advanced:** Credential graph density analysis, attack path probability, tiered administration modeling, detection probability per hop

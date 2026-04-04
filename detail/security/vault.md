@@ -294,6 +294,10 @@ $$V_{daily} = R_{ops} \times S_{entry} \times 86400$$
 | Policy deny-wins | Boolean logic (meet) | Access control |
 | HMAC audit | Keyed hash | Log privacy |
 
+## Prerequisites
+
+- polynomial interpolation (Shamir's secret sharing), symmetric encryption, HMAC
+
 ---
 
 *Vault transforms secret management from a static credential problem into a mathematically bounded lease system — Shamir's polynomial splitting protects the master key, AES-GCM protects data at rest, and time-bounded leases ensure that compromised credentials automatically expire.*

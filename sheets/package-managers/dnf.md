@@ -167,6 +167,14 @@ rpm --import https://example.com/RPM-GPG-KEY  # import GPG key
 - Unlike apt, `dnf upgrade` handles both package updates and dependency changes in one command.
 - `dnf needs-restarting -r` checks if a reboot is needed (after kernel/glibc updates).
 
+## See Also
+
+- apt
+- brew
+- pip
+- npm
+- cargo
+
 ## References
 
 - [DNF Documentation](https://dnf.readthedocs.io/)

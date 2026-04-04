@@ -257,6 +257,20 @@ But inodes are often adjacent — readahead can amortize: $T_{readahead} \approx
 | Exec batching | $\lceil N / ARG\_MAX \rceil$ | Ceiling division |
 | Time predicates | $n \times 24h \leq age < (n+1) \times 24h$ | Interval arithmetic |
 
+## Prerequisites
+
+- tree traversal (DFS/BFS), filesystem inodes, geometric series, conditional probability, ARG_MAX
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|:---|:---|:---|
+| Full tree walk | $O(N)$ | N = total filesystem entries |
+| DFS memory | $O(\log_b N)$ | b = branching factor |
+| Pruned search | $O(N - S)$ | S = pruned subtree nodes |
+| -exec per file | $O(N \times T_{fork})$ | One fork per match |
+| -exec + batched | $O(\lceil N / ARG\_MAX \rceil \times T_{fork})$ | Amortized fork cost |
+
 ---
 
 *find walks a tree, and every optimization — pruning, expression ordering, exec batching — reduces the number of nodes visited or the cost per node. Think of it as graph search with I/O weights on every edge.*

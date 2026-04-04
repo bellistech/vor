@@ -246,6 +246,10 @@ $$T_{crack} = 2.18 \times 10^{14} \times 2.5ms = 1.73 \times 10^{4} \text{ years
 | File growth | $N \times 170$ bytes | Linear |
 | Hash cost | $rounds \times T_{SHA512}$ | Computational hardening |
 
+## Prerequisites
+
+- UID/GID allocation, /etc/passwd and /etc/shadow formats, file permissions, skeleton directories, password hashing
+
 ---
 
 *useradd is a controlled allocation: take the next UID from a range, create a group, copy a skeleton, and set security defaults. Every field in passwd and shadow is a parameter in the security equation, and the defaults are the sysadmin's first line of defense.*

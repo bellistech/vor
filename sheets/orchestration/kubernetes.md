@@ -233,6 +233,15 @@ kubectl cp web-abc123:/data ./backup -c sidecar   # from specific container
 - Set a default namespace with `kubectl config set-context --current --namespace=myapp` to avoid typing `-n` everywhere.
 - `kubectl run --rm -it debug --image=alpine -- sh` is indispensable for in-cluster network debugging.
 
+## See Also
+
+- helm
+- docker
+- containerd
+- podman
+- terraform
+- prometheus
+
 ## References
 
 - [Kubernetes Documentation](https://kubernetes.io/docs/)

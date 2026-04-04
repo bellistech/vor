@@ -437,6 +437,10 @@ bridge fdb show | grep aa:bb:cc    # look for same MAC on multiple ports
 - CRC/FCS errors incrementing on `ethtool -S` indicate physical layer problems: bad cable, failing transceiver, or EMI. Replace the cable first, then the transceiver.
 - The minimum Ethernet frame is 64 bytes. Frames smaller than this (runts) indicate a physical or driver issue. The NIC pads payloads shorter than 46 bytes automatically.
 
+## See Also
+
+- vxlan, ip, iptables, ethtool, tcpdump
+
 ## References
 
 - [IEEE 802.3 Ethernet Standard](https://standards.ieee.org/ieee/802.3/)

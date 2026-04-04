@@ -232,6 +232,10 @@ Heavy pause frame activity can reduce throughput by 30-50%.
 | $\Delta E / \Delta t$ | Rate | Error rate |
 | $\text{quanta} \times 512 \times T_{bit}$ | Product | Pause duration |
 
+## Prerequisites
+
+- NIC hardware concepts, ring buffer arithmetic, link negotiation
+
 ---
 
 *ethtool is the window into your NIC's soul — it shows you link speed, ring buffers, offload engines, and error counters that no other tool can access. When tcpdump shows packet loss but the application looks fine, ethtool's error counters tell you whether it's a software problem or a dying cable.*

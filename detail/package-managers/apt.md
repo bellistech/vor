@@ -207,3 +207,16 @@ $$\text{Version} = [\text{epoch}:]\text{upstream\_version}[-\text{debian\_revisi
 ---
 
 *Every `apt install`, `apt update`, and `dpkg --configure` runs through these algorithms — a dependency solver that navigates a 60,000-node graph to find a consistent set of packages that satisfies all constraints.*
+
+## Prerequisites
+
+- Dependency graph concepts (directed acyclic graphs)
+- Boolean satisfiability (SAT) problem basics
+- Debian .deb package format and repository structure
+- GPG signature verification concepts
+
+## Complexity
+
+- **Beginner:** Install/remove/upgrade packages, add repositories
+- **Intermediate:** Pinning, version holds, dpkg low-level operations, offline installs
+- **Advanced:** SAT-based dependency resolution internals, Packages.gz index parsing, delta compression, resolver conflict strategies

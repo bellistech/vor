@@ -481,6 +481,10 @@ sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 - CAA records are checked by CAs before issuing certificates. Set them to prevent unauthorized certificate issuance.
 - Keep zone transfer (AXFR) restricted to known secondary nameservers. Open zone transfers leak your entire DNS inventory.
 
+## See Also
+
+- dig, nslookup, curl, ipv4, ipv6
+
 ## References
 
 - [RFC 1034 — Domain Names: Concepts and Facilities](https://www.rfc-editor.org/rfc/rfc1034)

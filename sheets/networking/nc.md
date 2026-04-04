@@ -149,6 +149,10 @@ ncat --sh-exec "echo hello" -l 8080   # execute command per connection
 - Named pipe relays are fragile; use `socat` for production relays
 - Never expose `-e /bin/bash` on an untrusted network — it creates a backdoor
 
+## See Also
+
+- nmap, curl, tcpdump, ss, tcp
+
 ## References
 
 - [man ncat (Nmap version)](https://man7.org/linux/man-pages/man1/ncat.1.html)

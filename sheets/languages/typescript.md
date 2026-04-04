@@ -345,6 +345,10 @@ import type { User } from "./models";
 - Use `noUncheckedIndexedAccess` to catch array/object index access bugs at compile time.
 - Template literal types enable type-safe string manipulation: `type Route = \`/api/${string}\``.
 
+## See Also
+
+- javascript, json, npm, rust, go, python
+
 ## References
 
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/) -- official docs and getting started

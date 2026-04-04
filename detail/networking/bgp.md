@@ -263,6 +263,19 @@ The global BGP routing table currently holds **~1 million prefixes**. Every aggr
 | Best Path | Piecewise / Algorithmic | Piecewise functions, Ordering |
 | $N - 1$ (Route Reflector) | Linear | Linear vs. quadratic comparison |
 
+## Prerequisites
+
+- algebra, logarithms, exponential functions, combinatorics, quadratic equations
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Full mesh peering | O(n^2) | O(n^2) |
+| Route reflector peering | O(n) | O(n) |
+| Best path selection | O(k) per prefix | O(1) |
+| Path exploration (worst) | O(n!) | O(n) |
+
 ---
 
 *These aren't abstract exercises — every one of these calculations runs in production on the routers carrying the internet right now.*

@@ -232,3 +232,16 @@ $$\text{Practical Limit} = \frac{\text{Free Space}}{\text{Inode Size}} \quad (\t
 ---
 
 *Every `xfs_info`, `xfs_repair`, and `xfs_bmap` command exposes these B+ tree structures — a filesystem designed at SGI in 1993 for IRIX supercomputers, now the default for RHEL and handling petabyte-scale deployments.*
+
+## Prerequisites
+
+- B+ tree data structure concepts
+- Allocation group parallelism and concurrency
+- Journaling and write-ahead logging
+- Block device and partition management
+
+## Complexity
+
+- **Beginner:** Filesystem creation, mounting, basic xfs_info
+- **Intermediate:** AG sizing, log tuning, realtime volume configuration
+- **Advanced:** B+ tree fan-out modeling, delayed logging internals, reflink COW mechanics

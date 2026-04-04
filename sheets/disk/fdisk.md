@@ -147,6 +147,15 @@ sudo sfdisk /dev/sdb < sdb-gpt.bak
 - Scripting fdisk is fragile; prefer `sfdisk` or `parted --script` for automation
 - On NVMe drives, partitions are named `nvme0n1p1` not `nvme0n11`; the `p` separates device from partition number
 
+## See Also
+
+- parted
+- lvm
+- mount
+- fstab
+- df
+- mdadm
+
 ## References
 
 - [fdisk(8) Man Page](https://man7.org/linux/man-pages/man8/fdisk.8.html)

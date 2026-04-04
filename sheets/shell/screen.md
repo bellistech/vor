@@ -243,6 +243,10 @@ screen -T screen-256color
 - To convert from screen to tmux: sessions map 1:1, and most concepts are similar, but the config syntax is completely different.
 - If Ctrl-s freezes your terminal (flow control), Ctrl-q unfreezes it. Disable with `defflow off`.
 
+## See Also
+
+- tmux, bash, zsh, vim, shell-scripting
+
 ## References
 
 - [GNU Screen Manual](https://www.gnu.org/software/screen/manual/) -- complete user manual

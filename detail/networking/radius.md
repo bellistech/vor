@@ -231,6 +231,10 @@ No complex computation — just string matching or regex on the username.
 | $N \times A / T_{peak}$ | Rate | Required TPS |
 | $\sum RTT_i + T_{home}$ | Summation | Proxy chain latency |
 
+## Prerequisites
+
+- shared secret hashing, modular arithmetic, protocol state machines
+
 ---
 
 *RADIUS authenticates billions of network access attempts daily — from WiFi logins to VPN connections to ISP dial-in (hence the name). The protocol's math is simple by design, because authentication must be fast, reliable, and never the bottleneck between a user and the network.*

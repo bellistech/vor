@@ -267,3 +267,16 @@ Custom overlays or unfree packages: hit rate drops to 80-95%.
 ---
 
 *Nix applies the lambda calculus to package management — packages are pure functions, the store is content-addressed, and upgrades are atomic generation switches. This isn't just theory — it's why NixOS can roll back an entire operating system in milliseconds.*
+
+## Prerequisites
+
+- Functional programming concepts (pure functions, immutability)
+- Linux package management basics
+- Content-addressable storage concepts (hashing)
+- Basic understanding of build systems
+
+## Complexity
+
+- Beginner: nix-env package install/remove, nix-shell ad-hoc environments
+- Intermediate: flakes, devShells, NixOS configuration, Home Manager
+- Advanced: derivation authoring, closure computation, overlays, cross-compilation, store optimization

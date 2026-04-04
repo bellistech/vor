@@ -214,6 +214,18 @@ $$T_{SPF\_MT} = 2 \times T_{SPF} \quad \text{(exactly double the computation)}$$
 | $T_{init} \times 2^n$ | Exponential backoff | SPF throttling |
 | $R \times F \times (N-1)$ | Combinatorial | Flooding traffic |
 
+## Prerequisites
+
+- graph theory, shortest path algorithms, binary arithmetic
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| SPF (Dijkstra) | O(n log n) | O(n) |
+| LSP flooding | O(n) | O(n) |
+| Route lookup | O(log n) | O(n) |
+
 ---
 
 *IS-IS runs underneath some of the largest networks on Earth — most major ISP backbones and hyperscaler data centers chose it over OSPF precisely because its two-level hierarchy scales without the constraints of a mandatory backbone area. Same algorithm, different topology math.*

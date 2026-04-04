@@ -233,3 +233,15 @@ $$\text{Total Memory} = \text{Base} + \text{Cache} + \text{DHCP Leases} + \text{
 ---
 
 *Every `dnsmasq --test`, `kill -HUP`, and DNS query to port 53 runs through this lightweight forwarder — a single binary that replaces separate DNS, DHCP, and TFTP servers with <3 MiB of RAM.*
+
+## Prerequisites
+
+- DNS forwarding vs authoritative resolution
+- DHCP lease lifecycle (DORA: Discover, Offer, Request, Acknowledge)
+- Hash table caching and LRU eviction
+
+## Complexity
+
+- **Beginner:** DNS forwarding setup, DHCP range configuration, static leases
+- **Intermediate:** Blocklist filtering, conditional forwarding, PXE/TFTP boot, upstream server failover
+- **Advanced:** Cache sizing formulas, DHCP pool exhaustion math, query rate limiting, memory footprint analysis

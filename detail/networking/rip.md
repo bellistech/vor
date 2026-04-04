@@ -185,6 +185,10 @@ Both get 50% of traffic — a fundamental limitation of hop-count metrics.
 | $\lceil R/25 \rceil \times 512 \times 8 / T$ | Rate calculation | Update bandwidth |
 | $\leq 15$ hops | Constraint | Network diameter limit |
 
+## Prerequisites
+
+- graph theory, distance vectors, linear algebra
+
 ---
 
 *RIP's simplicity is both its strength and its death sentence — hop count ignores bandwidth, convergence takes minutes, and 15 hops limits network size. But Bellman-Ford is the mathematical foundation that all distance-vector protocols (including BGP) build upon.*

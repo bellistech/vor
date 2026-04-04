@@ -239,6 +239,10 @@ If $trend > 0$ consistently → leak confirmed.
 | Deleted space | $df_{used} - du_{used}$ | Disk accounting |
 | Filtering speedup | $N_{total} / N_{filtered}$ | Optimization |
 
+## Prerequisites
+
+- file descriptors, /proc filesystem, TCP/IP connection states, resource limits, process management
+
 ---
 
 *lsof shows you what the kernel is holding onto — every file, every socket, every pipe. When your system says "too many open files," lsof tells you who opened them and why they're still there.*

@@ -282,6 +282,12 @@ leafnodes {
 - Use `nats events` to monitor server events (connects, disconnects, errors).
 - Replicas must be an odd number (1, 3, 5) for JetStream consensus.
 
+## See Also
+
+- kafka
+- rabbitmq
+- redis
+
 ## References
 
 - [NATS Documentation](https://docs.nats.io/)

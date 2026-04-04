@@ -181,6 +181,10 @@ ip monitor address               # address changes
 - `ip route replace` is idempotent and safer than `add` in scripts
 - `ip neigh flush` can disrupt active connections briefly while ARP re-resolves
 
+## See Also
+
+- iptables, nftables, ipv4, ipv6, ethtool
+
 ## References
 
 - [man ip](https://man7.org/linux/man-pages/man8/ip.8.html)

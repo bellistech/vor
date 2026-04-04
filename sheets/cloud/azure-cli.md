@@ -308,6 +308,14 @@ az find "vm create"
 - Most commands accept `--tags` for resource tagging.
 - Use `az extension add --name <ext>` to add CLI extensions (e.g., `aks-preview`).
 
+## See Also
+
+- aws-cli
+- gcloud
+- terraform
+- kubernetes
+- docker
+
 ## References
 
 - [Azure CLI Reference](https://learn.microsoft.com/en-us/cli/azure/reference-index)

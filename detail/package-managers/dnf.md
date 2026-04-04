@@ -207,3 +207,15 @@ $$T_{total} = 3 + 40 + 5 + 25 + 10 = 83\text{s}$$
 ---
 
 *Every `dnf install`, `dnf module enable`, and `dnf history` runs through libsolv's SAT solver — the same mathematical framework used in formal verification and AI planning, applied to finding a consistent set of RPM packages.*
+
+## Prerequisites
+
+- RPM package format and repository metadata (repodata)
+- Dependency graph and SAT solving concepts
+- Module stream versioning (RHEL/CentOS modularity)
+
+## Complexity
+
+- **Beginner:** Install/remove/upgrade packages, repository management
+- **Intermediate:** Module streams, history undo/rollback, group management, delta RPMs
+- **Advanced:** libsolv SAT solver internals, repository metadata compression, transaction cost analysis

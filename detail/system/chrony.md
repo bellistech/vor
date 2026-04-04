@@ -278,6 +278,10 @@ $$error_{total} = \sqrt{error_{network}^2 + error_{oscillator}^2 + error_{asymme
 | Poll interval | $2^{poll}$ seconds | Exponential |
 | Error budget | $\sqrt{\sum e_i^2}$ | Quadrature sum |
 
+## Prerequisites
+
+- linear regression, Kalman filtering, NTP protocol, clock drift, statistical estimation, network latency
+
 ---
 
 *Chrony is a Kalman filter for your system clock — continuously estimating offset and drift from noisy network measurements, and steering the clock frequency to converge on true time. Its regression-based approach is why it syncs in seconds where ntpd takes minutes.*

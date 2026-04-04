@@ -478,6 +478,10 @@ awk '$6=="\"POST" && $10>100000 {print $1,$7,$10}' \
 
 ---
 
+## See Also
+
+- auditd, ids-ips, threat-hunting, incident-response, forensics
+
 ## References
 
 - [NIST SP 800-92 — Guide to Computer Security Log Management](https://csrc.nist.gov/publications/detail/sp/800-92/final)

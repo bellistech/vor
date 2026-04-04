@@ -178,3 +178,15 @@ $$\text{Memory (incremental)} = O(\sqrt{n}) \quad (\text{directory at a time})$$
 ---
 
 *Every `rsync -avz`, `rsync --progress`, and `rsync --dry-run` runs this algorithm — a 1996 invention (Andrew Tridgell's PhD thesis) that turned file synchronization from "copy everything" into "transfer only the differences" using rolling checksums.*
+
+## Prerequisites
+
+- Rolling checksum (Adler-32) and strong checksum (MD5/xxHash) algorithms
+- File system metadata (permissions, timestamps, symlinks)
+- Delta encoding and compression fundamentals
+
+## Complexity
+
+- **Beginner:** Basic file sync (-avz), dry-run, exclude patterns, progress display
+- **Intermediate:** Partial transfers (--partial), bandwidth limiting, SSH transport, --delete modes, hardlink handling
+- **Advanced:** Rolling checksum algorithm internals, block size optimization, delta transfer ratio analysis, pipeline scheduling over high-latency links

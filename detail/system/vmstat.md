@@ -261,6 +261,10 @@ At 100,000 cs/sec: $overhead = 500ms/s = 50\%$ of one CPU core.
 | Sampling | $T_{sample} \leq T_{phenomenon} / 2$ | Nyquist criterion |
 | Confidence | $\bar{x} \pm 1.96 \times s / \sqrt{n}$ | Statistical validity |
 
+## Prerequisites
+
+- virtual memory, sampling theory, Nyquist criterion, statistics, memory partitioning
+
 ---
 
 *vmstat is the vital signs monitor of your system. Like a doctor reading blood pressure and heart rate, you read memory pressure and CPU utilization — and the formulas tell you which organ is failing.*

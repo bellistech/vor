@@ -242,3 +242,17 @@ $$\text{Effective Capacity} = 20 \times 2.2 = 44 \text{ TiB logical}$$
 ---
 
 *Every `zpool scrub`, `zfs send`, and `zpool status` you run is traversing these data structures — a Merkle tree of checksummed, copy-on-write blocks that self-heals on read.*
+
+## Prerequisites
+
+- Solid understanding of RAID levels and parity concepts
+- Memory management fundamentals (ARC cache sizing depends on available RAM)
+- Copy-on-write filesystem concepts
+- Block device and partition management (fdisk, parted)
+- Basic probability for snapshot sizing estimates
+
+## Complexity
+
+- **Beginner:** Pool creation, dataset management, snapshots
+- **Intermediate:** RAIDZ geometry planning, ARC tuning, send/receive replication
+- **Advanced:** Dedup DDT memory modeling, L2ARC index overhead, COW write amplification analysis

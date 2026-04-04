@@ -281,3 +281,16 @@ Charts are typically 10-100 KB compressed — orders of magnitude smaller than c
 ---
 
 *Helm transforms Kubernetes from "apply a pile of YAML" to "install a versioned, configurable, rollbackable package" — the template algebra, three-way merge, and dependency DAG make this possible.*
+
+## Prerequisites
+
+- Kubernetes fundamentals (resources, namespaces, kubectl)
+- Go template syntax
+- Semantic versioning
+- YAML proficiency
+
+## Complexity
+
+- Beginner: installing charts, overriding values, basic upgrades
+- Intermediate: chart authoring, dependencies, hooks, release management
+- Advanced: three-way merge strategy, OCI registry distribution, library charts, custom template functions

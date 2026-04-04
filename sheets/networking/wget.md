@@ -156,6 +156,10 @@ wget --certificate=client.pem --private-key=key.pem https://mtls.example.com
 - `--content-disposition` handles servers that set `Content-Disposition: attachment; filename=...`
 - For single API calls, `curl` is usually better; `wget` shines for bulk and recursive downloads
 
+## See Also
+
+- curl, dns, tls, openssl, dig
+
 ## References
 
 - [GNU Wget Manual](https://www.gnu.org/software/wget/manual/)

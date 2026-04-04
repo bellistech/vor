@@ -427,6 +427,16 @@ curl -X POST "https://target.com/upload" \
 
 ---
 
+## See Also
+
+- recon
+- burpsuite
+- metasploit
+- privilege-escalation
+- password-attacks
+- html
+- css
+
 ## References
 
 - [OWASP Top 10 (2021)](https://owasp.org/Top10/)

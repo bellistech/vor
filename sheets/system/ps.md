@@ -169,6 +169,10 @@ ps aux | awk '$8 == "Z"'
 - Zombie processes (`Z` state) cannot be killed -- they are already dead. Kill or restart their parent process instead.
 - `ps` shows a point-in-time snapshot; use `top`/`htop` for continuous monitoring.
 
+## See Also
+
+- htop, kill, lsof, strace, nice, systemd
+
 ## References
 
 - [man ps(1)](https://man7.org/linux/man-pages/man1/ps.1.html)

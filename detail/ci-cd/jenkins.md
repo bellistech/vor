@@ -288,3 +288,16 @@ $$\text{Reuse ratio} = \frac{L_{shared}}{L_{shared} + L_{per\_pipeline}}$$
 ---
 
 *Jenkins is a distributed job scheduler with 20+ years of evolution. Its controller-agent model is a classic M/M/c queue, its pipelines are DAGs, and its plugin ecosystem is a dependency management problem. The math hasn't changed — just the scale.*
+
+## Prerequisites
+
+- Groovy syntax fundamentals (for Jenkinsfile)
+- CI/CD concepts (build, test, deploy pipelines)
+- Java runtime environment (JRE) basics
+- SCM fundamentals (Git integration)
+
+## Complexity
+
+- Beginner: declarative pipelines, basic stages, credentials
+- Intermediate: parallel stages, shared libraries, Docker agents, parameters
+- Advanced: executor pool sizing (queueing theory), scripted pipelines, distributed workspaces, plugin dependency management

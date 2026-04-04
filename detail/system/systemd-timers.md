@@ -250,6 +250,10 @@ Useful for recalculating schedules after DST transitions that shift wall-clock t
 | Thundering herd | $(dt / jitter)^n$ | Probability |
 | Missed runs | $\lfloor downtime / period \rfloor$ | Floor division |
 
+## Prerequisites
+
+- set theory, calendar arithmetic, uniform distributions, scheduling theory, monotonic clocks
+
 ---
 
 *systemd timers are calendar algebra plus monotonic delays, with randomization for load spreading and persistence for reliability. They replace cron not by being simpler, but by being more mathematically complete.*

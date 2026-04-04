@@ -202,3 +202,16 @@ $$\text{Notifications} = \lceil \frac{\text{Firing Alerts}}{\text{group\_by card
 ---
 
 *Every `promtool tsdb analyze`, `prometheus --storage.tsdb.retention.time`, and PromQL query reflects these internals — a monitoring system where cardinality management is the primary engineering challenge.*
+
+## Prerequisites
+
+- Time series concepts (samples, labels, retention)
+- HTTP pull-based scraping model
+- Basic statistics (rates, averages, percentiles)
+- YAML configuration syntax
+
+## Complexity
+
+- **Beginner:** Scrape config, basic PromQL instant vectors, `up` metric
+- **Intermediate:** Rate/increase functions, histogram quantiles, recording rules, relabeling
+- **Advanced:** Cardinality management, storage sizing, federation, remote write/read, TSDB internals

@@ -121,6 +121,10 @@ netstat -an -f inet6    # IPv6 only
 - `netstat -i` output is cumulative since boot; use `sar` or `nstat` for interval stats
 - Watch for high `RX-DRP` or `RX-OVR` in `netstat -i` — indicates kernel is dropping packets
 
+## See Also
+
+- ss, tcp, udp, ip, nmap
+
 ## References
 
 - [man netstat](https://man7.org/linux/man-pages/man8/netstat.8.html)

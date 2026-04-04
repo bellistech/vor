@@ -462,6 +462,15 @@ def handleResponse(req, interesting):
 
 ---
 
+## See Also
+
+- web-attacks
+- recon
+- metasploit
+- password-attacks
+- html
+- css
+
 ## References
 
 - [PortSwigger Burp Suite Documentation](https://portswigger.net/burp/documentation)

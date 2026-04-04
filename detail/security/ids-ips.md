@@ -262,6 +262,18 @@ $$\text{Security risk} = \begin{cases} \text{High} & \text{fail-open (attacks pa
 | ROC / AUC | Integral | Threshold optimization |
 | Cost function | Optimization | Alert prioritization |
 
+## Prerequisites
+
+- Bayes' theorem, pattern matching, statistical baselines, false positive rates
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Signature matching (Aho-Corasick) | O(n + m) | O(m) |
+| Anomaly baseline update | O(n) | O(w) |
+| Alert correlation | O(a log a) | O(a) |
+
 ---
 
 *An IDS is only as good as its mathematics — a 99.9% accurate detector still drowns analysts in false positives when attack prevalence is low. Understanding the base rate is the difference between a useful tool and an expensive noise generator.*

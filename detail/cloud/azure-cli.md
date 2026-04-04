@@ -265,3 +265,16 @@ $$A_{zones} = 1 - (0.0001)^3 = 1 - 10^{-12} \approx 99.9999999999\%$$
 ---
 
 *Azure CLI commands ultimately become ARM API calls — each subject to OAuth2 authentication, RBAC evaluation, rate limiting, and consumption billing. The hierarchical resource model and inheritance rules determine who can do what, where, and at what cost.*
+
+## Prerequisites
+
+- Azure subscription and resource group concepts
+- OAuth2 and service principal authentication
+- ARM (Azure Resource Manager) model
+- JSON and JMESPath query syntax
+
+## Complexity
+
+- Beginner: login, VM creation, storage accounts, resource group management
+- Intermediate: RBAC role assignments, AKS clusters, Key Vault, networking
+- Advanced: ARM template evaluation, OAuth2 token lifecycle, throttling strategies, consumption billing optimization

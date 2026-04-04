@@ -251,6 +251,10 @@ This is why PAM misconfiguration is a top-10 Linux security issue — the config
 | nproc $\lceil \log_2 n \rceil$ | Logarithmic bound | Fork bomb limit |
 | Access $(u,s)$ predicate | Boolean function | Source-based control |
 
+## Prerequisites
+
+- Boolean logic, stack evaluation, set theory
+
 ---
 
 *PAM is the gatekeeper function for every authentication decision on a Linux system — its stack-based evaluation model means the difference between a secure system and an open door is often a single line in a configuration file, evaluated in microseconds at every login attempt.*

@@ -230,3 +230,16 @@ $$\text{Max QPS per Source} = \text{Connections} \times \frac{1}{T_{avg\_query}}
 ---
 
 *Every Grafana dashboard load triggers these calculations — a visualization layer where the math of resolution, caching, and cardinality determines whether your monitoring dashboard loads in milliseconds or times out.*
+
+## Prerequisites
+
+- Time series data model (timestamps, values, labels)
+- A data source backend (Prometheus, Loki, InfluxDB, or similar)
+- Basic understanding of query languages (PromQL, LogQL, or SQL)
+- Browser rendering concepts (DOM, client-side JavaScript)
+
+## Complexity
+
+- **Beginner:** Importing dashboards, Stat/Gauge panels, basic variables
+- **Intermediate:** Custom panels with PromQL, template variables, alerting, provisioning via YAML
+- **Advanced:** Multi-value variable query explosion, connection pooling, cache optimization, Grafana API automation

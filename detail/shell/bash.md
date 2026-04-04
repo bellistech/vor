@@ -347,3 +347,10 @@ count=$(grep -c "pattern" file || true)
 ---
 
 *Every Bash bug you've ever encountered — word splitting on filenames with spaces, lost variables in pipelines, unexpected glob expansion — is explained by the 7-stage expansion pipeline and the subshell forking rules. Learn the order of expansions, learn what creates a subshell, and quote everything. That's the entire discipline of reliable shell scripting.*
+
+## Prerequisites
+
+- Process model (fork, exec, wait, exit codes, signals)
+- File descriptors and I/O redirection (stdin, stdout, stderr)
+- Word splitting and globbing rules
+- Environment variables and variable scoping (export, local, subshell)

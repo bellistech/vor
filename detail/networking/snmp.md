@@ -225,6 +225,10 @@ At 5 ms per RTT:
 | $Q_{max} / (R - C)$ | Queue theory | Time to overflow |
 | $\lceil N/M \rceil$ | Ceiling division | GETBULK round trips |
 
+## Prerequisites
+
+- counter arithmetic, polling intervals, integer overflow
+
 ---
 
 *SNMP has monitored billions of network interfaces for three decades. The protocol's math — polling intervals, counter wraps, and trap storm capacity — determines whether your monitoring system catches a network outage or becomes a victim of it.*

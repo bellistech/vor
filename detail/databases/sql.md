@@ -203,3 +203,16 @@ Practical for $n \leq 12-15$ tables. Beyond that, heuristic/greedy planners are 
 ---
 
 *Every `EXPLAIN`, `ANALYZE TABLE`, and query plan visualization reflects these cost calculations — SQL is a declarative language, but underneath it's an optimization problem that query planners solve millions of times per second.*
+
+## Prerequisites
+
+- Relational algebra fundamentals (sets, joins, projections)
+- B-tree index structures
+- Basic statistics (cardinality, selectivity)
+- Algorithm complexity (Big-O notation for scan vs seek)
+
+## Complexity
+
+- **Beginner:** Reading EXPLAIN output, understanding scan types
+- **Intermediate:** Cost model parameters, join algorithm selection, index coverage analysis
+- **Advanced:** Join order combinatorics, histogram-based selectivity estimation, multi-column index prefix optimization

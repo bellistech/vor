@@ -254,3 +254,10 @@ ASCII approximations: `-`, `|`, `+`
 ---
 
 *ASCII's design is a masterclass in bit-level engineering from 1963. Every character position was chosen so that common operations — case conversion, digit extraction, control character generation — could be done with a single bitwise operation. Sixty years later, UTF-8's backward compatibility with ASCII means these bit tricks still work on the most common characters in every text file on earth.*
+
+## Prerequisites
+
+- Binary number representation and bitwise operations
+- Character encoding fundamentals
+- Control characters and terminal protocols
+- Hexadecimal and octal number systems

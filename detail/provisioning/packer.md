@@ -262,3 +262,16 @@ $$C = 45 \times 10 \times 0.05 + 4 \times 45 \times 0.50 = 22.50 + 90 = \$112.50
 ---
 
 *Packer turns "works on my machine" into "works on every cloud" — the multi-platform parallel build model, image optimization math, and break-even analysis make the case for pre-baked images over boot-time provisioning at any scale beyond a handful of instances.*
+
+## Prerequisites
+
+- HCL syntax (HashiCorp Configuration Language)
+- At least one cloud provider or virtualization platform (AWS, GCP, QEMU, Docker)
+- Provisioning concepts (shell scripts, Ansible, or Chef)
+- Understanding of machine images (AMI, QCOW2, OVA)
+
+## Complexity
+
+- Beginner: single-builder template, shell provisioner, validate/build workflow
+- Intermediate: multi-platform builds, variables, Ansible provisioner, post-processors
+- Advanced: parallel build optimization, image size minimization, break-even analysis (image vs. boot-time provisioning)

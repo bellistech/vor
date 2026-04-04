@@ -303,6 +303,16 @@ nikto -h https://example.com -Tuning x 6   # test for specific categories
 
 ---
 
+## See Also
+
+- web-attacks
+- privilege-escalation
+- lateral-movement
+- metasploit
+- burpsuite
+- bind
+- password-attacks
+
 ## References
 
 - [Nmap Reference Guide](https://nmap.org/book/man.html)

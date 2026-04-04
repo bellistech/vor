@@ -171,6 +171,14 @@ nerdctl info                               # runtime info
 - For rootless containerd, use `containerd-rootless-setuptool.sh install` and prefix commands with `nerdctl` (rootless by default with rootless containerd).
 - containerd uses OCI image spec; no proprietary image format.
 
+## See Also
+
+- docker
+- podman
+- kubernetes
+- lxd
+- container-security
+
 ## References
 
 - [containerd Official Documentation](https://containerd.io/docs/)

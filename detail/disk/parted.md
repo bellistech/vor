@@ -212,3 +212,16 @@ $$\text{ESP Size} \geq \text{Kernels} \times \text{Kernel Size} + \text{Bootload
 ---
 
 *Every `parted mkpart`, `resizepart`, and `align-check` operates on sector-level arithmetic — integer math that maps physical geometry to logical partitions with precision that matters for performance.*
+
+## Prerequisites
+
+- Partition table formats (MBR, GPT)
+- Sector and block size concepts
+- Alignment requirements for SSDs and 4K-sector drives
+- Root/sudo access for partition operations
+
+## Complexity
+
+- **Beginner:** Creating and listing partitions
+- **Intermediate:** Optimal alignment calculations, partition resizing
+- **Advanced:** Sector-level arithmetic for precise placement, GPT header/entry structure analysis

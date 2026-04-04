@@ -320,3 +320,10 @@ Compiler ───────┘                       float window, quickfix
 ---
 
 *Neovim's core insight is separation: separate the editor from the UI, separate configuration from implementation (Lua over Vimscript), separate syntax understanding from regex heuristics (Tree-sitter), and separate language intelligence from the editor (LSP). Each separation makes the system more composable, testable, and extensible.*
+
+## Prerequisites
+
+- Vim fundamentals (modal editing, operator-motion grammar, registers)
+- Lua programming basics (tables, metatables, closures)
+- Language Server Protocol (LSP) concepts
+- Tree-sitter parsing and syntax trees

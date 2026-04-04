@@ -209,3 +209,15 @@ $$\text{Throughput} = \min(\text{Cipher Speed}, \text{Network BW}, \text{socat B
 ---
 
 *Every `socat TCP-LISTEN:8080,fork TCP:backend:80` creates a userspace relay — connecting any two address types with a simple read-write loop that trades the overhead of process-per-connection for the flexibility of 400+ address combinations.*
+
+## Prerequisites
+
+- Socket programming (TCP, UDP, Unix domain sockets)
+- File descriptor and bidirectional I/O concepts
+- Process forking model for concurrent connections
+
+## Complexity
+
+- **Beginner:** TCP relay, port forwarding, stdin/stdout piping, simple listeners
+- **Intermediate:** TLS wrapping, Unix socket bridging, UDP relaying, timeout and retry options
+- **Advanced:** Address type combinatorics (400+ pairs), fork-per-connection overhead, buffer sizing, throughput analysis for userspace relay

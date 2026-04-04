@@ -256,6 +256,18 @@ For truly random data: $\chi^2 \approx 255$ (degrees of freedom). Encrypted data
 | $\chi^2$ test | Statistical hypothesis | Randomness testing |
 | Page table walk | Bit-field extraction | Memory forensics |
 
+## Prerequisites
+
+- hash verification, timeline reconstruction, data carving, chain of custody
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| File carving (linear scan) | O(n) | O(1) |
+| Hash verification | O(n) | O(1) |
+| Timeline sort | O(n log n) | O(n) |
+
 ---
 
 *Digital forensics is evidence-grade mathematics — every hash verification, timeline correlation, and file carving operation must withstand cross-examination in court. The math is the proof.*

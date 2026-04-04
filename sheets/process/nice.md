@@ -100,6 +100,10 @@ nice -n 19 ionice -c 3 rsync -a --bwlimit=10m /data/ /backup/
 - `chrt` is the tool for real-time CPU scheduling (FIFO, round-robin) -- different from nice values.
 - On systemd-managed services, use `Nice=` and `IOSchedulingClass=` in the unit file instead of wrapping with nice/ionice.
 
+## See Also
+
+- ps, htop, kill, kernel, cron
+
 ## References
 
 - [man nice(1)](https://man7.org/linux/man-pages/man1/nice.1.html)

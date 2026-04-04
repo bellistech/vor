@@ -141,6 +141,14 @@ scp ~/.ssh/id_ed25519.pub user@host:~/.ssh/authorized_keys
 - `scp` copies files through your local machine even for remote-to-remote; use `-3` to be explicit about this
 - Use `~/.ssh/config` to avoid repeating `-P`, `-i`, and usernames on every command
 
+## See Also
+
+- rsync
+- sftp
+- ssh-tunneling
+- tar
+- zip
+
 ## References
 
 - [man scp](https://man7.org/linux/man-pages/man1/scp.1.html)

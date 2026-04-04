@@ -218,6 +218,10 @@ For 1,000 receivers: 99.9% bandwidth reduction on the sender's link.
 | $R/N$ | Fraction | FEC overhead |
 | $(N-1)/N$ | Ratio | Multicast savings |
 
+## Prerequisites
+
+- checksum arithmetic, binary operations, basic probability
+
 ---
 
 *UDP's simplicity is its math — 8 bytes of header and zero state. It doesn't guarantee delivery, ordering, or congestion control, which makes it the fastest transport on the wire and the foundation for DNS, VoIP, gaming, QUIC, and every protocol that prefers speed over safety.*

@@ -214,6 +214,10 @@ ip -s link show eth1
 - Test ECMP distribution with `iperf3` from multiple source ports to confirm flows spread across paths.
 - Keep the number of ECMP paths as a power of 2 (2, 4, 8) for the most even hash distribution on hardware ASICs.
 
+## See Also
+
+- bgp, ospf, is-is, mpls, bfd
+
 ## References
 
 - [RFC 2992 — Analysis of an Equal-Cost Multi-Path Algorithm](https://www.rfc-editor.org/rfc/rfc2992)

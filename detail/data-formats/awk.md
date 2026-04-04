@@ -315,3 +315,10 @@ Where $C_{\text{pattern}}$ is the cost of evaluating each pattern (typically $O(
 ---
 
 *AWK occupies a unique niche: more powerful than sed, simpler than Perl, faster to write than Python for columnar data. Its pattern-action model maps naturally to log analysis, CSV processing, and report generation. When your problem is "for each line, check something, print something," AWK is the right tool.*
+
+## Prerequisites
+
+- Regular expressions (ERE syntax)
+- Field-delimited text processing (CSV, TSV, whitespace-separated)
+- Associative arrays (hash maps)
+- Shell piping and text stream concepts

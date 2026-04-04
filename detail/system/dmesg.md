@@ -254,6 +254,10 @@ $$\text{Use dmesg when: } \begin{cases} \text{Current boot only needed} \\ \text
 | OOM score | $(RSS + swap) / (RAM + swap) \times 1000 + adj$ | Scoring |
 | DIMM failure | $P(UE \mid CE > threshold)$ | Conditional probability |
 
+## Prerequisites
+
+- ring buffers, kernel architecture, log levels, monotonic clocks, rate limiting
+
 ---
 
 *dmesg is the kernel talking to you. Its ring buffer is finite and its messages are ephemeral — but in the seconds after a crash, a hang, or a hardware failure, those messages are the most valuable data on the system.*

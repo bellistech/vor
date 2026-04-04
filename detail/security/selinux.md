@@ -249,6 +249,10 @@ semodule -i mymodule.pp
 | Domain transitions | Directed graph | Process confinement |
 | $2^b$ booleans | Exponential configuration | Policy tunability |
 
+## Prerequisites
+
+- type theory, Boolean algebra, state machines, set theory
+
 ---
 
 *SELinux evaluates millions of access decisions per second through a compiled Boolean policy — it's a type system for the operating system, where every process and file has a type, and the policy defines exactly which types can interact.*

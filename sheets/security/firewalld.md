@@ -239,6 +239,10 @@ firewall-cmd --query-lockdown
 - Check the backend (`nftables` vs `iptables`) with `firewall-cmd --version` and `/etc/firewalld/firewalld.conf`.
 - Use `journalctl -u firewalld` to troubleshoot firewalld issues.
 
+## See Also
+
+- ufw, iptables, nftables, fail2ban, hardening-linux
+
 ## References
 
 - [firewalld Documentation](https://firewalld.org/documentation/)

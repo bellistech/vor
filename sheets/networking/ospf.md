@@ -241,6 +241,10 @@ vtysh -c "show ip ospf route"
 - Virtual links are a band-aid; redesign the network if possible to avoid them.
 - When redistributing into OSPF, always use a route-map to prevent accidental route leaks.
 
+## See Also
+
+- bgp, is-is, bfd, ecmp, subnetting, ip
+
 ## References
 
 - [RFC 2328 — OSPF Version 2](https://www.rfc-editor.org/rfc/rfc2328)

@@ -287,3 +287,10 @@ go build -gcflags="-m" ./...
 ---
 
 *The Go runtime is not magic — it's a carefully engineered scheduler, allocator, and garbage collector that trades some raw performance for safety and simplicity. Knowing these internals is what separates writing Go from understanding Go.*
+
+## Prerequisites
+
+- Concurrency concepts (goroutines, threads, mutexes, channels)
+- Garbage collection basics (mark-and-sweep, generational GC)
+- Memory layout (stack vs heap, pointer indirection, escape analysis)
+- Interface-based polymorphism and structural typing

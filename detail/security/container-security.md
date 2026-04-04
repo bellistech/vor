@@ -271,6 +271,10 @@ An immutable container should have drift = 0 (no new executables). Any positive 
 | Network graph $G = (P, E)$ | Graph theory | Network policy |
 | $V_0 + rt$ | Linear growth | Vulnerability accumulation |
 
+## Prerequisites
+
+- namespace isolation, capability bitmasks, syscall filtering, cgroup arithmetic
+
 ---
 
 *Container security is defense in depth with shared kernel risk — namespaces, capabilities, seccomp, cgroups, and network policies each reduce the attack surface independently, and their compound effect makes container escape a multi-barrier challenge.*

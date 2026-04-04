@@ -137,6 +137,10 @@ ssh gateway mtr -r -c 100 example.com  # from another host
 - `mtr` requires root (or `setuid`) for raw socket access; use `sudo mtr` if needed
 - Compare reports from both ends of a connection to identify asymmetric routing issues
 
+## See Also
+
+- dig, nslookup, ip, tcpdump, nc
+
 ## References
 
 - [mtr GitHub Repository](https://github.com/traviscross/mtr)

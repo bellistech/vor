@@ -229,6 +229,10 @@ lsmod | grep wireguard
 - WireGuard uses UDP only (default port 51820); if blocked, consider running on port 443/udp
 - `wg syncconf` applies peer changes without dropping existing connections, unlike `wg-quick down && up`
 
+## See Also
+
+- ipsec, ssh, tls, openssl, nftables
+
 ## References
 
 - [WireGuard Official Documentation](https://www.wireguard.com/)

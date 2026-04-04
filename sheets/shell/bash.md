@@ -268,6 +268,10 @@ echo $((2 ** 10))         # 1024
 - Process substitution `<()` creates a temporary file descriptor -- not available in POSIX sh.
 - Heredocs with `<<'EOF'` (quoted) disable variable expansion inside the block.
 
+## See Also
+
+- zsh, shell-scripting, tmux, awk, sed, regex
+
 ## References
 
 - [Bash Reference Manual](https://www.gnu.org/software/bash/manual/) -- complete GNU Bash reference

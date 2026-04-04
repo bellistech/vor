@@ -307,3 +307,10 @@ function assertNever(x: never): never {
 ---
 
 *TypeScript is two languages: a runtime language (JavaScript) and a compile-time language (the type system). The type system is genuinely a functional programming language with recursion, pattern matching, and data structures — it just happens to erase completely before execution.*
+
+## Prerequisites
+
+- JavaScript language fundamentals (prototypes, closures, event loop)
+- Type theory (structural typing, union/intersection types, generics)
+- Type inference and type narrowing concepts
+- Module systems (ESM, CommonJS) and declaration files

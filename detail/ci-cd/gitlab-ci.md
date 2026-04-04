@@ -273,3 +273,16 @@ $$\text{Savings} = 1 - 0.05 = 95\%$$
 ---
 
 *GitLab CI's stage model is a synchronization barrier, its parallel keyword is Amdahl's law in action, and merge trains are a queueing theory problem. Understanding these formulas lets you design pipelines that are fast, reliable, and cost-effective.*
+
+## Prerequisites
+
+- Git fundamentals (branches, merge requests)
+- YAML syntax
+- Docker basics (for container-based jobs)
+- Basic CI/CD concepts (stages, artifacts, caching)
+
+## Complexity
+
+- Beginner: basic stages, script blocks, rules
+- Intermediate: Docker-in-Docker, artifacts, caching, environments, includes/extends
+- Advanced: DAG pipelines, merge trains, runner autoscaling, parallel test splitting, coverage metrics

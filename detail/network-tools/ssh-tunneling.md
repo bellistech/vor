@@ -213,3 +213,15 @@ $$\text{Effective MTU}_{TAP} = 1500 - 50 - 20 - 14 = 1416 \text{ bytes}$$
 ---
 
 *Every `ssh -L`, `ssh -R`, `ssh -D`, and `ssh -J` creates encrypted data channels — a tunneling system so versatile it can replace VPNs, port forwarders, SOCKS proxies, and jump hosts, all through a single protocol that was designed for terminal access.*
+
+## Prerequisites
+
+- SSH protocol (key exchange, channel multiplexing, authentication)
+- TCP port forwarding and SOCKS proxy concepts
+- Bandwidth-delay product and window sizing
+
+## Complexity
+
+- **Beginner:** Local port forwarding (-L), remote port forwarding (-R), basic jump hosts (-J)
+- **Intermediate:** Dynamic SOCKS proxy (-D), ProxyJump chains, ControlMaster multiplexing, agent forwarding
+- **Advanced:** Tunnel overhead calculations, BDP optimization, multiplexed channel scheduling, TCP-over-TCP performance degradation

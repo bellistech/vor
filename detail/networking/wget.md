@@ -225,6 +225,10 @@ For a 500 MB quota with max file size of 50 MB: actual usage could reach 550 MB.
 | $T_{connect} + N \times T_{request}$ | Summation | Keep-alive performance |
 | $1/\text{Crawl-delay}$ | Inverse | Max request rate |
 
+## Prerequisites
+
+- URL encoding, recursive graph traversal, exponential backoff
+
 ---
 
 *wget is the tool you use when reliability matters more than speed — its retry logic, resume capability, and recursive mirroring make it the workhorse of automated downloads. The exponential growth of recursive crawling is why every wget tutorial warns you about `-r` without `-l`.*

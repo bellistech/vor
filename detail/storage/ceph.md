@@ -222,3 +222,16 @@ $$\text{Usable} = 400 \times 0.95 \times \frac{1}{3} \times 0.80 = 101.3 \text{ 
 ---
 
 *Every `ceph osd pool create`, `ceph pg dump`, and `ceph -s` you run reflects these CRUSH calculations — a pseudo-random, deterministic algorithm that replaces centralized metadata lookup with math.*
+
+## Prerequisites
+
+- Distributed systems fundamentals (replication, consistency, failure domains)
+- Networking concepts (cluster communication, latency estimation)
+- Linux storage basics (block devices, filesystems)
+- Hashing algorithms (CRUSH map is hash-based placement)
+
+## Complexity
+
+- **Beginner:** Cluster health monitoring, basic pool creation
+- **Intermediate:** CRUSH rule design, PG calculation, replication factor tuning
+- **Advanced:** Recovery I/O modeling, CRUSH weight optimization, erasure coding overhead analysis

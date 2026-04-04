@@ -153,6 +153,10 @@ tcpdump -i eth0 -ttttt             # delta from first packet
 - PCAP files from tcpdump open in Wireshark/tshark for detailed analysis
 - On busy interfaces, capture to file and analyze later to avoid dropping packets
 
+## See Also
+
+- tshark, nmap, ss, tcp, udp
+
 ## References
 
 - [tcpdump Official Man Page](https://www.tcpdump.org/manpages/tcpdump.1.html)

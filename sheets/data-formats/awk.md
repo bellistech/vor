@@ -238,6 +238,10 @@ awk -F, -v OFS='\t' '{$1=$1; print}' data.csv
 - `OFMT` controls default number formatting for print. Use `printf` for explicit control.
 - `-v var=value` passes shell variables into awk. For dynamic values: `awk -v threshold="$THRESH" '$3 > threshold'`.
 
+## See Also
+
+- sed, regex, jq, bash, grep, shell-scripting
+
 ## References
 
 - [GNU AWK Manual (GAWK)](https://www.gnu.org/software/gawk/manual/) -- complete gawk reference

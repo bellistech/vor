@@ -166,6 +166,10 @@ journalctl -u nginx -g "error|timeout"
 - The `-g` grep flag requires systemd 246+; on older systems pipe through `grep`.
 - Journal vacuum only removes archived files -- it will not shrink the active journal file.
 
+## See Also
+
+- systemd, dmesg, rsyslog, logrotate, grep
+
 ## References
 
 - [man journalctl(1)](https://man7.org/linux/man-pages/man1/journalctl.1.html)

@@ -234,6 +234,10 @@ bpftrace -e 'tracepoint:sched:sched_switch {
 - Filter early (`/comm == "myapp"/`) to reduce overhead on busy systems.
 - bpftrace scripts (`.bt` files) can be run with `bpftrace script.bt` for reuse.
 
+## See Also
+
+- ebpf, perf, strace, kernel, prometheus
+
 ## References
 
 - [bpftrace Reference Guide](https://github.com/bpftrace/bpftrace/blob/master/docs/reference_guide.md)

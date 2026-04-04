@@ -326,3 +326,15 @@ At 100,000 pps with 10us processing: $\text{Buffers} = 100{,}000 \times 0.00001 
 ---
 
 *Every packet passing through a Cisco router traverses the FIB trie in 40ns, hits TCAM for ACL evaluation in one clock cycle, and enters a QoS scheduler that allocates bandwidth by weight. This is the math running at line rate on the backbone of the internet.*
+
+## Prerequisites
+
+- IP routing fundamentals (longest prefix match, administrative distance)
+- Trie and TCAM data structures for forwarding lookups
+- QoS scheduling (weighted fair queuing, priority queuing)
+
+## Complexity
+
+- **Beginner:** Interface configuration, static routes, show commands, running/startup config
+- **Intermediate:** OSPF/BGP configuration, ACLs, NAT, HSRP/VRRP, VLANs, port security
+- **Advanced:** CEF/FIB trie internals, TCAM sizing and ACL scale, QoS scheduler math (CBWFQ, LLQ), control plane policing

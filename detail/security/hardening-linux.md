@@ -263,6 +263,10 @@ Without syscall monitoring: $35 \text{ MB/day} \times 30 = 1.05 \text{ GB/month}
 | Password entropy | $L \times \log_2(C)$ | Policy strength |
 | Firewall ordering | Weighted expected value | Rule optimization |
 
+## Prerequisites
+
+- attack surface reduction, probability, defense in depth
+
 ---
 
 *Hardening is not a checklist — it's an engineering discipline. Each control reduces a measurable probability, and the compound effect of layered defenses makes breach exponentially harder.*

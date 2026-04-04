@@ -321,6 +321,10 @@ print(ipaddress.ip_address('192.168.1.75') in ipaddress.ip_network('192.168.1.64
 - Use `ipcalc -s` to let the tool calculate optimal VLSM allocation for you when given host counts.
 - For quick mental math: /24 = 256, /25 = 128, /26 = 64, /27 = 32, /28 = 16, /29 = 8, /30 = 4. Each step doubles or halves.
 
+## See Also
+
+- ipv4, ipv6, ip, nftables, iptables
+
 ## References
 
 - [RFC 4632 — Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan](https://www.rfc-editor.org/rfc/rfc4632)

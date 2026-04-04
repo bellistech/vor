@@ -194,3 +194,15 @@ Above this bandwidth, compression adds latency without benefit.
 ---
 
 *Every `scp file user@host:path` opens an SSH channel and streams file data through encrypted pipes — a protocol so simple it's being replaced, but so ubiquitous it remains the first tool most sysadmins reach for.*
+
+## Prerequisites
+
+- SSH channel and transport layer fundamentals
+- Symmetric encryption overhead (AES-GCM, ChaCha20)
+- TCP throughput and window scaling
+
+## Complexity
+
+- **Beginner:** Copy files to/from remote hosts, recursive copy (-r), port selection (-P)
+- **Intermediate:** Compression (-C), cipher selection (-c), bandwidth limiting (-l), ProxyJump usage
+- **Advanced:** SSH channel overhead calculations, encryption throughput bottlenecks, SCP vs SFTP protocol comparison, deprecation path to sftp-based transfer

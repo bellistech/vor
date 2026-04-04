@@ -276,6 +276,14 @@ cargo uninstall ripgrep                # remove installed binary
 - `cargo update` only updates within semver-compatible ranges. Edit Cargo.toml to bump major versions.
 - Use `workspace.dependencies` to keep dependency versions consistent across workspace members.
 
+## See Also
+
+- pip
+- npm
+- apt
+- dnf
+- brew
+
 ## References
 
 - [The Cargo Book](https://doc.rust-lang.org/cargo/)

@@ -345,3 +345,10 @@ add-zsh-hook precmd my_precmd
 ---
 
 *Zsh's killer feature is not any single thing — it's the cumulative effect of fixing Bash's paper cuts: no default word splitting, 1-based arrays (matching human counting), glob qualifiers for file filtering, floating-point math, and a completion system that understands command arguments. If Bash is "good enough for scripts," Zsh is "good enough to live in."*
+
+## Prerequisites
+
+- Bash fundamentals (parameter expansion, conditionals, loops)
+- Glob patterns and extended globbing
+- Completion system internals (zstyle, compsys)
+- Shell option management (setopt, emulate)

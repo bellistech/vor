@@ -210,6 +210,13 @@ mysqlbinlog --start-datetime="2025-01-15 10:00:00" binlog.000042 | mysql -u root
 - Set `innodb_buffer_pool_size` to 70-80% of available RAM on a dedicated database server.
 - `SHOW CREATE TABLE` gives the exact DDL including indexes and constraints, more useful than `DESCRIBE`.
 
+## See Also
+
+- postgresql
+- sql
+- sqlite
+- redis
+
 ## References
 
 - [MySQL 8.0 Reference Manual](https://dev.mysql.com/doc/refman/8.0/en/)

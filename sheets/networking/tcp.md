@@ -325,6 +325,10 @@ tcpdump -i eth0 'tcp[tcpflags] & tcp-rst != 0'   # capture all RSTs
 - MSS is typically MTU minus 40 bytes (20 IP + 20 TCP). On Ethernet with 1500 MTU, MSS = 1460. With timestamps (12 bytes), effective payload per segment drops to 1448.
 - CLOSE_WAIT sockets indicate a bug in your application: the remote side closed the connection but your code never called `close()`. These will persist until the process exits.
 
+## See Also
+
+- udp, quic, ss, netstat, tcpdump, iptables
+
 ## References
 
 - [RFC 9293 — Transmission Control Protocol (TCP)](https://www.rfc-editor.org/rfc/rfc9293)

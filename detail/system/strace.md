@@ -235,6 +235,10 @@ With seccomp-BPF: 90% of syscalls pass through the kernel filter at near-zero co
 | seccomp speedup | $N_{filtered} \times T_{ptrace} / (N_{total} \times T_{ptrace})$ | Selective tracing |
 | Timing accuracy | $\pm T_{ptrace\_overhead}$ | Measurement error |
 
+## Prerequisites
+
+- system calls, ptrace, context switching, process lifecycle, seccomp-BPF, measurement theory
+
 ---
 
 *strace is the most powerful debugging tool you'll never want to use in production — because the observer effect is measured in microseconds per syscall, and at scale, microseconds become seconds.*

@@ -124,6 +124,10 @@ sysctl -w kernel.sysrq=1
 - `fs.inotify.max_user_watches` too low causes "no space left on device" errors from tools like webpack, VSCode, or inotifywait.
 - `sysctl --system` reloads from all standard locations (`/etc/sysctl.d/`, `/run/sysctl.d/`, `/usr/lib/sysctl.d/`).
 
+## See Also
+
+- kernel, dmesg, systemd, perf, vmstat
+
 ## References
 
 - [man sysctl(8)](https://man7.org/linux/man-pages/man8/sysctl.8.html)

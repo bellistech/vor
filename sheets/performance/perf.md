@@ -227,6 +227,10 @@ perf list tracepoint                       # kernel tracepoints
 - Kernel symbols require `/proc/kallsyms` access (may need `sysctl kernel.kptr_restrict=0`).
 - `perf record` writes to `perf.data` in the current directory. Specify `-o filename` to change.
 
+## See Also
+
+- bpftrace, ebpf, strace, htop, sar, valgrind
+
 ## References
 
 - [man perf(1)](https://man7.org/linux/man-pages/man1/perf.1.html)

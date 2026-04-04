@@ -247,6 +247,19 @@ Without autogroup: $CPU_{interactive} \approx \frac{1}{N+1}$ where $N$ = compila
 | Nice to ionice | $(nice + 20) / 5$ | Linear mapping |
 | Weight ratio | $1.25^{\Delta nice}$ | Exponential in difference |
 
+## Prerequisites
+
+- exponential functions, proportional-share scheduling, CFS scheduler, I/O scheduling classes, process priority
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|:---|:---|:---|
+| Nice to weight conversion | $O(1)$ | Lookup table |
+| CFS vruntime update | $O(1)$ | Arithmetic per tick |
+| CFS pick-next (with nice) | $O(\log N)$ | Red-black tree by vruntime |
+| ionice class change | $O(1)$ | Syscall |
+
 ---
 
 *nice is a logarithmic dial on the CPU scheduler. Each step of 1 changes your share by ~10%, and the exponential weight mapping ensures that the difference between nice 0 and nice 10 is a 9:1 CPU ratio — not an absolute amount, but a proportional share of whatever CPU is available.*

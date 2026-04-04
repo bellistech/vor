@@ -317,3 +317,10 @@ end
 ---
 
 *Ruby's philosophy is programmer happiness, but its implementation is serious engineering: a generational GC, inline method caches, instruction specialization, and a precisely defined object model. The "magic" of Ruby (method_missing, open classes, eval) is built on deterministic, well-specified machinery.*
+
+## Prerequisites
+
+- Object-oriented programming (message passing, metaclasses, mixins)
+- Closures and higher-order functions (blocks, procs, lambdas)
+- Garbage collection (generational, incremental)
+- Dynamic dispatch and method lookup chains

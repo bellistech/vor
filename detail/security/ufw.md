@@ -251,6 +251,10 @@ Optimal ordering is 46% faster.
 | $2^{128}$ IPv6 | Exponential | Scan infeasibility |
 | $\sum p_i \times i$ | Expected value | Rule ordering |
 
+## Prerequisites
+
+- rule ordering, set theory, port numbering, CIDR notation
+
 ---
 
 *UFW makes iptables accessible without sacrificing the underlying mathematics — every `ufw allow` command generates precisely structured netfilter rules that execute in the kernel at line rate, evaluated millions of times per second with sub-microsecond latency.*

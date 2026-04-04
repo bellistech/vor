@@ -329,6 +329,15 @@ pages:
 - Lint your `.gitlab-ci.yml` at `CI/CD > Pipelines > CI Lint` in the GitLab UI.
 - Use `interruptible: true` on jobs that can be safely cancelled by newer pushes.
 
+## See Also
+
+- github-actions
+- jenkins
+- docker
+- kubernetes
+- helm
+- git
+
 ## References
 
 - [GitLab CI/CD YAML Reference](https://docs.gitlab.com/ee/ci/yaml/)

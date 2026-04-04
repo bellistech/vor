@@ -255,6 +255,10 @@ iptables -L -n | grep -E "3784|4784"
 - UDP ports 3784 (single-hop) and 4784 (multi-hop) must be permitted through any intermediate firewalls or ACLs.
 - When BFD brings down a BGP session, the BGP hold timer still applies for the actual session teardown; BFD just accelerates the detection, not the BGP state machine itself.
 
+## See Also
+
+- bgp, ospf, is-is, ecmp, ip
+
 ## References
 
 - [RFC 5880 — Bidirectional Forwarding Detection (BFD)](https://www.rfc-editor.org/rfc/rfc5880)

@@ -373,6 +373,15 @@ done < creds.txt
 
 ---
 
+## See Also
+
+- lateral-movement
+- privilege-escalation
+- recon
+- metasploit
+- burpsuite
+- web-attacks
+
 ## References
 
 - [Hashcat Wiki](https://hashcat.net/wiki/)

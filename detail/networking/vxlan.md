@@ -209,6 +209,10 @@ $$N_{VTEPs} = L \quad \text{(one VTEP per leaf)}$$
 | $\sqrt{K-1}/\sqrt{F}$ | Statistical | ECMP imbalance |
 | $S \times L \times BW$ | Product | Bisection bandwidth |
 
+## Prerequisites
+
+- binary arithmetic, encapsulation, modular arithmetic
+
 ---
 
 *VXLAN solved the 4,096 VLAN limit by moving network segmentation into an overlay, but it traded one scaling problem for another — the N-squared BUM replication that forced the industry to build EVPN. The math of encapsulation overhead and VTEP scaling governs every modern data center fabric.*

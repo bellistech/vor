@@ -242,3 +242,16 @@ $$\text{Full Handshakes} = \text{Total Connections} \times (1 - \text{Session Re
 ---
 
 *Every `show stat`, `show info`, and `show servers state` on the HAProxy stats socket reflects these calculations — a load balancer where Little's Law and connection queuing determine whether your backend drowns or thrives.*
+
+## Prerequisites
+
+- TCP/IP and HTTP fundamentals (connections, keep-alive, status codes)
+- Basic queuing theory (arrival rate, service time, queue depth)
+- Health check concepts (probes, failure thresholds, timeouts)
+- Load balancing algorithms (round-robin, least-connections, hashing)
+
+## Complexity
+
+- **Beginner:** Frontend/backend config, round-robin balancing, basic ACLs
+- **Intermediate:** Stick tables, rate limiting, SSL termination, health check tuning
+- **Advanced:** Little's Law capacity planning, maxconn math, connection queuing, stick table memory sizing

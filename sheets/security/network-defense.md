@@ -424,6 +424,10 @@ conntrack -S                   # connection tracking stats
 - Enable SYN cookies and connection limits on internet-facing services as baseline DDoS protection.
 - Static ARP entries for critical infrastructure (gateways, DNS servers) prevent ARP spoofing attacks.
 
+## See Also
+
+- ids-ips, firewalld, ufw, nftables, iptables
+
 ## References
 
 - [NIST SP 800-94 - Intrusion Detection and Prevention Systems](https://csrc.nist.gov/publications/detail/sp/800-94/final)

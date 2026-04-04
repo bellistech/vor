@@ -261,3 +261,16 @@ $$\text{Max DB Size} = \text{Max Pages} \times \text{Page Size}$$
 ---
 
 *Every `.schema`, `EXPLAIN QUERY PLAN`, and `PRAGMA page_count` reflects these internals — the world's most deployed database (trillions of instances) running on a single-file B-tree engine that fits in 700 KiB of code.*
+
+## Prerequisites
+
+- SQL fundamentals (queries, indexes, transactions)
+- B-tree data structure concepts
+- File I/O and page-based storage
+- WAL (Write-Ahead Logging) basics
+
+## Complexity
+
+- **Beginner:** Database creation, basic queries, page size selection
+- **Intermediate:** WAL mode tuning, page cache sizing, VACUUM mechanics
+- **Advanced:** B-tree cell packing analysis, overflow page chains, WAL checkpoint frame accounting

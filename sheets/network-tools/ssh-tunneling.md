@@ -170,6 +170,14 @@ ssh -i ~/.ssh/tunnel_key -L 8080:target:80 -N -f user@bastion
 - SSH tunnels are encrypted end-to-end between your machine and the SSH server — traffic beyond the server is not encrypted by SSH
 - Kill a backgrounded tunnel: `ssh -S /path/to/socket -O exit user@host` or find the PID with `ps aux | grep ssh`
 
+## See Also
+
+- rsync
+- scp
+- sftp
+- socat
+- lateral-movement
+
 ## References
 
 - [OpenSSH Official Manual Pages](https://www.openssh.com/manual.html)

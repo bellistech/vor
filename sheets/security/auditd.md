@@ -365,6 +365,10 @@ EOF
 - Forward audit logs to a central SIEM for correlation and long-term retention.
 - Test new rules in permissive/non-immutable mode before locking them down with `-e 2`.
 
+## See Also
+
+- selinux, log-analysis, forensics, hardening-linux, acl
+
 ## References
 
 - [Linux Audit Documentation](https://github.com/linux-audit/audit-documentation/wiki)

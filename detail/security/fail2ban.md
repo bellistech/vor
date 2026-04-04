@@ -243,6 +243,10 @@ Against botnets with 10,000+ IPs, fail2ban alone is insufficient. Complementary 
 | ipset $O(1)$ vs iptables $O(n)$ | Algorithmic complexity | Firewall performance |
 | $n \times R_{effective}$ | Linear scaling | Distributed attack rate |
 
+## Prerequisites
+
+- threshold arithmetic, exponential backoff, regular expressions, rate limiting
+
 ---
 
 *Fail2ban is a simple but effective rate limiter — it cannot stop a determined attacker with a botnet, but it transforms brute force from a minutes-to-hours problem into a years-to-never problem for single-source attacks, all through basic threshold arithmetic.*

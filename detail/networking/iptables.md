@@ -254,6 +254,17 @@ Packet is allowed if tokens > 0; one token consumed per packet.
 | $K \times 64,511 \times 2$ | Product | NAT capacity |
 | $\min(\text{burst}, \text{tokens} + \text{rate} \times \Delta t)$ | Token bucket | Rate limiting |
 
+## Prerequisites
+
+- set theory, chain evaluation, token bucket algorithms, packet matching
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Linear rule match | O(n) | O(n) |
+| Connection tracking lookup | O(1) avg | O(connections) |
+
 ---
 
 *Every iptables rule you add is a tax on every packet. The difference between a 10-rule firewall and a 10,000-rule firewall is the difference between line-rate forwarding and a bottleneck — which is why the first rule should always be ESTABLISHED,RELATED.*

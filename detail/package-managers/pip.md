@@ -221,3 +221,15 @@ $$\text{No solution exists:} \quad [1.0, 2.0) \cap [2.0, 3.0) = \emptyset$$
 ---
 
 *Every `pip install`, `pip freeze`, and `requirements.txt` runs through these algorithms — a dependency resolver that navigates Python's 500,000+ package ecosystem with backtracking search to find compatible version sets.*
+
+## Prerequisites
+
+- Python virtual environments (venv, site-packages isolation)
+- SemVer and PEP 440 version specifiers
+- Wheel vs source distribution formats
+
+## Complexity
+
+- **Beginner:** Install packages, create virtual environments, freeze requirements
+- **Intermediate:** Editable installs, extras, constraints files, private indexes
+- **Advanced:** Backtracking resolver internals, wheel binary compatibility (manylinux), build system hooks (PEP 517/518)

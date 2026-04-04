@@ -202,6 +202,15 @@ npm cache verify                       # verify cache integrity
 - Use `--ignore-scripts` when installing untrusted packages to prevent arbitrary code execution.
 - `npm outdated` shows current, wanted (semver-compatible), and latest versions side by side.
 
+## See Also
+
+- pip
+- cargo
+- apt
+- brew
+- html
+- css
+
 ## References
 
 - [npm Documentation](https://docs.npmjs.com/)

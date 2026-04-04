@@ -271,6 +271,10 @@ Without `.PHONY`, if a file named `clean` exists, `make clean` would do nothing.
 - `-` before a command ignores its exit status: `-rm -f maybe_missing`.
 - `$(MAKE)` should be used instead of `make` for recursive calls to inherit flags like `-j`.
 
+## See Also
+
+- c, go, bash, shell-scripting, docker, git
+
 ## References
 
 - [GNU Make Manual](https://www.gnu.org/software/make/manual/) -- complete reference for GNU Make

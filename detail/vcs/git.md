@@ -400,3 +400,10 @@ Blobs are fetched lazily when needed — dramatically reduces initial clone time
 ---
 
 *Git's design insight is that version control is a graph problem over content-addressed storage. Every commit is immutable (changing it changes its hash, which changes its children's hashes). Every branch is a pointer (cheap to create, rename, delete). Every merge is a graph operation (find common ancestor, three-way diff). The entire complexity of Git reduces to understanding these three concepts: hashes, DAGs, and three-way merge.*
+
+## Prerequisites
+
+- Directed acyclic graphs (DAGs) and graph traversal
+- Content-addressable storage (SHA-1/SHA-256 hashing)
+- Three-way merge algorithm (common ancestor, ours, theirs)
+- Diff algorithms (Myers, patience, histogram)

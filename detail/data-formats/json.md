@@ -301,3 +301,19 @@ $$\text{low} = \text{0xDC00} + (U' \mathbin{\&} \text{0x3FF})$$
 ---
 
 *JSON won not because it's the best serialization format — it lacks comments, dates, and binary support. It won because it's simple enough to parse in any language in an afternoon, human-readable enough to debug by eye, and precisely specified enough that interoperability issues are rare. The entire spec fits on a business card.*
+
+## Prerequisites
+
+- Context-free grammars and recursive descent parsing
+- Unicode and UTF-8 encoding
+- Data serialization concepts (schema, validation, interchange)
+- IEEE 754 floating-point representation
+
+## Complexity
+
+| Operation | Time Complexity | Notes |
+|---|---|---|
+| Parse | O(n) | Single-pass recursive descent |
+| Serialize | O(n) | Linear scan of data structure |
+| JSONPath query | O(n) | Full document traversal in worst case |
+| Schema validation | O(n * s) | n = document size, s = schema size |

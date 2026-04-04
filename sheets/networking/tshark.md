@@ -170,6 +170,10 @@ tshark -r capture.pcap -z io,phs -q
 - `-b files:N -b filesize:M` creates a ring buffer — essential for continuous monitoring without filling disk
 - `tshark` requires the same permissions as tcpdump (root or cap_net_raw)
 
+## See Also
+
+- tcpdump, nmap, ss, curl, nc
+
 ## References
 
 - [Wireshark/tshark Official Documentation](https://www.wireshark.org/docs/)

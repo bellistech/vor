@@ -276,3 +276,16 @@ $$\text{Step 2}: \text{target}(G_2) \rightarrow \text{state.apply}$$
 ---
 
 *Salt's ZeroMQ transport makes it the fastest configuration management tool — $O(1)$ command distribution to any fleet size. The reactor system, pillar isolation, and requisite graph add the intelligence needed for production infrastructure.*
+
+## Prerequisites
+
+- Linux system administration (packages, services, files)
+- YAML syntax and Jinja2 templating
+- Networking basics (for master/minion communication)
+- Understanding of pub/sub messaging patterns
+
+## Complexity
+
+- Beginner: master/minion setup, remote execution, basic states
+- Intermediate: pillar data, grains, top file, state requisites, formulas
+- Advanced: ZeroMQ transport tuning, reactor system, orchestration runner, event-driven automation

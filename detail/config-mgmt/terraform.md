@@ -270,3 +270,16 @@ Deleting a VPC cascades to all resources that depend on it:
 ---
 
 *Terraform's `plan` is a set difference, its `apply` is a topological sort, and its parallelism is bounded by graph width. Every `terraform apply` is a lesson in applied graph theory operating on real cloud infrastructure.*
+
+## Prerequisites
+
+- Cloud provider fundamentals (AWS, GCP, or Azure)
+- HCL syntax (HashiCorp Configuration Language)
+- Understanding of API-driven infrastructure
+- State management concepts (remote backends, locking)
+
+## Complexity
+
+- Beginner: init/plan/apply workflow, basic resources, variables
+- Intermediate: modules, state management, workspaces, import
+- Advanced: dependency graph optimization, provider development, state surgery, blast radius analysis

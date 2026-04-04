@@ -302,3 +302,10 @@ set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{25
 ---
 
 *tmux's value proposition is simple: your work survives network disconnections, terminal crashes, and going home for the night. The client-server split makes this possible — your shells, editors, and running processes live in the server, not in your terminal. Everything else (pane layouts, copy mode, scripting) is a bonus built on top of that fundamental architectural decision.*
+
+## Prerequisites
+
+- Terminal emulation and PTY (pseudo-terminal) concepts
+- Client-server architecture (Unix domain sockets)
+- Shell session management (jobs, signals, process groups)
+- Key binding and prefix key conventions

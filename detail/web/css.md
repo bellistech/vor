@@ -232,3 +232,15 @@ $$\text{preferred} = \text{min} + (\text{max} - \text{min}) \times \frac{\text{v
 ---
 
 *Every browser layout engine executes these algorithms for every frame — a constraint solver that turns declarative CSS rules into precise pixel positions 60+ times per second.*
+
+## Prerequisites
+
+- HTML document structure and DOM tree model
+- Basic arithmetic (margins, padding, percentages)
+- Coordinate systems (x/y positioning, z-index stacking)
+
+## Complexity
+
+- **Beginner:** Box model arithmetic, specificity (0,0,0,0) scoring, simple selectors
+- **Intermediate:** Flexbox distribution algorithm, grid track sizing, cascade resolution order
+- **Advanced:** Rendering pipeline (style, layout, paint, composite), GPU compositing layers, animation frame budgets

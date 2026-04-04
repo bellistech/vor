@@ -240,6 +240,18 @@ $$\text{Benefit} = 0.99 \times (T_{full} - T_{base}) \approx 0.99 \times T_{rule
 | $T_{inconsistent} = 0$ | Atomic operation | Ruleset commit |
 | $(1 - P_{new}) \times \Delta T$ | Probability weighting | Flowtable benefit |
 
+## Prerequisites
+
+- set theory, hash-based lookups, chain evaluation, packet matching
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Set lookup (hash) | O(1) avg | O(n) |
+| Linear rule match | O(n) | O(n) |
+| Interval set lookup | O(log n) | O(n) |
+
 ---
 
 *nftables is what happens when you rethink packet filtering as a data structure problem rather than a list-traversal problem. The shift from O(n) rule matching to O(1) set lookups is the same algorithmic insight that separates a linear search from a hash table — and at millions of packets per second, that difference is everything.*

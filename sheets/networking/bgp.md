@@ -324,6 +324,10 @@ vtysh -c "show ip route <next-hop-ip>"
 - Document every route-map and prefix-list with comments; BGP policy is the most common source of outages.
 - Use `bgp graceful-restart` to minimize traffic loss during planned maintenance or software upgrades.
 
+## See Also
+
+- ospf, is-is, mpls, bfd, ecmp, ipv4
+
 ## References
 
 - [RFC 4271 — A Border Gateway Protocol 4 (BGP-4)](https://www.rfc-editor.org/rfc/rfc4271)

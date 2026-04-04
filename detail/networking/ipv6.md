@@ -232,6 +232,10 @@ But only one placement of `::` is allowed, and the longest run should be chosen 
 | EUI-64: insert FFFE + flip bit 7 | Bit manipulation | SLAAC address generation |
 | $2^{(64-p)}$ | Exponent | Subnets per allocation |
 
+## Prerequisites
+
+- binary arithmetic, hexadecimal notation, powers of two, bitwise operations
+
 ---
 
 *IPv6's 128-bit address space is so large that if you allocated a million addresses per nanosecond, it would take $10^{19}$ years to exhaust — roughly a billion times the age of the universe. The math isn't just big; it's designed to make address scarcity permanently impossible.*

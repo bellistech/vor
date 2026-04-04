@@ -219,6 +219,18 @@ $$R_{oversub} = \frac{24 \times 10}{4 \times 40} = \frac{240}{160} = 1.5:1$$
 | $C_i / \gcd(C)$ | GCD normalization | Weight calculation |
 | $P_{south} \times BW_{south} / (S \times BW_{north})$ | Ratio | Oversubscription |
 
+## Prerequisites
+
+- hash functions, modular arithmetic, probability, load distribution
+
+## Complexity
+
+| Operation | Time | Space |
+|-----------|------|-------|
+| Hash-based selection | O(1) | O(k) |
+| Consistent hashing | O(log k) | O(k) |
+| Path rebalance | O(k) | O(k) |
+
 ---
 
 *ECMP is the mathematical backbone of every modern data center fabric — it's how a Clos network achieves non-blocking bandwidth without a single chassis switch. The quality of the hash function and the number of flows determine whether you get perfect load balancing or a hot spine.*

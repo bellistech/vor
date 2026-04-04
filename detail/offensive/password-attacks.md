@@ -263,3 +263,15 @@ To try 1M credentials: $\frac{10^6}{10{,}000} = 100 \text{ minutes}$.
 ---
 
 *Password security is not about making uncrackable passwords — it's about making cracking uneconomical. The right hash function (bcrypt/Argon2) with appropriate cost parameters makes brute force take centuries regardless of password choice, while salts make precomputation impossible.*
+
+## Prerequisites
+
+- Information entropy and keyspace calculation
+- Cryptographic hash functions (MD5, SHA, bcrypt, Argon2)
+- Time-memory trade-off (rainbow tables, precomputation)
+
+## Complexity
+
+- **Beginner:** Dictionary attacks, basic brute force, common wordlists, online vs offline attacks
+- **Intermediate:** Rule-based attacks (hashcat rules), mask attacks, hash identification, credential stuffing, salted hash cracking
+- **Advanced:** Keyspace exhaustion calculations, GPU throughput modeling, hash function cost parameter tuning, rainbow table size/coverage trade-offs

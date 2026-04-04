@@ -224,6 +224,10 @@ At 100K tunnels with PFS, the gateway needs ~3,125 DH operations/second — feas
 | $N_{tunnels} / T_{rekey}$ | Rate calculation | DH operations/sec |
 | $\exp(c \cdot (\ln p)^{1/3} \cdot (\ln\ln p)^{2/3})$ | Sub-exponential | DLP difficulty |
 
+## Prerequisites
+
+- modular arithmetic, exponential functions, finite fields, cryptography fundamentals
+
 ---
 
 *Every VPN tunnel on the internet starts with modular exponentiation — the same math that Diffie and Hellman published in 1976. The numbers got bigger, the curves got elliptic, but the core idea remains: compute forward is easy, compute backward is infeasible.*

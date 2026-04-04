@@ -255,3 +255,16 @@ $$\text{ALARM} \iff \text{metric}(stat, period) \geq \text{threshold} \text{ for
 ---
 
 *Every `aws` command becomes an HMAC-signed HTTPS request subject to pagination, rate limits, and IAM evaluation. The CLI abstracts this, but the math determines your throughput, cost, and access control.*
+
+## Prerequisites
+
+- AWS account and IAM fundamentals (users, roles, policies)
+- HTTP/HTTPS and REST API concepts
+- JSON and JMESPath query syntax
+- Understanding of cloud regions and availability zones
+
+## Complexity
+
+- Beginner: configure profiles, S3 operations, EC2 listing
+- Intermediate: IAM policy authoring, STS role assumption, CloudFormation, JMESPath queries
+- Advanced: SigV4 signing internals, rate limit handling, pagination strategies, cost optimization

@@ -267,6 +267,10 @@ High-level, dynamically typed language with batteries-included standard library.
 - `functools.lru_cache` memoizes pure functions. Use `@cache` (3.9+) for unbounded caching.
 - Type hints (`def f(x: int) -> str:`) are documentation that `mypy` can verify at build time.
 
+## See Also
+
+- ruby, javascript, json, yaml, jq, pip
+
 ## References
 
 - [Python Documentation](https://docs.python.org/3/) -- official docs, tutorials, and library reference

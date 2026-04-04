@@ -250,6 +250,14 @@ cloud-init query ds.meta_data            # show datasource metadata
 - For multi-part configs, use MIME multipart to combine cloud-config + shell scripts.
 - Set `final_message` to log a custom completion message with timestamps.
 
+## See Also
+
+- packer
+- terraform
+- ansible
+- vagrant
+- lxd
+
 ## References
 
 - [cloud-init Official Documentation](https://cloudinit.readthedocs.io/)

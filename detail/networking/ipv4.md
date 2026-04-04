@@ -255,6 +255,10 @@ This is why Path MTU Discovery (PMTUD) exists — avoiding fragmentation entirel
 | $(1-p)^F$ | Exponential probability | Fragment loss |
 | $N \times C / P$ | Rate ratio | CGNAT public IP requirement |
 
+## Prerequisites
+
+- binary arithmetic, powers of two, subnetting, bitwise operations
+
 ---
 
 *Every packet on the internet carries a 32-bit source and destination address — and the binary math of subnetting, masking, and aggregation determines whether that packet reaches its destination or vanishes into a black hole.*

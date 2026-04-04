@@ -261,6 +261,10 @@ Secure Boot      Not supported          Supported
 - For headless servers, set `GRUB_TERMINAL=serial` and add `GRUB_SERIAL_COMMAND` for serial console access.
 - If Secure Boot is enabled, GRUB must be signed with a trusted key (shim-signed on Ubuntu/Fedora).
 
+## See Also
+
+- kernel, systemd, dmesg, sysctl
+
 ## References
 
 - [GNU GRUB Manual](https://www.gnu.org/software/grub/manual/grub/)

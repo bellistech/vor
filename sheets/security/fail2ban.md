@@ -231,6 +231,10 @@ sudo fail2ban-client get dbpurgeage
 - `findtime` and `bantime` accept suffixes: `s` (seconds), `m` (minutes), `h` (hours), `d` (days), `w` (weeks)
 - Aggressive `maxretry=1` on SSH is fine if you only use key auth -- password typos won't be an issue
 
+## See Also
+
+- ufw, firewalld, iptables, nftables, ssh
+
 ## References
 
 - [Fail2ban Documentation](https://www.fail2ban.org/wiki/index.php/MANUAL_0_8)

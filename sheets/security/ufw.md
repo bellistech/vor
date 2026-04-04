@@ -189,6 +189,10 @@ sudo ufw route allow in on eth0 out on wg0
 - `ufw reset` deletes all rules and disables the firewall -- useful for starting fresh
 - Rules persist across reboots automatically when UFW is enabled
 
+## See Also
+
+- firewalld, iptables, nftables, fail2ban, hardening-linux
+
 ## References
 
 - [Ubuntu UFW Documentation](https://help.ubuntu.com/community/UFW)

@@ -235,6 +235,10 @@ at jobs do **not** survive reboots unless atd has a persistent queue mechanism (
 | Storage | $N_{jobs} \times avg\_size$ | Linear |
 | Execution overhead | $T_{fork} + T_{shell} + T_{env}$ | Constant per job |
 
+## Prerequisites
+
+- epoch time conversion, process scheduling, queue priority, load averages, permission models
+
 ---
 
 *at is Unix minimalism applied to scheduling: one job, one time, fire and forget. When cron is a machine gun, at is a sniper rifle — and batch adds a trigger that waits for the right moment.*

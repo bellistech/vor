@@ -270,3 +270,16 @@ Where $\alpha, \beta, \gamma$ are weighting factors.
 ---
 
 *LXD bridges the gap between VMs and containers — you get the density of containers with the operational model of full machines. The math of live migration, ZFS cloning, and Raft consensus makes this possible.*
+
+## Prerequisites
+
+- Linux system administration (systemd, networking, storage)
+- Cgroups and namespaces concepts
+- Storage fundamentals (ZFS, btrfs, or LVM)
+- Networking (bridges, VLANs, macvlan)
+
+## Complexity
+
+- Beginner: launching instances, basic config, snapshots
+- Intermediate: profiles, storage pools, networking, cloud-init integration
+- Advanced: live migration, clustering, Raft consensus, SR-IOV passthrough

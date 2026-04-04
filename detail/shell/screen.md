@@ -330,3 +330,10 @@ select 0                # start in window 0
 ---
 
 *Screen's place in computing history is secure: it invented terminal multiplexing. Its multi-user ACL system and serial port support remain unique features that tmux doesn't replicate. For everything else — pane management, scripting, modern terminal features — tmux has surpassed it. Know both: Screen for legacy systems and serial work, tmux for daily use.*
+
+## Prerequisites
+
+- Terminal emulation and PTY concepts
+- Session management (detach, reattach, multi-user)
+- Shell fundamentals (job control, signals)
+- Serial port communication basics (for serial console use)

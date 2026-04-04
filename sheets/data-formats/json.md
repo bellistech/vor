@@ -236,6 +236,10 @@ python3 -c "import csv,json,sys; print(json.dumps(list(csv.DictReader(sys.stdin)
 - JSON does not distinguish between integers and floats. `1` and `1.0` may parse differently depending on the language.
 - For large JSON files, streaming parsers (`jq --stream`, Python `ijson`) avoid loading everything into memory.
 
+## See Also
+
+- jq, yaml, toml, xml, javascript, python
+
 ## References
 
 - [JSON Specification (json.org)](https://www.json.org/) -- grammar, syntax diagrams, and parser list

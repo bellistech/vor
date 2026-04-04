@@ -249,6 +249,10 @@ $$delay = anacron\_delay + random\_delay$$
 | Aggregate load | $\sum T_{exec}/T_{period}$ | Utilization |
 | Missed runs | $\lfloor downtime / period \rfloor$ | Floor division |
 
+## Prerequisites
+
+- set theory, set intersection/union, scheduling theory, modular arithmetic, process lifecycle
+
 ---
 
 *A cron expression is discrete mathematics in five fields. The scheduler computes set intersections 60 times per hour, matching the current time against every installed job. When it matches, fork-exec-run. When it doesn't, sleep and try again in a minute.*

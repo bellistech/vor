@@ -175,6 +175,15 @@ LABEL=backup  /mnt/backup xfs   defaults,nofail   0  2
 - A broken fstab can prevent boot; keep a live USB ready for recovery, or use `nofail` liberally
 - systemd's `x-systemd.automount` is useful for slow or unreliable mounts (NFS, USB) as it defers until first access
 
+## See Also
+
+- mount
+- fdisk
+- parted
+- df
+- ext4
+- xfs
+
 ## References
 
 - [fstab(5) Man Page](https://man7.org/linux/man-pages/man5/fstab.5.html)

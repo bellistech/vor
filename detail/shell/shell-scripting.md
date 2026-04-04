@@ -341,3 +341,10 @@ $$\text{Correct cost} = O(n \times C_{\text{line}}) + C_{\text{fork}}$$
 ---
 
 *The fundamental truth of shell scripting: the shell is a job control language, not a programming language. It excels at orchestrating programs (pipes, redirects, process management) and fails at data processing (loops, arithmetic, string manipulation). Write your logic in awk/python/go and your orchestration in shell. The scripts that last are the ones that understand this boundary.*
+
+## Prerequisites
+
+- POSIX shell specification (portable constructs vs bash extensions)
+- Process management (fork, exec, signals, exit codes)
+- File I/O and redirection (pipes, here documents, process substitution)
+- Error handling patterns (set -euo pipefail, trap, exit codes)

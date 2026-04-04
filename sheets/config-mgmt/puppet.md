@@ -245,6 +245,14 @@ puppet resource service nginx
 - `r10k` or Code Manager automates deploying Puppet code from Git branches to environments.
 - `puppet parser validate manifest.pp` checks syntax without applying.
 
+## See Also
+
+- ansible
+- chef
+- salt
+- terraform
+- vagrant
+
 ## References
 
 - [Puppet Documentation](https://www.puppet.com/docs/puppet/)

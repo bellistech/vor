@@ -171,6 +171,10 @@ iptables -A INPUT -j DROP
 - Don't lock yourself out: test with `at now + 5 minutes <<< 'iptables -F'` before applying strict rules over SSH
 - IPv6 uses `ip6tables` — a separate ruleset that must be configured independently
 
+## See Also
+
+- nftables, ip, tcpdump, ufw, firewalld
+
 ## References
 
 - [man iptables](https://man7.org/linux/man-pages/man8/iptables.8.html)

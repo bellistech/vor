@@ -294,3 +294,10 @@ The collector uses a **mark-and-sweep** algorithm on containers only (ints, stri
 ---
 
 *CPython is a reference-counted, GIL-protected, bytecode-interpreted runtime with a three-tier memory allocator. Every "why is Python slow?" question has a specific answer in these internals — and every performance optimization (NumPy, asyncio, multiprocessing) is a strategy for working around one of them.*
+
+## Prerequisites
+
+- Object-oriented programming (classes, inheritance, protocols)
+- Reference counting and garbage collection concepts
+- Bytecode interpretation and virtual machines
+- Dynamic typing and duck typing principles

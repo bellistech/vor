@@ -282,6 +282,10 @@ bpftrace -e 'kprobe:vfs_read /comm == "myapp"/ { @[kstack] = count(); }'
 - Kernel 5.8+ added BPF LSM hooks for security policy enforcement without kernel modules.
 - The `CAP_BPF` capability (kernel 5.8+) allows non-root users to load BPF programs.
 
+## See Also
+
+- bpftrace, perf, kernel, strace, docker
+
 ## References
 
 - [eBPF.io — Official Documentation](https://ebpf.io/)

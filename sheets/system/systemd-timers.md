@@ -163,6 +163,10 @@ journalctl -u backup.service
 - Timer accuracy is 1 minute by default; set `AccuracySec=1s` if you need second-level precision.
 - Advantages over cron: output goes to the journal automatically, resource limits via `MemoryMax`/`CPUQuota`, dependency ordering, and no mail surprises.
 
+## See Also
+
+- systemd, cron, at, journalctl
+
 ## References
 
 - [man systemd.timer(5)](https://man7.org/linux/man-pages/man5/systemd.timer.5.html)

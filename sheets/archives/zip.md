@@ -142,6 +142,14 @@ zip -r --symlinks archive.zip project/
 - `-x` exclude patterns must come after the source path in the command.
 - zip is the best choice when archives need to be opened on Windows systems without additional software.
 
+## See Also
+
+- tar
+- gzip
+- xz
+- 7z
+- scp
+
 ## References
 
 - [Info-ZIP Home Page](https://infozip.sourceforge.net/)

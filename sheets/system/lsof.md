@@ -148,6 +148,10 @@ kill $(lsof -t -i :8080)
 - On macOS, `lsof -i` works the same way but some flags like `-sTCP:LISTEN` require newer versions.
 - `lsof` needs root to see other users' processes on some systems; use `sudo` when results look incomplete.
 
+## See Also
+
+- ps, strace, find, htop, kill
+
 ## References
 
 - [man lsof(8)](https://man7.org/linux/man-pages/man8/lsof.8.html)

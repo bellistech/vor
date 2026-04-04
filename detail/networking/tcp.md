@@ -244,6 +244,10 @@ This is why interactive protocols (SSH, gaming) disable Nagle (`TCP_NODELAY`).
 | $W_0 \times 2^n$ | Exponential growth | Slow start |
 | $(1-\beta) \cdot V + \beta \cdot |S - R|$ | Variance estimation | Jitter tracking |
 
+## Prerequisites
+
+- sequence arithmetic, exponential functions, sliding window algorithms, feedback control
+
 ---
 
 *TCP's math is a live feedback control system — every connection on your machine is running these equations in real time, adjusting windows, estimating RTTs, and probing for bandwidth thousands of times per second.*

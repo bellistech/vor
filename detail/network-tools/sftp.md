@@ -197,3 +197,15 @@ Most SFTP clients verify by file size only (not checksum), risking corruption:
 ---
 
 *Every `sftp`, `sshfs mount`, and `put/get` command uses this request-response protocol — where pipeline depth and block size are the critical tuning parameters that make the difference between 640 KiB/s and 12 MiB/s on the same link.*
+
+## Prerequisites
+
+- SSH subsystem model (sftp-server as SSH channel)
+- Request pipelining and windowed protocols
+- Block size and read-ahead/write-behind buffering
+
+## Complexity
+
+- **Beginner:** Interactive file transfer (put/get), directory listing, resume transfers
+- **Intermediate:** Batch mode, sshfs FUSE mounting, chroot configuration, umask control
+- **Advanced:** Pipeline depth tuning, block size optimization, latency-bandwidth product analysis, concurrent request scheduling

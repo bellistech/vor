@@ -257,6 +257,10 @@ tmux wait-for -S build-done
 - `tmux source-file ~/.tmux.conf` reloads config without restarting.
 - Consider tmux plugin manager (tpm) for plugins like tmux-resurrect (persist sessions across reboots).
 
+## See Also
+
+- screen, bash, zsh, vim, shell-scripting
+
 ## References
 
 - [tmux Wiki](https://github.com/tmux/tmux/wiki) -- official wiki with FAQ, guides, and recipes

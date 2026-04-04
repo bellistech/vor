@@ -238,6 +238,14 @@ salt 'web1' grains.setval role webserver
 - Requisites matter: `require` ensures ordering, `watch` triggers restarts on change, `onchanges` runs only when something changed.
 - Salt SSH (`salt-ssh`) works without a minion agent, similar to Ansible.
 
+## See Also
+
+- ansible
+- puppet
+- chef
+- terraform
+- ssh
+
 ## References
 
 - [Salt Documentation](https://docs.saltproject.io/)

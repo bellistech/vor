@@ -256,3 +256,16 @@ Typical: from 120s to 15s by pre-baking an AMI with all packages.
 ---
 
 *cloud-init runs on virtually every cloud VM in existence — AWS, GCP, Azure, OpenStack, and more. Its 5-stage boot pipeline, metadata polling, and module frequency system transform a blank VM into a configured server in under a minute.*
+
+## Prerequisites
+
+- Linux boot process (systemd, init stages)
+- YAML syntax (for cloud-config format)
+- Cloud instance metadata concepts (datasources)
+- Basic networking (for network-config)
+
+## Complexity
+
+- Beginner: user creation, package installation, runcmd
+- Intermediate: write_files, disk setup, network configuration, multi-part MIME
+- Advanced: boot stage pipeline optimization, datasource internals, module frequency control, NoCloud seed ISO creation

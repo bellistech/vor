@@ -358,6 +358,10 @@ grep -rE '/tmp/|/var/tmp/|/dev/shm/' /var/log/audit/audit.log
 
 ---
 
+## See Also
+
+- log-analysis, ids-ips, incident-response, forensics, network-defense
+
 ## References
 
 - [MITRE ATT&CK for Linux](https://attack.mitre.org/matrices/enterprise/linux/)

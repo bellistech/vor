@@ -165,6 +165,10 @@ nmap -sA -p 80 example.com            # ACK scan reveals filtered vs unfiltered
 - `nmap -sV` can trigger IDS alerts — the probes are distinctive
 - Greppable output (`-oG`) is ideal for piping into `awk`/`grep` for bulk analysis
 
+## See Also
+
+- nc, ss, tcpdump, tshark, vulnerability-scanning
+
 ## References
 
 - [Nmap Official Documentation](https://nmap.org/docs.html)

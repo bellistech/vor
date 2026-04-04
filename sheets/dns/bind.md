@@ -278,6 +278,14 @@ delv @8.8.8.8 example.com                 # DNSSEC-aware lookup
 - `rndc querylog on` enables query logging for debugging, but generates heavy log volume.
 - MX record values must be hostnames (not IPs) and should have matching A records.
 
+## See Also
+
+- dnsmasq
+- nginx
+- haproxy
+- recon
+- cisco-ios
+
 ## References
 
 - [BIND 9 Administrator Reference Manual](https://bind9.readthedocs.io/en/latest/)

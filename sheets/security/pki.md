@@ -202,6 +202,10 @@ PKCS12  Binary bundle (key + cert + chain)            .p12 .pfx
 - OCSP stapling is preferred over CRL; clients do not need to contact the CA.
 - Verify the full chain: `openssl verify -CAfile root.crt -untrusted intermediate.crt server.crt`.
 
+## See Also
+
+- tls, openssl, certbot, gpg, cryptography
+
 ## References
 
 - [RFC 5280 — Internet X.509 PKI Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280)
