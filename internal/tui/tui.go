@@ -521,7 +521,7 @@ func (m Model) View() string {
 			cat := cats[i]
 			count := len(m.reg.ByCategory(cat))
 			bar := renderBarChart(count, maxCat, barWidth)
-			countStr := countStyle.Render(fmt.Sprintf("(%d)", count))
+			countStr := countStyle.Render(fmt.Sprintf("(%3d)", count))
 
 			if i == m.cursor {
 				name := selectedStyle.Render(fmt.Sprintf("%-20s", cat))
