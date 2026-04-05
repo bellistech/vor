@@ -1,6 +1,8 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with **200 embedded cheatsheets** and **200 deep-dive theory pages** across 32 categories. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
+Single-binary Go CLI with **590+ embedded cheatsheets** and **590+ deep-dive theory pages** across 59 categories. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
+
+Covers 11 certification domains: CCNP DC, CCNP Enterprise, CCIE Enterprise Infrastructure, CCIE Service Provider, CCIE Security, CCIE Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, and C|RAGE.
 
 ## Install
 
@@ -136,42 +138,69 @@ cs --starred                  # list all bookmarked topics
 cs --update                   # check GitHub for new releases and update
 ```
 
-## Categories (32)
+## Categories (59)
 
-| Category | Sheets | Topics |
-|----------|--------|--------|
-| networking | 34 | bgp, ospf, is-is, rip, mpls, vxlan, ecmp, bfd, tcp, udp, quic, ipv4, ipv6, ethernet, dns, subnetting, ipsec, snmp, radius, ss, netstat, ip, iptables, nftables, tcpdump, curl, wget, dig, nslookup, mtr, nc, nmap, tshark, ethtool |
-| security | 26 | tls, pki, ssh, openssl, gpg, vault, pam, acl, fail2ban, ufw, firewalld, selinux, apparmor, wireguard, certbot, auditd, cryptography, container-security, hardening-linux, ids-ips, incident-response, log-analysis, network-defense, threat-hunting, forensics, vulnerability-scanning |
-| system | 19 | kernel, systemd, journalctl, systemd-timers, htop, iostat, vmstat, sar, strace, lsof, ps, dmesg, sysctl, find, grep, gdb, grub, chrony, valgrind |
-| data-formats | 10 | json, yaml, xml, toml, jq, awk, sed, regex, ascii, unicode |
-| languages | 9 | c, go, python, ruby, rust, javascript, typescript, lua, make |
-| offensive | 7 | recon, web-attacks, privilege-escalation, lateral-movement, password-attacks, metasploit, burpsuite |
+| Category | Sheets | Highlights |
+|----------|--------|------------|
+| networking | 118 | bgp, ospf, is-is, mpls, vxlan, eigrp, lisp, dmvpn, flexvpn, sd-access, multicast, qos, carrier-ethernet, fibre-channel, fcoe, roce, vpc, aci, pbr, gre-tunnels, ipv6-advanced, vrf, tcp, udp, quic, dns, ipsec, tcpdump, nmap, tshark |
+| security | 53 | tls, pki, dot1x, macsec, copp, nxos-security, network-security-infra, cryptography, ids-ips, incident-response, threat-hunting, forensics, container-security, hardening-linux |
+| offensive | 37 | recon, web-attacks, privilege-escalation, lateral-movement, password-attacks, metasploit, burpsuite, CEH v13 topics |
+| system | 32 | kernel, systemd, journalctl, htop, iostat, vmstat, strace, lsof, dmesg, sysctl, gdb, valgrind |
+| cs-theory | 25 | algorithms, data-structures, complexity, graph-theory, automata, computability |
+| coding-problems | 20 | lru-cache, sliding-window, merge-k-sorted, edit-distance, rate-limiter |
+| databases | 16 | postgresql, mysql, redis, sqlite, sql, time-series, graph-databases |
+| data-formats | 13 | json, yaml, xml, toml, jq, awk, sed, regex, ascii, unicode |
+| monitoring | 12 | prometheus, grafana, netflow-ipfix, ip-sla, model-driven-telemetry |
+| orchestration | 11 | kubernetes, helm, service-mesh, istio |
+| containers | 11 | docker, docker-compose, lxd, containerd, podman |
+| testing | 10 | unit-testing, integration-testing, load-testing, chaos-engineering |
+| languages | 10 | c, go, python, ruby, rust, javascript, typescript, lua, make |
+| fundamentals | 9 | networking-basics, linux-basics, security-fundamentals |
+| terminal | 8 | tmux, screen, terminal-emulators |
+| storage | 8 | lvm, zfs, btrfs, ceph, mdadm, san-storage |
+| juniper | 8 | junos, junos-routing, junos-firewall |
+| compliance | 8 | nist, fedramp, soc2, pci-dss, hipaa, gdpr, iso27001 |
+| ai-ml | 8 | llm-fundamentals, prompt-engineering, rag, transformers |
+| config-mgmt | 7 | ansible, terraform, salt, puppet, chef, dc-automation, eem |
+| cloud | 7 | aws-cli, gcloud, azure-cli |
+| ci-cd | 7 | github-actions, gitlab-ci, jenkins |
+| big-data | 7 | spark, hadoop, data-pipelines |
+| shell | 7 | bash, zsh, shell-scripting, tmux, screen |
+| network-tools | 7 | ssh-tunneling, rsync, scp, sftp, socat |
 | disk | 7 | fdisk, parted, mount, fstab, df, du, ncdu |
 | package-managers | 6 | apt, dnf, brew, pip, npm, cargo |
-| databases | 5 | postgresql, mysql, redis, sqlite, sql |
-| storage | 5 | lvm, zfs, btrfs, ceph, mdadm |
-| shell | 5 | bash, zsh, shell-scripting, tmux, screen |
-| network-tools | 5 | ssh-tunneling, rsync, scp, sftp, socat |
-| containers | 5 | docker, docker-compose, lxd, containerd, podman |
-| archives | 5 | tar, gzip, xz, zip, 7z |
-| config-mgmt | 5 | ansible, terraform, salt, puppet, chef |
+| kernel-tuning | 6 | sysctl, cgroups, namespaces, ebpf |
+| filesystems | 6 | ext4, xfs, btrfs, zfs |
+| api | 6 | rest, graphql, grpc, openapi |
 | users | 5 | useradd, usermod, passwd, groups, sudo |
-| process | 4 | cron, at, nice, kill |
+| quality | 5 | code-review, linting, static-analysis |
+| process | 5 | cron, at, nice, kill |
+| performance | 5 | perf, bpftrace, ebpf |
+| patterns | 5 | distributed-systems, microservices, event-driven |
+| data-science | 5 | pandas, numpy, matplotlib |
+| archives | 5 | tar, gzip, xz, zip, 7z |
+| virtualization | 4 | kvm, qemu, libvirt, vagrant |
+| vcs | 4 | git |
+| service-mesh | 4 | istio, envoy, linkerd |
 | provisioning | 4 | cloud-init, nix, packer, vagrant |
-| editors | 4 | vim (1166 lines), neovim (930 lines), emacs, nano |
-| messaging | 3 | kafka, rabbitmq, nats |
-| performance | 3 | perf, bpftrace, ebpf |
-| cloud | 3 | aws-cli, gcloud, azure-cli |
-| ci-cd | 3 | github-actions, gitlab-ci, jenkins |
+| network-os | 4 | cisco-ios, cisco-nexus, cisco-ios-xr, junos |
+| infrastructure | 4 | cisco-ucs, data-center-design |
+| editors | 4 | vim, neovim, emacs, nano |
+| auth | 4 | oauth, oidc, saml, ldap |
 | web-servers | 3 | nginx, haproxy, caddy |
-| network-os | 2 | cisco-ios, junos |
-| logs | 2 | rsyslog, logrotate |
-| orchestration | 2 | kubernetes, helm |
-| filesystems | 2 | ext4, xfs |
-| monitoring | 2 | prometheus, grafana |
-| dns | 2 | bind, dnsmasq |
+| queuing | 3 | kafka, rabbitmq, nats |
+| messaging | 3 | kafka, rabbitmq, nats |
+| logs | 3 | rsyslog, logrotate, elk |
+| load-testing | 3 | k6, locust, wrk |
+| iac | 3 | terraform, pulumi, crossplane |
+| email | 3 | postfix, dovecot, spf-dkim |
+| data-engineering | 3 | airflow, dbt, kafka-streams |
+| backup | 3 | restic, borgbackup, velero |
 | web | 2 | css, html |
-| vcs | 1 | git |
+| serverless | 2 | lambda, cloud-functions |
+| secrets | 2 | vault, sops |
+| dns | 2 | bind, dnsmasq |
+| build-systems | 2 | make, bazel |
 
 Every sheet includes `## References` with official documentation, RFCs, man pages, vendor guides, and project wikis. Every sheet includes `## See Also` cross-references to related topics.
 
