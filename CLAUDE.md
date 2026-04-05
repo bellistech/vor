@@ -1,6 +1,6 @@
 # cs — Cheatsheet CLI
 
-Single-binary Go CLI with 590+ embedded markdown cheatsheets and 590+ deep-dive theory pages across 59 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE).
+Single-binary Go CLI with 685 embedded markdown cheatsheets and 685 deep-dive theory pages across 59 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE).
 
 ## Build
 
@@ -24,8 +24,8 @@ make fmt            # gofmt -s -w .
 - `internal/verify/` — math verification for detail pages (parses expressions, evaluates via calc)
 - `internal/tui/` — interactive TUI (bubbletea + bubbles, category browser, fuzzy filter, content viewer)
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`, REST API server
-- `sheets/<category>/<topic>.md` — 590+ embedded cheatsheets across 59 categories
-- `detail/<category>/<topic>.md` — 590+ deep-dive theory/math pages
+- `sheets/<category>/<topic>.md` — 685 embedded cheatsheets across 59 categories
+- `detail/<category>/<topic>.md` — 685 deep-dive theory/math pages
 
 ## Adding Sheets
 

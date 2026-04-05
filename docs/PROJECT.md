@@ -1,6 +1,6 @@
 # cs — The Complete Cheatsheet CLI
 
-> A single-binary Go CLI embedding 549 markdown cheatsheets and 549 deep-dive theory pages across 59 categories. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions, bookmarks, cross-references, export, learning paths, and math verification — all in a 25 MB binary with zero runtime dependencies.
+> A single-binary Go CLI embedding 685 markdown cheatsheets and 685 deep-dive theory pages across 59 categories. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions, bookmarks, cross-references, export, learning paths, and math verification — all in one binary with zero runtime dependencies. Covers 11 certification domains: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, CompTIA Linux+, CISSP, and C|RAGE.
 
 ---
 
@@ -25,12 +25,12 @@
 `cs` is a terminal-native knowledge base for systems engineers, network architects, security professionals, and software developers. Every cheatsheet is a markdown file embedded at compile time via Go's `embed.FS` — no internet connection, no package manager, no config files needed. Just the binary.
 
 **Key numbers:**
-- **549 cheatsheets** — practical quick-reference with code blocks, tables, tips
-- **549 detail pages** — deep-dive theory, math, proofs, architectural analysis
+- **685 cheatsheets** — practical quick-reference with code blocks, tables, tips
+- **685 detail pages** — deep-dive theory, math, proofs, architectural analysis
 - **59 categories** — networking, security, offensive, system, cloud, databases, CS theory, fundamentals, kernel tuning, Juniper, and more
+- **11 certification domains** — CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE
 - **20 coding problems** — multi-language solutions (Go, Rust, Python, TypeScript)
-- **25 MB binary** — single static binary, zero runtime deps
-- **4,563 lines of Go** — across 14 source files and 8 internal packages
+- **Single static binary** — zero runtime deps
 
 **What it replaces:** Scattered bookmarks, `tldr` pages, man pages, personal wikis, multiple browser tabs of documentation. Everything in one `cs <topic>` command.
 
@@ -52,16 +52,17 @@ cs (root module)
 │   ├── custom/                  # User overlay sheets from ~/.config/cs/sheets/
 │   ├── bookmarks/               # Bookmark management (~/.config/cs/bookmarks.json)
 │   └── verify/                  # Math verification for detail pages
-├── sheets/                      # 549 embedded cheatsheets
-│   ├── networking/ (85)
-│   ├── security/ (48)
+├── sheets/                      # 685 embedded cheatsheets
+│   ├── networking/ (135)
+│   ├── security/ (84)
 │   ├── offensive/ (37)
-│   ├── system/ (32)
+│   ├── system/ (34)
+│   ├── juniper/ (30)
 │   ├── cs-theory/ (25)
 │   ├── coding-problems/ (20)
-│   ├── ... (53 more categories)
+│   ├── ... (52 more categories)
 │   └── build-systems/ (2)
-└── detail/                      # 549 embedded deep-dive pages
+└── detail/                      # 685 embedded deep-dive pages
     └── (mirrors sheets/ structure)
 ```
 
@@ -99,47 +100,65 @@ var EmbeddedDetails embed.FS
 
 | Category | Sheets | Focus |
 |----------|--------|-------|
-| `networking` | 85 | Protocols (TCP/IP/BGP/OSPF), tools, wireless, tunneling |
-| `security` | 48 | Hardening, forensics, compliance, IDS/IPS, cryptography |
-| `offensive` | 37 | Ethical hacking, pentesting, exploit tools, CTF methodology |
-| `system` | 32 | Linux internals, process management, kernel, debugging |
+| `networking` | 135 | Protocols (TCP/IP/BGP/OSPF/EIGRP/IS-IS/MPLS), VXLAN, SD-Access, LISP, DMVPN, multicast, QoS, FCoE, RoCE, ACI |
+| `security` | 84 | Hardening, forensics, IDS/IPS, cryptography, CISSP domains, container security, zero trust |
+| `offensive` | 37 | Ethical hacking, pentesting, exploit tools, CTF methodology, CEH v13 modules |
+| `system` | 34 | Linux internals, process management, kernel, debugging, CompTIA Linux+ |
+| `juniper` | 30 | JNCIE-SP/SEC: MPLS, multicast, CoS, IPsec, high availability, routing policy |
 | `cs-theory` | 25 | Turing machines, complexity, category theory, crypto theory |
 | `coding-problems` | 20 | LeetCode-style problems with Go/Rust/Python/TypeScript solutions |
 | `databases` | 16 | PostgreSQL, MySQL, Redis, MongoDB, SQLite, Elasticsearch |
+| `ai-ml` | 15 | Transformers, LoRA, vector databases, prompt engineering, C\|RAGE |
+| `monitoring` | 14 | Prometheus, Grafana, alerting, distributed tracing, SNMP, sFlow |
 | `data-formats` | 13 | JSON, YAML, TOML, Protocol Buffers, Avro, Parquet |
 | `orchestration` | 11 | Kubernetes, Helm, operators, CRDs, scheduling |
-| `monitoring` | 11 | Prometheus, Grafana, alerting, distributed tracing |
 | `containers` | 11 | Docker, OCI, CRI, Podman, buildah, container security |
-| `testing` | 10 | Unit/integration/E2E, TDD, property-based, mutation testing |
+| `testing` | 11 | Unit/integration/E2E, TDD, property-based, mutation, fuzz testing |
 | `languages` | 10 | Go, Rust, Python, TypeScript, Bash, Lua, C, Java, Zig, Ruby |
+| `config-mgmt` | 10 | Ansible, Chef, Puppet, Salt, Terraform, dc-automation, EEM |
+| `compliance` | 10 | SOC2, PCI-DSS, HIPAA, GDPR, NIST, CIS, ISO 27001, FedRAMP |
 | `fundamentals` | 9 | Tiered ELI5-to-college: computers, networking, binary, ISAs, kernel |
+| `storage` | 9 | LVM, Ceph, btrfs, ZFS, SAN, Rook, Longhorn |
 | `terminal` | 8 | tmux, screen, readline, terminal emulators |
-| `juniper` | 8 | JNCIA-Junos certification: architecture, routing, filters, interfaces |
-| `compliance` | 8 | SOC2, PCI-DSS, HIPAA, GDPR, NIST, CIS benchmarks |
-| `ai-ml` | 8 | Transformers, LoRA, vector databases, prompt engineering |
-| `storage` | 7 | LVM, Ceph, btrfs, ZFS, Rook, Longhorn |
-| `shell` | 7 | Bash, Zsh, fish, POSIX, readline, dotfiles |
+| `shell` | 8 | Bash, Zsh, fish, POSIX, readline, dotfiles |
+| `ci-cd` | 8 | GitHub Actions, GitLab CI, Jenkins, ArgoCD |
+| `cloud` | 7 | AWS, GCP, Azure CLIs, IAM, VPC, S3 |
+| `big-data` | 7 | Spark, Kafka, Flink, Airflow, Hadoop |
 | `network-tools` | 7 | Wireshark, iperf, mtr, dig, netcat, sftp |
 | `disk` | 7 | fdisk, parted, mount, fstab, SMART, mdadm |
-| `cloud` | 7 | AWS, GCP, Azure CLIs, IAM, VPC, S3 |
-| `ci-cd` | 7 | GitHub Actions, GitLab CI, Jenkins, ArgoCD |
-| `big-data` | 7 | Spark, Kafka, Flink, Airflow, Hadoop |
 | `kernel-tuning` | 6 | CPU scheduler, memory, network stack, I/O, IRQ, hardening |
 | `package-managers` | 6 | apt, dnf, brew, snap, nix, pip |
 | `filesystems` | 6 | ext4, XFS, NFS, FUSE, OverlayFS, tmpfs |
 | `api` | 6 | REST, GraphQL, gRPC, WebSocket, OpenAPI |
 | `patterns` | 5 | Distributed systems, microservices, event-driven, design patterns |
 | `performance` | 5 | eBPF, bpftrace, perf, flamegraphs, caching |
-| `config-mgmt` | 5 | Ansible, Chef, Puppet, Salt, Terraform |
-| `auth` | 4 | OAuth2, OIDC, LDAP, Kerberos |
+| `auth` | 5 | OAuth2, OIDC, LDAP, SAML, Kerberos |
+| `data-science` | 5 | pandas, numpy, matplotlib |
+| `users` | 5 | useradd, usermod, passwd, groups, sudo |
+| `quality` | 5 | code-review, linting, static-analysis |
+| `process` | 5 | cron, at, nice, kill |
+| `archives` | 5 | tar, gzip, xz, zip, 7z |
 | `vcs` | 4 | Git, GitHub, GitLab, Mercurial |
 | `virtualization` | 4 | KVM, QEMU, libvirt, Vagrant |
 | `service-mesh` | 4 | Istio, Envoy, Linkerd, Consul |
+| `provisioning` | 4 | cloud-init, nix, packer, vagrant |
+| `network-os` | 4 | Cisco IOS, IOS-XR, NX-OS, JunOS |
+| `infrastructure` | 4 | Cisco UCS, data-center design |
+| `editors` | 4 | vim, neovim, emacs, nano |
 | `web-servers` | 3 | Nginx, HAProxy, Caddy |
-| `messaging` | 3 | RabbitMQ, NATS, ZeroMQ |
-| `dns` | 2 | BIND, CoreDNS |
-| `network-os` | 2 | JunOS, Cisco IOS |
-| *...and 19 more* | 2-3 each | logs, backup, email, serverless, IaC, etc. |
+| `queuing` | 3 | Kafka, RabbitMQ, NATS |
+| `messaging` | 3 | Kafka, RabbitMQ, NATS |
+| `logs` | 3 | rsyslog, logrotate, ELK |
+| `load-testing` | 3 | k6, locust, wrk |
+| `iac` | 3 | Terraform, Pulumi, Crossplane |
+| `email` | 3 | Postfix, Dovecot, SPF/DKIM |
+| `data-engineering` | 3 | Airflow, dbt, kafka-streams |
+| `backup` | 3 | restic, borgbackup, velero |
+| `web` | 2 | CSS, HTML |
+| `serverless` | 2 | Lambda, Cloud Functions |
+| `secrets` | 2 | Vault, SOPS |
+| `dns` | 2 | BIND, dnsmasq |
+| `build-systems` | 2 | Make, Bazel |
 
 ### Content Tiers
 
@@ -174,7 +193,7 @@ cs -d tcp                     # show TCP deep-dive theory
 cs tcp "congestion"           # show only the congestion section
 cs networking                 # list all networking topics
 cs -s "raft consensus"        # full-text search across all sheets
-cs -l                         # list all 549 topics with descriptions
+cs -l                         # list all 685 topics with descriptions
 cs -i                         # launch interactive TUI
 cs --random                   # random cheatsheet (learn something new)
 cs --count                    # show statistics
@@ -356,6 +375,24 @@ More theory with worked examples.
 
 ## Certification Coverage
 
+### 11 Certification Domains
+
+The cheatsheet collection provides study material for 11 professional certifications:
+
+| Domain | Category/Sheets | Coverage |
+|--------|----------------|----------|
+| **CCNP Data Center** | `networking`, `infrastructure` | ACI, VPC, FCoE, NX-OS, UCS, VXLAN EVPN |
+| **CCNP Enterprise** | `networking` | SD-Access, LISP, EIGRP, DMVPN, FlexVPN, QoS |
+| **CCIE Enterprise Infrastructure** | `networking` | Advanced BGP/OSPF/IS-IS, multicast, MPLS, PBR |
+| **CCIE Service Provider** | `networking` | MPLS TE, Segment Routing, carrier ethernet, IOS-XR |
+| **CCIE Security** | `security` | Firepower, ISE, StealthWatch, DMVPN, zone-based FW |
+| **CCIE Automation** | `config-mgmt`, `ci-cd` | YANG/NETCONF, NSO, Ansible, Terraform, MDT |
+| **JNCIE-SP** | `juniper` | MPLS, multicast, CoS, high availability, routing policy |
+| **JNCIE-SEC** | `juniper` | SRX, IPsec, IDP, AppSecure, UTM |
+| **CompTIA Linux+** | `system`, `shell` | systemd, kernel tuning, storage, users, process |
+| **CISSP** | `security`, `compliance` | 8 CISSP domains — security governance through software security |
+| **C\|RAGE** | `ai-ml` | RAG architecture, embedding, chunking, evaluation, guardrails |
+
 ### JNCIA-Junos (Juniper Networks Certified Associate)
 
 Full coverage of all 7 exam objective areas:
@@ -442,7 +479,7 @@ Go's `embed.FS` compiles all markdown into the binary at build time. This means:
 - **Cross-platform** — same binary works on any OS, any arch
 - **Fast** — all content is in-memory, no file I/O at runtime
 
-Trade-off: binary grows with content (~25 MB for 1,098 markdown files). Acceptable for a CLI tool.
+Trade-off: binary grows with content (1,370 markdown files). Acceptable for a CLI tool.
 
 ### Why stdlib `flag` (not Cobra)
 
@@ -483,6 +520,7 @@ The TUI uses a warm amber/gold palette inspired by classic terminal aesthetics. 
 | `285b04a` | Kernel tuning (6) + fundamentals with tiered ELI5-to-college (9) |
 | `37243db` | JNCIA-Junos certification prep (10 topics) |
 | `b6d354e` | CEH v13 certification prep (12 offensive security topics) |
+| Waves 1-28 | 137 new sheets + details across 28 waves: CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C\|RAGE |
 
 ---
 
@@ -499,4 +537,4 @@ The TUI uses a warm amber/gold palette inspired by classic terminal aesthetics. 
 
 ---
 
-*Generated by the Unheaded Librarian. 549 sheets. 549 details. 59 categories. One binary to rule them all.*
+*Generated by the Unheaded Librarian. 685 sheets. 685 details. 59 categories. 11 certification domains. One binary to rule them all.*
