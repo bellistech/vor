@@ -46,6 +46,18 @@ func main() {
 	prereqs := flag.Bool("prereqs", false, "show prerequisites (use with -d)")
 	update := flag.Bool("update", false, "check for updates and self-update")
 
+	// Short aliases
+	flag.BoolVar(random, "r", false, "shorthand for -random")
+	flag.BoolVar(count, "c", false, "shorthand for -count")
+	flag.BoolVar(prereqs, "p", false, "shorthand for -prereqs")
+	flag.BoolVar(update, "u", false, "shorthand for -update")
+	flag.StringVar(add, "a", "", "shorthand for -add")
+	flag.StringVar(edit, "e", "", "shorthand for -edit")
+	flag.StringVar(related, "R", "", "shorthand for -related")
+	flag.StringVar(format, "f", "", "shorthand for -format")
+	flag.StringVar(star, "b", "", "shorthand for -star (bookmark)")
+	flag.BoolVar(starred, "B", false, "shorthand for -starred")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, `cs - cheatsheet CLI (v%s)
 

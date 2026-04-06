@@ -1,5 +1,5 @@
 bin/
-cs
+/cs
 *.exe
 .DS_Store
 *.swp
