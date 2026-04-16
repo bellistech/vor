@@ -17,6 +17,12 @@ func init() {
 	bookmarkFile = filepath.Join(home, ".config", "cs", "bookmarks.json")
 }
 
+// SetBookmarkFile overrides the default bookmark file path.
+// Used by mobile apps to point at the app sandbox.
+func SetBookmarkFile(path string) {
+	bookmarkFile = path
+}
+
 // Load returns the current bookmark list.
 func Load() []string {
 	if bookmarkFile == "" {
