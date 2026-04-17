@@ -555,6 +555,8 @@ Additional Columns per Risk:
 - ai-testing-assurance
 - ai-supply-chain
 - nist
+- eu-ai-act
+- ai-governance
 
 ## References
 - NIST AI RMF 1.0: https://airc.nist.gov/AI_RMF

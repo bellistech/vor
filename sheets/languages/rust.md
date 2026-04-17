@@ -249,7 +249,7 @@ cargo bench                                # run benchmarks
 
 ## See Also
 
-- c, go, toml, make, cargo, typescript
+- c, go, toml, make, cargo, typescript, webassembly
 
 ## References
 

@@ -1,8 +1,0 @@
-framework module "Cscore" {
-	header "ref.h"
-    header "Mobile.objc.h"
-    header "Universe.objc.h"
-    header "Cscore.h"
-
-    export *
-}

@@ -267,7 +267,7 @@ CGO_ENABLED=0 go build -o myapp .     # static binary (no cgo)
 
 ## See Also
 
-- c, rust, python, make, json, docker
+- c, rust, python, make, json, docker, webassembly
 
 ## References
 

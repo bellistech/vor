@@ -338,7 +338,7 @@ async def submit_dsar(request: DSARRequest):
 - Appoint a DPO even if not strictly required; it demonstrates accountability and simplifies DPA interactions
 
 ## See Also
-- soc2, nist, fedramp, hipaa, ccpa
+- soc2, nist, fedramp, hipaa, ccpa, dora, eu-ai-act
 
 ## References
 - [GDPR Full Text](https://gdpr-info.eu/)

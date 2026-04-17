@@ -241,7 +241,7 @@ oscap xccdf eval \
 - Apply tailoring guidance to remove controls not applicable to your system's risk profile
 
 ## See Also
-- soc2, fedramp, gdpr, cis-benchmarks, mitre-attack
+- soc2, fedramp, gdpr, cis-benchmarks, mitre-attack, dora, eu-ai-act, post-quantum-crypto
 
 ## References
 - [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework)

@@ -509,6 +509,8 @@ Datasheet Template (Gebru et al., 2021):
 - Privacy Regulations
 - Supply Chain Security
 - Security Awareness
+- eu-ai-act
+- ai-risk-management
 
 ## References
 
