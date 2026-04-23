@@ -1,4 +1,4 @@
-# cs — Cheatsheet CLI
+# cs — Cheatsheet
 
 Single-binary Go CLI with **685 embedded cheatsheets** and **685 deep-dive theory pages** across **59 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Better than man pages — real examples, clear explanations, official references, and deep mathematical/theoretical analysis instantly searchable.
 
