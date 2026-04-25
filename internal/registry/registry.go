@@ -181,11 +181,13 @@ func tokenize(s string) []string {
 // Search does case-insensitive AND-of-terms search across all sheets.
 // Each input is split on whitespace. A sheet matches when all terms appear
 // somewhere in its category/name/content. Matching sheets are ranked by
-// (1) terms that exactly match a name/category token, then (2) shorter
-// names (more of the name is captured by the query), then (3) lines
-// containing all terms (strict matches), then (4) sheet name. Within each
-// sheet, strict-AND lines are returned when any exist; otherwise lines
-// containing any term are returned as a fallback.
+// (1) terms that exactly match a name/category token, then (2) total terms
+// found across all section titles in the sheet, then (3) shorter names
+// (more of the name is captured by the query), then (4) lines containing
+// all terms (strict matches), then (5) sheet name. Within each sheet,
+// matches from sections whose title contains a term float to the top, and
+// strict-AND lines are returned when any exist; otherwise lines containing
+// any term are returned as a fallback.
 func (r *Registry) Search(queries ...string) []Match {
 	var terms []string
 	seen := make(map[string]bool)
@@ -226,6 +228,7 @@ collect:
 	type sheetHit struct {
 		sheet        *Sheet
 		wholeMatches int // terms that exactly match a name/category token
+		titleMatches int // sum of search-term hits across section titles
 		nameTokens   int // number of tokens in the sheet name (smaller = more specific)
 		strict       []Match
 		loose        []Match
@@ -246,11 +249,44 @@ collect:
 			tokenSet[t] = true
 		}
 		whole := 0
+		isAnchor := make(map[string]bool, len(terms))
 		for _, t := range terms {
 			if tokenSet[t] {
 				whole++
+				isAnchor[t] = true
 			}
 		}
+
+		// Title-hit scoring uses non-anchor (filter) terms when any exist —
+		// otherwise the sheet name leaks into every section that mentions
+		// the topic (e.g. "rust tuple" should privilege titles with "tuple",
+		// not titles with "Rust" since the whole sheet is about Rust).
+		titleHitTerms := make([]string, 0, len(terms))
+		for _, t := range terms {
+			if !isAnchor[t] {
+				titleHitTerms = append(titleHitTerms, t)
+			}
+		}
+		if len(titleHitTerms) == 0 {
+			titleHitTerms = terms
+		}
+
+		sectionTitleHits := make(map[string]int, len(s.Sections))
+		titleHitTotal := 0
+		for _, sec := range s.Sections {
+			titleLower := strings.ToLower(sec.Title)
+			h := 0
+			for _, t := range titleHitTerms {
+				if strings.Contains(titleLower, t) {
+					h++
+				}
+			}
+			if h > 0 {
+				sectionTitleHits[sec.Title] = h
+				titleHitTotal += h
+			}
+		}
+
 		var strict, loose []Match
 		for _, line := range strings.Split(s.Content, "\n") {
 			lower := strings.ToLower(line)
@@ -269,9 +305,20 @@ collect:
 				})
 			}
 		}
+
+		// Within each tier, float matches from title-hit sections to the top.
+		titleScore := func(m Match) int { return sectionTitleHits[m.Section] }
+		sort.SliceStable(strict, func(i, j int) bool {
+			return titleScore(strict[i]) > titleScore(strict[j])
+		})
+		sort.SliceStable(loose, func(i, j int) bool {
+			return titleScore(loose[i]) > titleScore(loose[j])
+		})
+
 		hits = append(hits, sheetHit{
 			sheet:        s,
 			wholeMatches: whole,
+			titleMatches: titleHitTotal,
 			nameTokens:   len(nameToks),
 			strict:       strict,
 			loose:        loose,
@@ -281,6 +328,9 @@ collect:
 	sort.SliceStable(hits, func(i, j int) bool {
 		if hits[i].wholeMatches != hits[j].wholeMatches {
 			return hits[i].wholeMatches > hits[j].wholeMatches
+		}
+		if hits[i].titleMatches != hits[j].titleMatches {
+			return hits[i].titleMatches > hits[j].titleMatches
 		}
 		if hits[i].nameTokens != hits[j].nameTokens {
 			return hits[i].nameTokens < hits[j].nameTokens

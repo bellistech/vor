@@ -273,6 +273,39 @@ func TestSearchRanksShorterNameOnTokenTie(t *testing.T) {
 	}
 }
 
+func TestSearchPrefersTitleHitSections(t *testing.T) {
+	// Two sections both contain strict-AND lines (rust + tuple). The section
+	// whose title contains a search term ("Tuples") must rank above the one
+	// whose title doesn't ("Pointers").
+	fs := fstest.MapFS{
+		"languages/rust.md": &fstest.MapFile{
+			Data: []byte(`# Rust
+
+## Pointers
+
+In Rust, tuples are not pointers.
+let p = &x;
+
+## Tuples
+
+A tuple in Rust is heterogeneous.
+let t = (1, 2, 3);
+`),
+		},
+	}
+	reg, err := New(fs)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	matches := reg.Search("rust", "tuple")
+	if len(matches) == 0 {
+		t.Fatal("Search(rust, tuple) = no results")
+	}
+	if matches[0].Section != "Tuples" {
+		t.Errorf("first match section = %q, want \"Tuples\"", matches[0].Section)
+	}
+}
+
 func TestSearchTermsCap(t *testing.T) {
 	reg, _ := New(testFS())
 
