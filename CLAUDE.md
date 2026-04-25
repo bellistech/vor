@@ -2,6 +2,23 @@
 
 Single-binary Go CLI with 685 embedded markdown cheatsheets and 685 deep-dive theory pages across 59 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE).
 
+## North Star
+
+> **cs, the cheat sheet application, should have the ability to avoid leaving terminal while working on a system to open a web browser and search Google.**
+
+Every sheet must be powerful enough that a terminal-bound developer never needs to open a web browser or web-search for routine work in that language/tool. If a section makes the reader think "I'd better google this," it's incomplete.
+
+Concretely, every sheet ships against this bar:
+
+- **Self-contained** — never "see the docs for X"; include the syntax, the flags, the error message, the fix.
+- **Standard-library coverage** — not a tutorial; the *useful* corners of the stdlib named with one-line summaries and a snippet.
+- **Ecosystem tools** — debugger, profiler, formatter, linter, package manager flags and idioms in-sheet.
+- **Common error messages** — the exact text the compiler/runtime emits, with the canonical fix.
+- **Version differences** — anything that changed in the last 3 major releases gets a version note.
+- **CLI flags** — every tool's most-used flags listed with what they do.
+- **Cross-link densely** — `See Also` connects every sheet to its neighbours so navigation stays in-terminal.
+- **Render check** — open a couple of sections in `cs` after writing; if a section is unreadable in a terminal the sheet failed.
+
 ## Build
 
 ```bash
@@ -31,10 +48,11 @@ make fmt            # gofmt -s -w .
 
 1. Create `sheets/<category>/<topic>.md`
 2. Format: H1 = title, one-liner, H2 = sections, H3 = subsections, bash code blocks
-3. Include `## See Also` with related topic names
+3. Include `## See Also` with related topic names (must resolve to existing sheets — no dangling refs)
 4. Include `## References` section with official docs, RFCs, man pages
 5. Optionally create `detail/<category>/<topic>.md` for deep dive
 6. Rebuild: `make build`
+7. **Apply the North Star checklist** — every snippet paste-and-runnable, exact error/flag/API names, broken-then-fixed pairs in gotchas, version notes on recently-changed features.
 
 ## Conventions
 
