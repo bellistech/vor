@@ -194,13 +194,21 @@ func (r *Registry) Search(queries ...string) []Match {
 collect:
 	for _, q := range queries {
 		for _, w := range strings.Fields(strings.ToLower(q)) {
-			if seen[w] {
-				continue
-			}
-			seen[w] = true
-			terms = append(terms, w)
-			if len(terms) == maxSearchTerms {
-				break collect
+			// Split hyphenated inputs like "shell-scripting" or "html-forms"
+			// into sub-terms so they match sheet names that tokenize the same
+			// way. AND semantics are preserved — both "shell" AND "scripting"
+			// must still appear in any matching sheet's haystack, and any
+			// sheet containing the original "shell-scripting" string trivially
+			// contains both halves.
+			for _, sub := range tokenize(w) {
+				if seen[sub] {
+					continue
+				}
+				seen[sub] = true
+				terms = append(terms, sub)
+				if len(terms) == maxSearchTerms {
+					break collect
+				}
 			}
 		}
 	}

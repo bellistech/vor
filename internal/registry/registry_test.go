@@ -273,6 +273,41 @@ func TestSearchRanksShorterNameOnTokenTie(t *testing.T) {
 	}
 }
 
+func TestSearchSplitsHyphenatedTerm(t *testing.T) {
+	// A user typing `cs -s shell-scripting` wants the shell-scripting sheet,
+	// not the bash sheet that just mentions it. Hyphens in the search term
+	// must split into the same sub-tokens used when tokenizing sheet names.
+	fs := fstest.MapFS{
+		"shell/shell-scripting.md": &fstest.MapFile{
+			Data: []byte(`# Shell Scripting
+
+## Setup
+
+Portable Bourne shell scripts run on dash, busybox, and ksh.
+`),
+		},
+		"shell/bash.md": &fstest.MapFile{
+			Data: []byte(`# Bash
+
+## See Also
+
+- shell-scripting
+`),
+		},
+	}
+	reg, err := New(fs)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	matches := reg.Search("shell-scripting")
+	if len(matches) == 0 {
+		t.Fatal("Search(shell-scripting) = no results")
+	}
+	if matches[0].Sheet.Name != "shell-scripting" {
+		t.Errorf("first match = %q, want shell-scripting (hyphen should split into tokens matching the name)", matches[0].Sheet.Name)
+	}
+}
+
 func TestSearchPrefersTitleHitSections(t *testing.T) {
 	// Two sections both contain strict-AND lines (rust + tuple). The section
 	// whose title contains a search term ("Tuples") must rank above the one
