@@ -169,6 +169,137 @@ func TestSearchCaseInsensitive(t *testing.T) {
 	}
 }
 
+func TestSearchMultipleTermsAND(t *testing.T) {
+	reg, _ := New(testFS())
+
+	// Both terms appear in the lvm sheet → match, scoped to that sheet only.
+	matches := reg.Search("lvm", "extend")
+	if len(matches) == 0 {
+		t.Fatal("Search(lvm, extend) = no results, want lvm matches")
+	}
+	for _, m := range matches {
+		if m.Sheet.Name != "lvm" {
+			t.Errorf("multi-term match returned %q, want only lvm", m.Sheet.Name)
+		}
+	}
+
+	// Term that doesn't co-occur in any fixture sheet → no results.
+	if got := reg.Search("lvextend", "kubernetes"); len(got) != 0 {
+		t.Errorf("Search(lvextend, kubernetes) = %d, want 0", len(got))
+	}
+}
+
+func TestSearchPrefersStrictLines(t *testing.T) {
+	reg, _ := New(testFS())
+
+	// "lvextend" and "myvg" co-occur on the same lvextend command lines in
+	// the fixture, so the strict pass should return only those lines and
+	// skip looser any-term matches like the "## Logical Volumes" header.
+	matches := reg.Search("lvextend", "myvg")
+	if len(matches) == 0 {
+		t.Fatal("Search(lvextend, myvg) = no results")
+	}
+	for _, m := range matches {
+		line := strings.ToLower(m.Line)
+		if !strings.Contains(line, "lvextend") || !strings.Contains(line, "myvg") {
+			t.Errorf("strict pass should only return lines with both terms, got %q", m.Line)
+		}
+	}
+}
+
+func TestSearchSplitsWhitespace(t *testing.T) {
+	reg, _ := New(testFS())
+	a := reg.Search("lvm extend")
+	b := reg.Search("lvm", "extend")
+	if len(a) == 0 || len(a) != len(b) {
+		t.Errorf("space-separated and variadic forms differ: %d vs %d", len(a), len(b))
+	}
+}
+
+func TestSearchEmpty(t *testing.T) {
+	reg, _ := New(testFS())
+	if got := reg.Search(""); got != nil {
+		t.Errorf("Search(\"\") = %d matches, want nil", len(got))
+	}
+}
+
+func TestSearchRanksNameMatchFirst(t *testing.T) {
+	// Two sheets both contain the terms "python" and "list", but only one
+	// has "python" in its name. The named sheet must rank first.
+	fs := fstest.MapFS{
+		"languages/python.md": &fstest.MapFile{
+			Data: []byte("# Python\n\nA language.\n\n## Lists\n\nlist examples\n"),
+		},
+		"ai-ml/notes.md": &fstest.MapFile{
+			Data: []byte("# Notes\n\nUsing python for list operations.\n"),
+		},
+	}
+	reg, err := New(fs)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	matches := reg.Search("python", "list")
+	if len(matches) == 0 {
+		t.Fatal("Search(python, list) = no results")
+	}
+	if matches[0].Sheet.Name != "python" {
+		t.Errorf("first match sheet = %q, want python (name match should rank first)", matches[0].Sheet.Name)
+	}
+}
+
+func TestSearchRanksShorterNameOnTokenTie(t *testing.T) {
+	// Both sheets score one whole-token name match (python's name has
+	// "python", merge-k-sorted-lists' name has "lists") AND have multiple
+	// strict-AND lines. The single-token "python" must win because more of
+	// the sheet's name is captured by the query.
+	fs := fstest.MapFS{
+		"languages/python.md": &fstest.MapFile{
+			Data: []byte("# Python\n\n## Lists\n\nPython lists are mutable.\nMore python lists examples.\n"),
+		},
+		"coding-problems/merge-k-sorted-lists.md": &fstest.MapFile{
+			Data: []byte("# Merge K Sorted Lists\n\nPython lists merge.\nIn Python, lists work like so.\nPython lists everywhere.\n"),
+		},
+	}
+	reg, err := New(fs)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	matches := reg.Search("python", "lists")
+	if len(matches) == 0 {
+		t.Fatal("no results")
+	}
+	if matches[0].Sheet.Name != "python" {
+		t.Errorf("first match = %q, want python (single-token name should beat multi-token name on whole-match tie)", matches[0].Sheet.Name)
+	}
+}
+
+func TestSearchTermsCap(t *testing.T) {
+	reg, _ := New(testFS())
+
+	// 16 terms that all appear in the lvm fixture content.
+	base := []string{
+		"lvm", "lvextend", "myvg", "myvolume", "lvcreate",
+		"extend", "create", "physical", "logical", "volume",
+		"manager", "storage", "virtualization", "groups", "vgs", "vgcreate",
+	}
+	if len(base) != 16 {
+		t.Fatalf("test setup: base has %d terms, want 16", len(base))
+	}
+
+	capped := reg.Search(base...)
+	if len(capped) == 0 {
+		t.Fatal("16-term lvm search returned 0 matches; fixture changed?")
+	}
+
+	// Add a 17th term that does NOT appear in any fixture sheet. Without
+	// the cap the AND would zero out; with the cap the 17th is dropped and
+	// the result equals the 16-term search.
+	overflow := reg.Search(append(append([]string{}, base...), "kubernetesxyz")...)
+	if len(overflow) != len(capped) {
+		t.Errorf("term cap should drop 17th term: capped=%d overflow=%d", len(capped), len(overflow))
+	}
+}
+
 func TestFindSection(t *testing.T) {
 	reg, _ := New(testFS())
 

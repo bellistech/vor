@@ -68,7 +68,7 @@ Usage:
   cs <topic> <section>   show matching section (e.g., cs lvm extend)
   cs -d <topic>          deep theory/math for topic (e.g., cs -d bgp)
   cs -d <topic> --prereqs show prerequisites for a detail page
-  cs -s <query>          search across all cheatsheets
+  cs -s <term> [term...] AND-search across all cheatsheets (e.g., cs -s python list)
   cs -l                  list all topics with descriptions
   cs -i                  interactive TUI mode
   cs --add <file>        add a custom cheatsheet
@@ -198,7 +198,8 @@ Options:
 	}
 
 	if *search != "" {
-		doSearch(reg, *search)
+		terms := append([]string{*search}, flag.Args()...)
+		doSearch(reg, terms)
 		return
 	}
 
@@ -489,17 +490,18 @@ func doSection(reg *registry.Registry, name, section, format string) {
 	render.Output(content)
 }
 
-func doSearch(reg *registry.Registry, query string) {
-	matches := reg.Search(query)
+func doSearch(reg *registry.Registry, terms []string) {
+	label := strings.Join(terms, " ")
+	matches := reg.Search(terms...)
 	if len(matches) == 0 {
-		die("no results for: %s", query)
+		die("no results for: %s", label)
 	}
 
 	// Deduplicate by sheet+section
 	type key struct{ sheet, section string }
 	seen := make(map[key]bool)
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("# Search: %s\n\n", query))
+	sb.WriteString(fmt.Sprintf("# Search: %s\n\n", label))
 
 	count := 0
 	for _, m := range matches {

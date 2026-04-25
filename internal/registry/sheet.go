@@ -15,6 +15,9 @@ type Sheet struct {
 	SeeAlso       []string // parsed from ## See Also section
 	Prerequisites []string // parsed from ## Prerequisites section (detail pages)
 	Complexity    string   // parsed from ## Complexity section (detail pages)
+
+	lower        string // lowercased "category name content" — search haystack
+	lowerNameCat string // lowercased "category name" — used for ranking signal
 }
 
 // Section represents an H2 or H3 section within a sheet.
@@ -67,6 +70,9 @@ func ParseSheet(name, category, raw string) *Sheet {
 	s.SeeAlso = parseSeeAlso(s.Sections)
 	s.Prerequisites = parseListSection(s.Sections, "Prerequisites")
 	s.Complexity = parseRawSection(s.Sections, "Complexity")
+
+	s.lowerNameCat = strings.ToLower(category + " " + name)
+	s.lower = s.lowerNameCat + " " + strings.ToLower(raw)
 	return s
 }
 

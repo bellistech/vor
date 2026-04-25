@@ -158,22 +158,145 @@ func (r *Registry) ByCategory(cat string) []*Sheet {
 	return r.byCategory[cat]
 }
 
-// Search does case-insensitive substring search across all sheets.
-func (r *Registry) Search(query string) []Match {
-	q := strings.ToLower(query)
-	var matches []Match
+// maxSearchTerms caps distinct query terms to bound per-call work. Terms
+// beyond the cap are silently dropped — defense against an unauthenticated
+// REST caller crafting many short tokens to amplify CPU/memory cost.
+const maxSearchTerms = 16
 
+// tokenize splits a hyphenated identifier into its parts, dropping empties.
+func tokenize(s string) []string {
+	if s == "" {
+		return nil
+	}
+	parts := strings.Split(s, "-")
+	out := parts[:0]
+	for _, p := range parts {
+		if p != "" {
+			out = append(out, p)
+		}
+	}
+	return out
+}
+
+// Search does case-insensitive AND-of-terms search across all sheets.
+// Each input is split on whitespace. A sheet matches when all terms appear
+// somewhere in its category/name/content. Matching sheets are ranked by
+// (1) terms that exactly match a name/category token, then (2) shorter
+// names (more of the name is captured by the query), then (3) lines
+// containing all terms (strict matches), then (4) sheet name. Within each
+// sheet, strict-AND lines are returned when any exist; otherwise lines
+// containing any term are returned as a fallback.
+func (r *Registry) Search(queries ...string) []Match {
+	var terms []string
+	seen := make(map[string]bool)
+collect:
+	for _, q := range queries {
+		for _, w := range strings.Fields(strings.ToLower(q)) {
+			if seen[w] {
+				continue
+			}
+			seen[w] = true
+			terms = append(terms, w)
+			if len(terms) == maxSearchTerms {
+				break collect
+			}
+		}
+	}
+	if len(terms) == 0 {
+		return nil
+	}
+
+	containsAll := func(s string, ts []string) bool {
+		for _, t := range ts {
+			if !strings.Contains(s, t) {
+				return false
+			}
+		}
+		return true
+	}
+	containsAny := func(s string, ts []string) bool {
+		for _, t := range ts {
+			if strings.Contains(s, t) {
+				return true
+			}
+		}
+		return false
+	}
+
+	type sheetHit struct {
+		sheet        *Sheet
+		wholeMatches int // terms that exactly match a name/category token
+		nameTokens   int // number of tokens in the sheet name (smaller = more specific)
+		strict       []Match
+		loose        []Match
+	}
+
+	var hits []sheetHit
 	for _, s := range r.all {
-		lines := strings.Split(s.Content, "\n")
-		for _, line := range lines {
-			if strings.Contains(strings.ToLower(line), q) {
-				section := findSectionForLine(s, line)
-				matches = append(matches, Match{
+		if !containsAll(s.lower, terms) {
+			continue
+		}
+		nameToks := tokenize(strings.ToLower(s.Name))
+		catToks := tokenize(strings.ToLower(s.Category))
+		tokenSet := make(map[string]bool, len(nameToks)+len(catToks))
+		for _, t := range nameToks {
+			tokenSet[t] = true
+		}
+		for _, t := range catToks {
+			tokenSet[t] = true
+		}
+		whole := 0
+		for _, t := range terms {
+			if tokenSet[t] {
+				whole++
+			}
+		}
+		var strict, loose []Match
+		for _, line := range strings.Split(s.Content, "\n") {
+			lower := strings.ToLower(line)
+			switch {
+			case containsAll(lower, terms):
+				strict = append(strict, Match{
 					Sheet:   s,
-					Section: section,
+					Section: findSectionForLine(s, line),
+					Line:    strings.TrimSpace(line),
+				})
+			case containsAny(lower, terms):
+				loose = append(loose, Match{
+					Sheet:   s,
+					Section: findSectionForLine(s, line),
 					Line:    strings.TrimSpace(line),
 				})
 			}
+		}
+		hits = append(hits, sheetHit{
+			sheet:        s,
+			wholeMatches: whole,
+			nameTokens:   len(nameToks),
+			strict:       strict,
+			loose:        loose,
+		})
+	}
+
+	sort.SliceStable(hits, func(i, j int) bool {
+		if hits[i].wholeMatches != hits[j].wholeMatches {
+			return hits[i].wholeMatches > hits[j].wholeMatches
+		}
+		if hits[i].nameTokens != hits[j].nameTokens {
+			return hits[i].nameTokens < hits[j].nameTokens
+		}
+		if len(hits[i].strict) != len(hits[j].strict) {
+			return len(hits[i].strict) > len(hits[j].strict)
+		}
+		return hits[i].sheet.Name < hits[j].sheet.Name
+	})
+
+	var matches []Match
+	for _, h := range hits {
+		if len(h.strict) > 0 {
+			matches = append(matches, h.strict...)
+		} else {
+			matches = append(matches, h.loose...)
 		}
 	}
 	return matches
