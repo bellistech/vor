@@ -132,6 +132,252 @@ account.1.timer_t2 = 4
 
 `account.1.transport` legacy alias maps to `sip_server.1.transport_type`. Stick with the new key on firmware 84+.
 
+## Verbatim Yealink Parameter Reference
+
+The Yealink config grammar groups parameters into well-known top-level namespaces. Knowing the namespace tells you which subsystem owns the parameter and which web UI tab surfaces it.
+
+`account.X.*` — per-SIP-account registration:
+
+```ini
+account.X.enable                         # 0/1 enable account
+account.X.label                          # display label on idle screen
+account.X.display_name                   # SIP From: display name
+account.X.auth_name                      # SIP Authorization: username
+account.X.user_name                      # SIP From: user
+account.X.password                       # SIP Authorization: password
+account.X.sip_server.Y.address           # primary/secondary registrar host
+account.X.sip_server.Y.port              # registrar port
+account.X.sip_server.Y.transport_type    # 0=UDP 1=TCP 2=TLS 3=NAPTR
+account.X.sip_server.Y.expires           # Expires: in REGISTER
+account.X.sip_server.Y.retry_counter     # retry count before failover
+account.X.outbound_proxy_enable          # 0/1 use outbound proxy
+account.X.outbound_host                  # outbound proxy host
+account.X.outbound_port                  # outbound proxy port
+account.X.proxy_require                  # Proxy-Require header value
+account.X.naptr_build                    # 0/1 use NAPTR/SRV resolution
+account.X.fallback.redundancy_type       # 0=concurrent 1=failover
+account.X.fallback.timeout               # failover delay (s)
+account.X.local_port                     # bind to local SIP source port
+account.X.local_port_enable              # 0/1 force local source port
+account.X.dialoginfo_callpickup          # 0/1 dialog-info pickup
+account.X.dnd.enable                     # 0/1 DND on this account
+account.X.dnd.on_code                    # server feature code on
+account.X.dnd.off_code                   # server feature code off
+account.X.cf.always.enable               # 0/1 forward all
+account.X.cf.always.target               # target uri
+account.X.cf.busy.enable                 # 0/1 forward busy
+account.X.cf.no_answer.enable            # 0/1 forward no-answer
+account.X.cf.no_answer.timeout           # ring delay seconds
+account.X.cid_source                     # 0=PAID 1=RPID 2=From 3=AVP
+account.X.session_timer.enable           # 0/1 session refresh
+account.X.session_timer.expires          # min-SE seconds
+account.X.session_timer.refresher        # 0=auto 1=uac 2=uas
+account.X.early_media                    # 0/1 send 183
+account.X.100rel_enable                  # 0/1 PRACK
+account.X.precondition.enable            # 0/1 RFC 3312 preconditions
+account.X.dnd.enable                     # 0/1 DND
+account.X.subscribe_register             # 0/1 send REG-EVENT subscribe
+account.X.shared_line                    # 0=off 1=BLA 2=SCA
+account.X.blf_list_uri                   # eventlist BLF SUBSCRIBE target
+account.X.reregister_enable              # 0/1 retry on net change
+```
+
+`sip.*` — global SIP behavior:
+
+```ini
+sip.trust_ctrl                           # 0/1 honour Trust-Identity headers
+sip.notify_reboot_enable                 # 0/1 accept NOTIFY check-sync
+sip.notify_resync_reboot_enable          # 0/1 accept resync;reboot=true
+sip.notify_resync_enable                 # 0/1 accept resync;reboot=false
+sip.use_sip_url_for_pickup               # 0/1 use SIP URI for pickup
+sip.shared_appearance.barge_in_enable    # 0/1 SCA barge
+sip.shared_appearance.silent_barge_in.enable # 0/1 silent barge
+sip.shared_appearance.privacy.enable     # 0/1 privacy on hold
+sip.shared_appearance.public_hold.led_enable
+sip.shared_appearance.private_hold.led_enable
+sip.tcp_keep_alive.interval              # seconds
+sip.local_addr                           # local IP override
+sip.allow_signal_encryption              # 0/1 allow SIPS
+sip.session_timer.enable
+sip.precondition.enable                  # global RFC 3312
+sip.notify_check_id                      # validate NOTIFY
+sip.subscribe_url_no_user                # 0/1 strip user on SUB
+sip.serial_number                        # in REGISTER User-Agent
+sip.user_agent                           # custom User-Agent string
+```
+
+`features.*` — call-feature toggles:
+
+```ini
+features.dnd.enable
+features.auto_answer
+features.auto_answer_delay               # seconds
+features.auto_answer.tone.enable
+features.headset_prior                   # 0=auto 1=headset 2=speaker
+features.transfer_mode_via_dsskey        # 0=new-call 1=blind 2=attended
+features.intercom.allow                  # 0/1 accept intercom
+features.intercom.mute                   # 0/1 mute on intercom
+features.intercom.tone                   # 0/1 play intercom tone
+features.intercom.barge                  # 0/1 barge on intercom
+features.bluetooth.enable
+features.bluetooth.discoverable
+features.bluetooth.headset.audio_route   # 0=phone 1=headset
+features.config_call_record_button.enable
+features.action_uri_limit_ip             # CIDR allow-list
+features.action_uri.allow.ip_list
+features.zrtp_enable                     # 0/1 ZRTP media
+features.codec.G722.enable               # global codec mask
+features.line_seize.timeout              # SCA seize seconds
+features.shared_line.led_idle_color
+features.shared_line.led_seize_color
+features.shared_line.led_active_color
+features.shared_line.led_held_color
+features.shared_line.led_held_private_color
+features.hot_desking.enable
+features.hot_desking.password.enable
+features.blf.led_mode                    # 1=normal 2=ring 3=busy
+features.blf.dialog_idle_blink
+features.web_logon.enable
+features.disable_user_account_settings
+features.power_on_handset                # W-series boot behaviour
+```
+
+`linekey.X.*` and `programablekey.X.*` — DSS key bindings:
+
+```ini
+linekey.X.type                           # 13=spd 15=line 16=blf etc
+linekey.X.value                          # number / URI / multicast
+linekey.X.line                           # bound account index
+linekey.X.label                          # short LCD label
+linekey.X.short_label
+linekey.X.icon                           # named icon
+linekey.X.extension                      # full SIP URI for BLF
+linekey.X.pickup_value                   # BLF pickup feature code
+linekey.X.attendant.barge_in_code
+linekey.X.attendant.transfer_mode_via_dsskey
+programablekey.X.type
+programablekey.X.label
+programablekey.X.value
+softkey.X.label                          # bottom row context label
+softkey.X.value
+softkey.X.type
+```
+
+`network.*` — IP/VLAN/Wi-Fi/QoS:
+
+```ini
+network.bridge_mode                      # 0=switch 1=bridge
+network.dhcp_host_name                   # supplied to DHCP
+network.dns_server.1                     # IPv4 DNS
+network.dns_server.2
+network.internet_port.type               # 0=DHCP 1=PPPoE 2=static
+network.internet_port.ip                 # static IP
+network.internet_port.mask
+network.gateway
+network.lldp.enable
+network.lldp.packet_interval             # seconds
+network.cdp.enable
+network.vlan.internet_port_enable
+network.vlan.internet_port_vid
+network.vlan.internet_port_priority
+network.vlan.pc_port_enable
+network.vlan.pc_port_vid
+network.vlan.pc_port_priority
+network.vlan.dhcp_voice.enable
+network.vlan.dhcp_option              # comma list 132,...
+network.802_1x.mode                     # 0=off 1=EAP-MD5 2=EAP-TLS 3=PEAP
+network.802_1x.identity
+network.802_1x.md5_password
+network.802_1x.ca_cert.url
+network.802_1x.device_cert.url
+network.dhcp_option.list                # 66,160,42 etc
+network.icmp_unreachable_enable
+network.wifi.enable
+network.wifi.X.label
+network.wifi.X.ssid
+network.wifi.X.security_mode             # WPA2 PSK / WPA3 PSK / WEP
+network.wifi.X.cipher_type               # AES / TKIP
+network.wifi.X.password
+network.lan_port.duplex
+network.lan_port.speed
+```
+
+`time.*` / `local_time.*` — clock:
+
+```ini
+local_time.summer_time                   # 0=off 1=on 2=auto
+local_time.time_zone                     # signed offset 8 = +8
+local_time.time_zone_name                # display label
+local_time.ntp_server1
+local_time.ntp_server2
+local_time.interval                      # NTP poll seconds
+local_time.dhcp_time                     # 0/1 honour DHCP option 42
+local_time.time_format                   # 0=12h 1=24h
+local_time.date_format                   # 0..7 various YMD orders
+local_time.dst_time_type                 # 0=auto 1=manual
+local_time.start_time                    # MM/DD/HH for manual DST
+local_time.end_time
+```
+
+`quality_of_service.*` — DSCP / QoS:
+
+```ini
+quality_of_service.audio.dscp            # default 46 EF
+quality_of_service.signal.dscp           # default 26 AF31
+quality_of_service.video.dscp
+quality_of_service.audio.svlan_priority
+quality_of_service.signal.svlan_priority
+```
+
+`management.*` — TR-069 / cloud:
+
+```ini
+management.tr069.enable
+management.tr069.acs_url
+management.tr069.acs_username
+management.tr069.acs_password
+management.tr069.connection_request_username
+management.tr069.connection_request_password
+management.tr069.periodic_inform_enable
+management.tr069.periodic_inform_interval
+management.cloud_enable
+management.cloud_provision_url
+```
+
+`static.*` — bootstrap (only writable via auto-prov, not the web UI):
+
+```ini
+static.security.user_password            # admin:pass / user:pass / var:pass
+static.security.trust_certificates       # 0/1 verify TLS
+static.security.cn_validation
+static.security.ca_cert.url
+static.security.dev_cert.url
+static.security.dev_cert.private_key.url
+static.auto_provision.server.url
+static.auto_provision.server.username
+static.auto_provision.server.password
+static.auto_provision.power_on
+static.auto_provision.repeat.enable
+static.auto_provision.repeat.minutes
+static.auto_provision.weekly.enable
+static.auto_provision.aes_key_in_file
+static.auto_provision.aes_key_16.com
+static.auto_provision.aes_key_16.mac
+static.firmware.url
+static.firmware.upgrade.check
+static.syslog.mode
+static.syslog.server
+static.syslog.server_port
+static.syslog.transport_type
+static.syslog.facility
+static.syslog.log_level
+static.syslog.app_module_log_level
+static.local_log.enable
+static.local_log.level
+static.local_log.max_file_size
+static.web_item_level.enable
+```
+
 ## Multiple Lines / Multiple Accounts
 
 Each line key on the phone can be bound to an account. With multiple SIP accounts, you assign which account each line key uses:
@@ -878,6 +1124,138 @@ linekey.1.label = "Reception"
 features.dnd.enable = 0
 ```
 
+## Hospitality (Hotel) per-MAC Snippet
+
+A hotel-room phone (T31G, T33G, MP54) needs hotline emergency (front desk speed-dial), Hot Desking (guest checkin/out), wake-up call URI, multilingual prompts.
+
+```ini
+#!version:1.0.0.1
+# y000000000147.cfg fragment for hotel deployment of T33G
+# Shared across all rooms — per-MAC.cfg only carries extension + room metadata.
+
+account.1.label = "Room"
+account.1.sip_server.1.address = "pms-pbx.hotel.example.com"
+account.1.sip_server.1.transport_type = 0
+features.headset_prior = 0
+features.auto_answer = 0
+features.auto_answer_delay = 0
+
+# Hotline to front desk after 3s of off-hook silence
+features.hotline.enable = 1
+features.hotline.number = "0"
+features.hotline.delay = 3
+
+# Disable browse outside the welcome menu
+features.callwaiting = 0
+features.allow_intercom = 1
+features.disable_user_phone_settings = 1
+features.disable_user_account_settings = 1
+features.dnd.enable = 0
+phone_setting.show_missed_calls = 0
+phone_setting.lcd_logo.mode = 1
+
+# Multi-language menu — pick by region
+lang.gui = "English"
+lang.gui_url = "https://prov.hotel.example.com/lang/en.lang"
+lang.wui = "English"
+
+# Hot Desking for staff phones in shared service offices
+features.hot_desking.enable = 0          # 0 in rooms, 1 in staff offices
+
+# XML phonebook = hotel directory pushed nightly
+remote_phonebook.data.1.url = "https://prov.hotel.example.com/dir/hotel.xml"
+remote_phonebook.data.1.name = "Hotel Directory"
+
+# Wake-up call URI = native PMS integration
+features.wakeup_call.enable = 1
+features.wakeup_call.url = "https://pms.hotel.example.com/wakeup?ext=$active_user"
+```
+
+Per-room MAC.cfg only needs:
+
+```ini
+#!version:1.0.0.1
+account.1.enable = 1
+account.1.label = "Room 412"
+account.1.user_name = "412"
+account.1.auth_name = "412"
+account.1.password = "{{room-secret}}"
+phone_setting.lcd_wallpaper = "room-412.jpg"
+```
+
+## Contact-Centre per-MAC Snippet
+
+Agent desks with ACD (BroadWorks Call Centre or Asterisk queues), expansion module turrets, recording, headset prior, automatic-clip-on-incoming.
+
+```ini
+#!version:1.0.0.1
+# y000000000096.cfg fragment for T54W contact centre agents
+
+# ACD on Account 1 (BroadWorks Call Center)
+account.1.subscribe_acd = 1
+account.1.acd.unavailable_reason_enable = 1
+account.1.acd.initial_state = "Available"
+
+linekey.1.type = 38                  # ACD soft-state toggle
+linekey.1.label = "ACD"
+linekey.2.type = 60                  # ACD Grace
+linekey.2.label = "Wrap"
+
+# Headset always primary; agents wear them for 8h shifts
+features.headset_prior = 1
+features.headset_training = 1
+
+# Always-record the call leg locally, request CDR record on PBX
+features.config_call_record_button.enable = 1
+features.always_record.enable = 1
+features.usb_record.enable = 0       # rec via PBX, not USB stick
+
+# 30 BLF on EXP43 page 1 — supervisor turret
+expansion_module.1.linekey.1.type = 16
+expansion_module.1.linekey.1.line = 1
+expansion_module.1.linekey.1.value = "2001"
+expansion_module.1.linekey.1.extension = "2001@pbx"
+expansion_module.1.linekey.1.label = "Sup 2001"
+expansion_module.1.linekey.1.attendant.transfer_mode_via_dsskey = 1
+
+# Action URL for the CRM popup
+action_url.incoming_call = "https://crm.example.com/yealink?ev=ring&from=$remote&to=$display_local"
+action_url.call_established = "https://crm.example.com/yealink?ev=answer&id=$call_id"
+action_url.call_terminated = "https://crm.example.com/yealink?ev=hangup&id=$call_id"
+```
+
+## Healthcare (Nurse-Call) per-MAC Snippet
+
+Hardened DECT (W76H, W57R, W56P) plus desk W60B base in nurse station, paging via multicast for code-blue, intercom auto-answer for room observation.
+
+```ini
+#!version:1.0.0.1
+# y000000000077.cfg fragment for W60B + W56H/W57R nurse stations
+
+# Intercom auto-answer for nurse observation
+features.intercom.allow = 1
+features.intercom.mute = 0
+features.intercom.tone = 1
+features.auto_answer = 0             # only when Alert-Info: <intercom>
+
+# Multicast paging — code blue / fire / lockdown
+multicast.codec = "PCMU"
+multicast.listen_address.1.ip_address = "239.10.10.10:6000"
+multicast.listen_address.1.label = "Code Blue"
+multicast.listen_address.1.priority = 1
+multicast.listen_address.2.ip_address = "239.10.10.11:6000"
+multicast.listen_address.2.label = "Fire"
+multicast.listen_address.2.priority = 2
+
+# DECT roaming — multi-cell W90B/W90DM
+multicell.cell.1.priority = 0
+multicell.cell.1.search_strength = -90
+
+# Quiet alarm tone for ICU rooms
+phone_setting.alert_info_tone_default = 1
+phone_setting.ring_type = "Silent2.wav"
+```
+
 ## Firmware Upgrade
 
 ```ini
@@ -1289,20 +1667,36 @@ Verbatim where possible — these are the strings that show on the LCD or in the
 - **"Register Failed: Authentication Failed"** — wrong `account.X.password` or `auth_name`. Check PBX user, regenerate password.
 - **"Register Failed: 403 Forbidden"** — server rejected the IP or transport. Check ACLs (`permit=` in Asterisk, ACL list in FreePBX, IP whitelist on SBC).
 - **"Register Failed: 408 Request Timeout"** — phone got no response. Network/firewall blocking SIP; outbound proxy unreachable; wrong port.
+- **"Register Failed: 503 Service Unavailable"** — registrar returned 503. Almost always upstream over-load or maintenance window. Yealink retries per `account.X.sip_server.1.retry_counter`.
+- **"Register Failed: 423 Interval Too Brief"** — phone offered an `Expires:` shorter than the registrar's `min_expires`. Bump `account.X.expires` or `account.X.sip_server.1.expires` ≥ 60.
 - **"No SIP Server"** — `account.X.sip_server.1.address` typo or DNS resolves wrong. Try IP literal to bypass DNS.
 - **"SDP Negotiation Failed"** — codec mismatch. Phone offers PCMU/G722; PBX wants G729. Adjust `account.X.codec.X.enable` to overlap.
 - **"Call Failed: 480 Temporarily Unavailable"** — callee not registered, DND on, or no available channel.
+- **"Call Failed: 488 Not Acceptable Here"** — SDP rejected. Codec list disjoint, or SRTP forced on a non-SRTP peer.
+- **"Call Failed: 486 Busy Here"** — callee on call, BLF should mirror the busy state.
 - **"DHCP Discover Failed"** — phone couldn't get IP. Check DHCP scope, exhausted leases, untagged port (VLAN), cable/PoE.
+- **"DHCP Lease Failed"** — server returned NAK or no offer; check VLAN tagging vs `network.vlan.internet_port_enable`.
 - **"TLS Handshake Failed"** — wrong CA, wrong TLS version, wrong cipher, time wrong (cert not yet valid). Check `static.security.trust_certificates` and `account.X.tls.mode`.
+- **"TLS: certificate verify failed"** — chain incomplete or hostname mismatch (`cn_validation=1` and `sip_server.1.address` ≠ cert CN/SAN).
 - **"Provisioning Failed: 401 Unauthorized"** — wrong `static.auto_provision.server.username/password`.
+- **"Provisioning Failed: 404 Not Found"** — `<MAC>.cfg` filename mismatch (uppercase MAC, separators) or wrong path on prov server.
 - **"Firmware Upgrade Failed: Wrong Model"** — hardware ID prefix in `.rom` filename does not match phone family.
+- **"Firmware Upgrade Failed: File checksum error"** — partial download or corrupted .rom; clear cache, retry over HTTPS.
 - **"Network Unavailable"** — link down, no IPv4 lease, or DNS unresolvable.
 - **"Connecting To Server"** — registration still pending; can stall on TCP handshake at SBC.
 - **"Server Connection Lost"** — outbound proxy dropped after registration.
 - **"Configuration File Format Error"** — malformed `.cfg` (mismatched quotes, unsupported encoding, BOM at start of file). Re-export from YCCT.
+- **"Configuration check fail"** — phone refused new cfg because a parameter exceeded a known range. Check syslog for the exact key.
 - **"Decryption Failed"** — encrypted `.cfg` AES key mismatch.
 - **"DECT not registered"** — handset on W-series lost base; press base sync key for 5s.
+- **"DECT Search"** — handset roaming, can't find base. Check multicell `multicell.cell.X.priority`.
+- **"PIN required"** — DECT base subscription expired; re-press base SUB button, enter base PIN.
 - **"Battery Low"** — DECT/Bluetooth handset.
+- **"Battery Charging"** — handset in cradle, normal.
+- **"USB Disk Full"** — local recording target out of space.
+- **"Headset Required"** — agent ACD policy forbids handset; plug headset.
+- **"Locked"** — phone lock active, enter unlock PIN.
+- **"BSFT mismatch"** — BroadSoft Anywhere / Mobility config mismatch with `bw.xsi.url`.
 
 ## Common Gotchas
 
@@ -1362,6 +1756,12 @@ Each entry: broken → fixed.
 18. **EHS adapter wrong model**:
     - Broken — Plantronics-EHS35 paired with Sennheiser headset → no answer/end events.
     - Fixed — use EHS36 for Sennheiser DHSG. Check headset brand → adapter compatibility chart.
+19. **MP56 audio-route locked to handset**:
+    - Broken — agents try Bluetooth headset on MP56 Teams phone; calls keep ringing the handset speaker.
+    - Fixed — set `features.bluetooth.headset.audio_route = 1` and validate via *Settings → Audio → Audio Path*.
+20. **W76P handset not roaming between cells**:
+    - Broken — single W70B base configured; second base added but handset stays attached to first base even when out of range.
+    - Fixed — provision multi-cell mode `multicell.cell.X.priority`, run *Menu → Settings → System → Multi-cell* on master, register handsets to the cluster (not single base).
 
 ## Diagnostic Tools
 
@@ -1402,6 +1802,17 @@ YCCT (Yealink Configuration Conversion Tool) — Windows desktop tool that reads
 - **CP-series** — `CP920`, `CP925`, `CP935W`, `CP965` conference room phones. Wireless options on -W variants.
 - **ATA / Audio Gateway** — `MP54` analogue ATA isn't in this line; the older `RT10/RT20/RT30` and Yealink VC-series SBC handle gateway use cases.
 
+### Model-Specific Quirks
+
+- **T54W** — `network.lan_port.duplex` defaults to auto-negotiate but mis-detects half-duplex on some Cisco access switches; pin `network.lan_port.speed = 1000` and `duplex = full` if syslog reports CRC errors. Built-in 5GHz Wi-Fi only on the `T54W-2` revision; older revs are 2.4GHz only.
+- **T57W** — touchscreen calibration drifts after firmware downgrades; recalibrate via *Menu → Settings → Advanced → Calibrate* (admin password required). The 7" panel has a known back-light flicker if `phone_setting.lcd_backlight_active_level` is set below 4.
+- **T58W** — Android-based, treats `static.auto_provision.server.url` differently — Android Yealink Apps fetch JSON manifest at `<url>/apps.json` in addition to `.cfg`. Disable Skype for Business / Teams branding via `static.boot_logo.url` + `phone_setting.lcd_logo.mode = 1`.
+- **W76P (W70B + W76H)** — handset ergonomics changed in HW rev 2; HW rev 1 SUB key is the small button near antenna, rev 2 moved it to the top edge. Multi-cell sync requires `multicell.cell.1.priority = 0` on the master and `mode = 2` on slaves; otherwise handsets register to slaves and never roam.
+- **W80B / W80DM** — DM (Device Manager) is the cluster brain. Always upgrade `W80DM` firmware *before* `W80B`; reverse order leaves the cluster split-brain. Each cluster supports 30 base stations + 100 handsets; per-handset throughput drops when more than 8 SIP accounts are registered.
+- **MP54** — Teams-edition only; SIP firmware unavailable. Microsoft sign-in flow uses `https://device.login.microsoftonline.com/`; corporate proxies must allow this exactly. Boot loop on stale OAuth token → factory reset and re-pair.
+- **MP56** — Bluetooth audio-route quirk: `features.bluetooth.headset.audio_route = 1` is the only way to make BT headset primary for Teams calls. Defaults to handset speaker, which is inaudible in open-plan offices.
+- **CP965** — Android-based; touch-to-share via NFC works only when `features.bluetooth.discoverable = 1` is also set, which is non-obvious because the NFC pairing is BT-Classic.
+
 ## Models Most-Used
 
 - **T54W** — most-deployed exec phone. 4.3" color, BT/WiFi.
@@ -1432,6 +1843,8 @@ YCCT (Yealink Configuration Conversion Tool) — Windows desktop tool that reads
 - "NTP before TLS, always." — TLS dies silently on wrong clock.
 - "Restrict web UI to management VLAN." — the web UI is the soft underbelly of every IP phone family.
 - "Tag firmware ROM by hardware ID." — wrong prefix → upgrade refused, no brick, but no upgrade either.
+- "DM before B." — when upgrading W80/W90 multi-cell, upgrade the device manager (DM) before the base (B); reverse order risks split-brain.
+- "MP is Microsoft, T is generic." — when in doubt, MP54/MP56/MP58 are Teams certified and use a different boot-flow than T-series; don't try to load generic Yealink firmware on Teams hardware.
 
 ## See Also
 

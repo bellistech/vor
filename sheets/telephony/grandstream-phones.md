@@ -1460,6 +1460,131 @@ Enterprise 200+          UCM6510A clustered + mixed GRP fleet + GDMS for managem
   Solves 90% of remote-phone audio issues.
 ```
 
+## Grandstream P-ID Reference
+
+Grandstream's text-format config files use numbered parameters (P-IDs). Knowing the major ones lets you read/diff configs without the web UI.
+
+| P-ID | Setting | Notes |
+|---|---|---|
+| P2 | Admin password | default 123456 |
+| P3 | User password | default 123 |
+| P4 | Web access port | default 80 (or 443 for HTTPS) |
+| P8 | Time zone | TZ database name (America/Los_Angeles) |
+| P30 | Status web access mode | 0=disabled, 1=user, 2=admin |
+| P63 | DTMF mode | 1=in-band, 2=RFC2833, 3=SIP-INFO |
+| P64 | Session expiration | seconds (default 180) |
+| P65 | Min session expiration | seconds (default 90) |
+| P67 | Random Port (boolean) | randomize local SIP port |
+| P75 | Use Random Port | similar to P67 (model-dependent) |
+| P83 | Local SIP port | default 5060 |
+| P135 | Layer 3 QoS DSCP | DSCP value for SIP signaling |
+| P137 | Layer 3 QoS DSCP | DSCP value for RTP media |
+| P191 | Account 1 active | 1=enable, 0=disable |
+| P192 | Account 1 SIP server | hostname or IP |
+| P193 | Account 1 outbound proxy | optional |
+| P196 | Account 1 SIP user ID | the extension number / username |
+| P197 | Account 1 auth ID | usually same as user ID |
+| P34 | Account 1 password | the SIP password |
+| P3 | Account 1 display name | what shows on caller ID |
+| P40 | Account 1 voicemail | feature code (e.g., *97) |
+| P47 | Account 1 SUBSCRIBE for MWI | 1=enable |
+| P50 | Account 1 voice mail userID | usually same as account |
+| P57 | Account 1 NAT traversal | 0=No NAT, 1=STUN, 2=Keep-alive, 3=UPnP, 4=Auto, 5=VPN |
+| P58 | Account 1 use NAT IP | manual public IP override |
+| P59 | Account 1 dial plan | regex-flavored pattern |
+| P78 | Account 1 SUBSCRIBE expiration | seconds |
+| P85 | Account 1 codec preference | comma-separated codec IDs |
+| P102 | Account 1 SRTP mode | 0=disabled, 1=enabled, 2=enabled-if-supported |
+| P130 | Layer 3 QoS DSCP for video | DSCP value |
+| P156 | Account 1 BLF list URI | URL of BLF event list |
+| P181 | Time zone display in idle | DST handling |
+| P212 | LDAP server address | hostname |
+| P213 | LDAP server port | default 389 |
+| P214 | LDAP server bind user | DN |
+| P215 | LDAP server bind password | password |
+| P217 | LDAP search base | DN |
+| P244 | NTP server | hostname |
+| P246 | DHCP option 132 (VLAN) | 1=enable |
+| P246 | LLDP-MED enable | 1=enable |
+| P273 | Web HTTPS only | 1=enforce |
+| P276 | LDAP version | 2 or 3 |
+| P301 | Phonebook download mode | 0=disabled, 1=manual, 2=auto |
+| P304 | Phonebook XML server | URL |
+| P305 | Phonebook download interval | seconds |
+| P327 | SIP transport | 0=UDP, 1=TCP, 2=TLS |
+| P341 | TLS verification mode | 0=none, 1=verify-once, 2=full |
+| P391 | SIP T1 timer | ms (default 500) |
+| P392 | SIP T2 timer | ms (default 4000) |
+| P398 | TLS minimum version | 0=any, 1=TLS1.0, 2=TLS1.1, 3=TLS1.2, 4=TLS1.3 |
+| P847 | Configuration server URL | http(s):// for provisioning |
+| P848 | Config server username | for HTTP auth |
+| P849 | Config server password | for HTTP auth |
+| P850 | Config server method | 0=TFTP, 1=HTTP, 2=HTTPS, 3=FTP, 4=FTPS |
+| P1359 | Use AES encryption for config file | 1=enable |
+| P1360 | AES key for config encryption | hex string |
+
+The full list is in the Grandstream "Administrators Guide" XML reference per model. Modern firmware supports both numbered (P-id) and named XML config formats.
+
+## Sample Config Snippets — txt vs XML format
+
+### Text format (legacy, all models):
+
+```text
+P2 = NewSecurePassword123!
+P192 = sip.example.com
+P196 = 1001
+P34 = SIPpassword!
+P3 = Alice Anderson
+P57 = 1
+P327 = 2
+P847 = https://provision.example.com/{$mac}.xml
+P850 = 2
+```
+
+### XML format (newer firmware, GRP series):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<gs_provision version="1">
+  <config>
+    <P2>NewSecurePassword123!</P2>
+    <P192>sip.example.com</P192>
+    <P196>1001</P196>
+    <P34>SIPpassword!</P34>
+    <P3>Alice Anderson</P3>
+    <P57>1</P57>
+    <P327>2</P327>
+    <P847>https://provision.example.com/cfg{$mac}.xml</P847>
+    <P850>2</P850>
+  </config>
+</gs_provision>
+```
+
+The advantage of XML format: per-line readability, easier diffing, structured parsers can validate.
+
+## HT Analog Adapter Regional Impedance Settings
+
+The HT-series analog adapters connect to PSTN-style FXO ports. Regional impedance settings ensure the analog signaling matches the local telephony spec:
+
+| Region | Impedance | Caller ID Standard | Ring Cadence |
+|---|---|---|---|
+| United States | 600Ω | Bellcore (FSK) | 2s on / 4s off |
+| United Kingdom | 270Ω + 750Ω + 150nF | DTMF or FSK | 0.4s on / 0.2s off / 0.4s on / 2s off |
+| Germany | 220Ω + 820Ω + 115nF | DTMF | 1s on / 4s off |
+| France | 215Ω + 750Ω + 200nF | FSK | 1.5s on / 3.5s off |
+| Italy | 600Ω | FSK | 1s on / 4s off |
+| Netherlands | 600Ω | FSK | 1s on / 3s off |
+| Spain | 220Ω + 820Ω + 120nF | FSK | 1.5s on / 3s off |
+| Sweden | 200Ω + 600Ω + 1µF | DTMF | 1s on / 5s off |
+| Australia | 200Ω + 780Ω + 150nF | FSK | 0.4s on / 0.2s off / 0.4s on / 2s off |
+| Japan | 600Ω | DTMF | 1s on / 2s off |
+| Brazil | 900Ω | DTMF | 1s on / 4s off |
+| China | 200Ω + 680Ω + 100nF | FSK | 1s on / 4s off |
+| India | 600Ω | DTMF | 0.4s on / 0.2s off / 0.4s on / 2s off |
+| Russia | 220Ω + 820Ω + 115nF | DTMF | 1s on / 4s off |
+
+The HT813 has both FXS (toward analog phone) and FXO (toward PSTN line) ports — each port can be set to a different regional impedance if you're doing hybrid setups.
+
 ## See Also
 
 - ip-phone-provisioning

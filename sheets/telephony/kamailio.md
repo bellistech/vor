@@ -1683,6 +1683,239 @@ if ($si == "1.1.1.1") drop;     # silent drop, no 403
 
 vs. `exit` (stops route, allows pending replies) and `return` (returns from the named route to caller).
 
+## Pseudo-Variable (PV) Reference
+
+Kamailio's PVs are runtime accessors for SIP message fields and registry state. The `$ru` form is the most-common.
+
+| PV | Meaning | Read | Write | Example |
+|---|---|---|---|---|
+| `$ru` | Request URI (full) | yes | yes | `$ru = "sip:bob@example.com"` |
+| `$rU` | Request URI username | yes | yes | `$rU = "bob"` |
+| `$rd` | Request URI domain | yes | yes | `$rd = "example.com"` |
+| `$rp` | Request URI port | yes | yes | `$rp = 5060` |
+| `$rP` | Request URI transport | yes | no | UDP/TCP/TLS |
+| `$fu` | From URI | yes | yes | `$fu == "sip:alice@example.com"` |
+| `$fU` | From username | yes | yes | |
+| `$fd` | From domain | yes | yes | |
+| `$fn` | From display name | yes | yes | |
+| `$ft` | From tag | yes | no | per-dialog identifier |
+| `$tu` | To URI | yes | yes | |
+| `$tU` | To username | yes | yes | |
+| `$td` | To domain | yes | yes | |
+| `$tt` | To tag | yes | no | |
+| `$ci` | Call-ID | yes | no | unique per call |
+| `$cs` | CSeq number | yes | no | per-transaction sequence |
+| `$cT` | Content-Type | yes | yes | |
+| `$cL` | Content-Length | yes | no | |
+| `$rs` | Reply status code | yes | yes | only in onreply_route / failure_route |
+| `$rr` | Reply reason | yes | yes | |
+| `$rm` | SIP method | yes | no | INVITE/REGISTER/etc. |
+| `$si` | Source IP | yes | no | actual transport-source IP |
+| `$sp` | Source port | yes | no | |
+| `$Ri` | Received IP (this proxy's interface) | yes | no | |
+| `$Rp` | Received port | yes | no | |
+| `$proto` | Transport protocol | yes | no | "udp"/"tcp"/"tls"/"sctp"/"ws"/"wss" |
+| `$au` | Authenticated user | yes | no | populated by www_authenticate / auth_db |
+| `$ar` | Authentication realm | yes | no | |
+| `$ai` | Authenticated identity | yes | no | |
+| `$br` | Branch | yes | no | top-most branch |
+| `$ct` | Contact header | yes | yes | |
+| `$cl` | Content-Length value | yes | no | |
+| `$hdr(Name)` | Specific header value | yes | no | `$hdr(User-Agent)` |
+| `$ua` | User-Agent | yes | no | |
+| `$T_branch_idx` | Current branch index | yes | no | for parallel forking |
+| `$T_reply_code` | Final reply code (in failure_route) | yes | no | |
+| `$mb` | SIP message body | yes | yes | rewrite SDP, body, etc. |
+| `$ml` | SIP message length | yes | no | |
+| `$src_ip` | Source IP (alias for $si) | yes | no | |
+| `$Tb` | Branch start timestamp (sec.usec) | yes | no | |
+| `$Ts` | Current Unix timestamp | yes | no | |
+| `$pp` | Process PID | yes | no | |
+| `$pr` | Protocol (1=UDP, 2=TCP, 3=TLS) | yes | no | numeric |
+| `$rb` | Request body | yes | yes | |
+| `$dd` | Destination domain | yes | no | next-hop domain |
+| `$di` | Destination IP | yes | no | next-hop IP |
+| `$dp` | Destination port | yes | no | |
+
+### AVP (Attribute-Value Pair) usage
+
+```text
+$avp(name)         # generic AVP, scoped to current message
+$avp(s:my_var)     # string-typed AVP
+$avp(i:user_id)    # integer-typed AVP
+
+# Set
+$avp(my_avp) = "stored value";
+$avp(user_count) = $avp(user_count) + 1;
+
+# Read
+xlog("L_INFO", "AVP value is: $avp(my_avp)\n");
+
+# AVPs persist across the duration of the message processing — across
+# multiple route blocks, route() invocations, etc. — but not across
+# transactions or dialogs (use htable for that).
+
+# Multi-value AVPs (lists)
+$(avp(my_list)[*]) = "value1";
+$(avp(my_list)[*]) = "value2";
+$(avp(my_list)[*]) = "value3";
+# Iterate via $(avp(my_list)[0]), [1], [2], ...
+```
+
+### Common $ru rewrite patterns
+
+```text
+# Rewrite Request-URI to upstream proxy
+$ru = "sip:" + $rU + "@upstream.example.com";
+
+# Add prefix for international dialing
+$rU = "+1" + $rU;
+
+# Strip prefix
+if ($rU =~ "^9") {
+    $rU = $(rU{s.substr,1,0});
+}
+
+# Set port
+$rp = 5060;
+
+# Force transport
+$rP = "TCP";
+
+# Lowercase domain
+$rd = $(rd{s.tolower});
+```
+
+## More Sample kamailio.cfg Block Patterns
+
+### Standard incoming-INVITE routing flow
+
+```text
+route {
+    # 1. Sanity check — drop malformed
+    if (!sanity_check()) {
+        sl_send_reply("400", "Bad Request");
+        exit;
+    }
+
+    # 2. Source IP filter (anti-spam)
+    if (src_ip != myself && !allow_trusted()) {
+        if (!auth_check("$fd", "subscriber", "1")) {
+            sl_send_reply("403", "Forbidden");
+            exit;
+        }
+    }
+
+    # 3. NAT detection / rewrite
+    if (nat_uac_test("19")) {
+        force_rport();
+        if (is_method("REGISTER")) {
+            fix_nated_register();
+        } else {
+            fix_nated_contact();
+        }
+        setflag(FLAG_NATED);
+    }
+
+    # 4. Method-specific routing
+    if (is_method("REGISTER")) {
+        route(REGISTRAR);
+    } else if (is_method("INVITE")) {
+        route(INVITE);
+    } else if (is_method("BYE|CANCEL|ACK")) {
+        route(WITHIN_DLG);
+    } else if (is_method("OPTIONS")) {
+        sl_send_reply("200", "OK");
+        exit;
+    } else {
+        sl_send_reply("405", "Method Not Allowed");
+        exit;
+    }
+}
+
+route[REGISTRAR] {
+    if (!save("location")) {
+        sl_reply_error();
+    }
+    exit;
+}
+
+route[INVITE] {
+    # Lookup destination from usrloc
+    if (!lookup("location")) {
+        sl_send_reply("404", "Not Found");
+        exit;
+    }
+
+    # NAT-aware media handling
+    if (isflagset(FLAG_NATED)) {
+        rtpengine_offer("trust-address replace-origin replace-session-connection RTP/AVP");
+    }
+
+    # Forward via stateful proxy
+    t_on_reply("REPLY_HANDLER");
+    t_on_failure("FAILURE_HANDLER");
+    if (!t_relay()) {
+        sl_reply_error();
+    }
+}
+```
+
+### dispatcher-based load balancer
+
+```text
+loadmodule "dispatcher.so"
+modparam("dispatcher", "ds_ping_interval", 30)
+modparam("dispatcher", "ds_ping_method", "OPTIONS")
+modparam("dispatcher", "list_file", "/etc/kamailio/dispatcher.list")
+modparam("dispatcher", "flags", 2)  # tracking + failover
+
+# dispatcher.list:
+# 1 sip:fs1.example.com:5060
+# 1 sip:fs2.example.com:5060
+# 1 sip:fs3.example.com:5060
+
+route[INVITE] {
+    if (!ds_select_dst("1", "4")) {  # set 1, alg 4 = round-robin
+        sl_send_reply("503", "All FreeSWITCH instances down");
+        exit;
+    }
+
+    t_on_failure("DISPATCHER_FAILURE");
+    t_relay();
+}
+
+failure_route[DISPATCHER_FAILURE] {
+    if (t_check_status("503|408")) {
+        if (ds_next_dst()) {
+            t_on_failure("DISPATCHER_FAILURE");
+            t_relay();
+            exit;
+        }
+    }
+}
+```
+
+### mid-registrar pattern
+
+```text
+loadmodule "mid_registrar.so"
+modparam("mid_registrar", "default_expires", 3600)
+modparam("mid_registrar", "outgoing_expires", 60)  # upstream sees fewer REGISTERs
+modparam("mid_registrar", "mode", 1)  # mid-registrar mode (consume + aggregate)
+
+route[REGISTRAR] {
+    if (is_method("REGISTER")) {
+        # Mid-registrar consumes the REGISTER, validates auth, stores in
+        # local usrloc, and forwards a periodic REGISTER upstream
+        if (!mid_registrar_save("location_table", "outgoing_user", "outgoing_proxy")) {
+            sl_reply_error();
+        }
+        exit;
+    }
+}
+```
+
 ## See Also
 
 - opensips — OpenSIPS, sister fork of SER, similar capabilities, different module ecosystem

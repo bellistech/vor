@@ -1174,6 +1174,201 @@ Anywhere a secret is on the right side of an `==` against user input, the compar
 
 The same principle applies inside cryptographic operations. RSA-PKCS1v1_5 padding-oracle attacks (Bleichenbacher) exploit non-constant-time padding validation; the modern fix is to do the entire decryption + padding check in constant time, regardless of validity. Modern AEAD constructions (AES-GCM, ChaCha20-Poly1305) are designed to be naturally constant-time.
 
+## Argon2id Parameter Math: Concrete Attacker Cost
+
+OWASP 2024 baseline: tCost=2, mCost=19MiB, parallelism=1. Wall-clock target: ~50ms.
+
+Attacker cost analysis at this baseline:
+
+```text
+Single GPU (NVIDIA RTX 4090, 24GB VRAM):
+  Memory pool: 24 GB / 19 MiB = ~1290 concurrent Argon2id operations
+  Per-operation latency: ~80ms (CPU) but ~120ms on GPU due to memory-bandwidth ceiling
+  Throughput: ~1290 / 0.12s = ~10,750 hashes/sec on a single high-end GPU
+
+  At $1/hour cloud GPU:
+    Cost per hash: $1 / 3600 / 10750 = 2.6e-8 dollars
+    Cost per 10^10 guesses (full English-word + suffix space): 10^10 * 2.6e-8 = $258
+    Cost per 10^14 guesses (full lowercase 8-char): $2.58 million
+
+Bumping to mCost=64 MiB:
+  Concurrent ops on 24GB GPU: 24/64 * 1024 = 384 concurrent
+  Throughput: ~384 / 0.12s = ~3200 hashes/sec
+  Cost per 10^10 guesses: $25,800 — 100x worse for attacker
+  Cost per 10^14 guesses: $258 million — practically intractable
+
+Bumping to tCost=4 + mCost=128 MiB:
+  Memory: 24/128*1024 = 192 concurrent
+  Wall-clock: ~250ms
+  Throughput: ~192/0.25 = 770 hashes/sec
+  Cost per 10^14 guesses: ~$1 billion
+```
+
+The takeaway: **memory cost dominates GPU economics**. Doubling mCost roughly halves attacker throughput because GPU VRAM is the bottleneck, not compute.
+
+For service-accounts where you control hardware, mCost=512MiB or even 1GiB is feasible; for user-facing login where 50ms is the budget, tCost=2/mCost=19MiB is the floor.
+
+## HIBP API Protocol Walkthrough
+
+The k-anonymity scheme works as follows:
+
+```python
+import hashlib, requests
+
+def hibp_check(password):
+    # Step 1: SHA-1 hash the password (on client side)
+    sha1 = hashlib.sha1(password.encode("utf-8")).hexdigest().upper()
+    prefix, suffix = sha1[:5], sha1[5:]
+
+    # Step 2: Send only the first 5 hex chars (20 bits) to HIBP
+    # The server returns ALL hashes that share this prefix (~500 entries on average)
+    response = requests.get(f"https://api.pwnedpasswords.com/range/{prefix}")
+
+    # Step 3: Search the returned list locally for the rest of the SHA-1
+    for line in response.text.splitlines():
+        h, count = line.strip().split(":")
+        if h == suffix:
+            return int(count)  # password seen this many times in breaches
+    return 0
+
+# Privacy property: HIBP server learns the 20-bit prefix only.
+# Even with the full 65,536 prefix space, the server can't determine
+# which exact password the user is checking — only that it's one of
+# ~30 trillion / 65,536 ≈ 460 million possible 160-bit suffixes per prefix.
+# In practice, the server sees ~500 candidate hashes per request.
+```
+
+The bandwidth cost: ~30KB per check (500 entries × 60 bytes each). HIBP serves billions of these checks per month and is hosted on Cloudflare for caching.
+
+## WebAuthn Ceremony Detailed Walk
+
+### Registration ceremony — server's challenge generation
+
+```python
+import secrets, base64
+
+def make_registration_options(user_id, user_email, user_display_name):
+    challenge = secrets.token_bytes(32)
+    return {
+        "challenge": base64.urlsafe_b64encode(challenge).rstrip(b"=").decode(),
+        "rp": {"name": "Example App", "id": "app.example.com"},
+        "user": {
+            "id": base64.urlsafe_b64encode(user_id.bytes).rstrip(b"=").decode(),
+            "name": user_email,
+            "displayName": user_display_name,
+        },
+        "pubKeyCredParams": [
+            {"type": "public-key", "alg": -7},   # ES256 (preferred)
+            {"type": "public-key", "alg": -257}, # RS256 (fallback)
+        ],
+        "timeout": 60000,
+        "attestation": "none",   # or "indirect"/"direct" if you need attestation cert
+        "authenticatorSelection": {
+            "authenticatorAttachment": "platform",  # or "cross-platform"
+            "userVerification": "required",
+            "residentKey": "required",  # discoverable credential (passkey)
+        },
+        "excludeCredentials": [],  # list of already-registered credentials
+    }
+```
+
+### Registration ceremony — verifying the response
+
+```python
+def verify_registration(response, expected_challenge, expected_origin):
+    # Parse clientDataJSON (browser-generated)
+    client_data = json.loads(base64url_decode(response["response"]["clientDataJSON"]))
+
+    # CRITICAL VERIFICATIONS:
+    assert client_data["type"] == "webauthn.create"
+    assert client_data["challenge"] == base64url_encode(expected_challenge)
+    assert client_data["origin"] == expected_origin  # ← phishing-resistance anchor
+
+    # Parse attestationObject (CBOR-encoded)
+    attestation_object = cbor.decode(base64url_decode(response["response"]["attestationObject"]))
+    auth_data = parse_authenticator_data(attestation_object["authData"])
+
+    # Verify rpIdHash matches SHA-256(rp.id)
+    assert auth_data.rp_id_hash == sha256(b"app.example.com")
+
+    # Verify flags: User Present (UP), User Verified (UV)
+    assert auth_data.flags & 0x01  # UP
+    assert auth_data.flags & 0x04  # UV
+
+    # Extract the credential public key (COSE-encoded)
+    # Store in DB: credential_id, public_key, sign_count, user_id
+    return {
+        "credential_id": auth_data.credential_id,
+        "public_key": auth_data.credential_public_key,
+        "sign_count": auth_data.sign_count,
+    }
+```
+
+### Assertion ceremony — verifying the signature
+
+```python
+def verify_assertion(response, expected_challenge, expected_origin,
+                     stored_credential):
+    client_data = json.loads(base64url_decode(response["response"]["clientDataJSON"]))
+    assert client_data["type"] == "webauthn.get"
+    assert client_data["challenge"] == base64url_encode(expected_challenge)
+    assert client_data["origin"] == expected_origin
+
+    auth_data_bytes = base64url_decode(response["response"]["authenticatorData"])
+    signature = base64url_decode(response["response"]["signature"])
+
+    # The signed data is auth_data || SHA-256(clientDataJSON)
+    client_data_hash = sha256(base64url_decode(response["response"]["clientDataJSON"]))
+    signed_bytes = auth_data_bytes + client_data_hash
+
+    # Verify signature with stored public key
+    pub_key = cose_to_pem(stored_credential["public_key"])
+    if not verify_signature(pub_key, signature, signed_bytes):
+        raise AuthenticationFailed()
+
+    # Anti-rollback: sign_count must increase
+    new_sign_count = parse_sign_count(auth_data_bytes)
+    if new_sign_count <= stored_credential["sign_count"] and new_sign_count != 0:
+        raise PossibleClonedCredential()  # The "duplicate authenticator" attack
+
+    update_credential_sign_count(stored_credential, new_sign_count)
+    return True
+```
+
+The sign_count anti-rollback protects against an attacker cloning the authenticator (e.g., by extracting the private key from a compromised hardware token).
+
+## TOTP Algorithm Walkthrough
+
+RFC 6238 defines TOTP as `HOTP(K, T)` where T is the time step:
+
+```python
+import hmac, hashlib, struct, time
+
+def totp(secret_b32, period=30, digits=6, algorithm="sha1"):
+    # 1. Decode base32 secret
+    secret = base64.b32decode(secret_b32, casefold=True)
+
+    # 2. Compute time step T (Unix time / period)
+    T = int(time.time() / period)
+    msg = struct.pack(">Q", T)  # 8-byte big-endian time counter
+
+    # 3. HMAC the time counter with the secret
+    h = hmac.new(secret, msg, hashlib.sha1).digest()  # 20 bytes
+
+    # 4. Dynamic truncation (RFC 4226 §5.3)
+    offset = h[-1] & 0x0F  # use last 4 bits as offset (0-15)
+    code = (struct.unpack(">I", h[offset:offset+4])[0] & 0x7FFFFFFF)
+    # ↑ mask off MSB to handle signed-int conversion in Java/JS implementations
+
+    # 5. Modulo to get 6 (or 7/8) digits
+    return str(code % (10 ** digits)).zfill(digits)
+
+# Usage:
+print(totp("JBSWY3DPEHPK3PXP"))  # standard test secret
+```
+
+The 30-second window means a code is valid for at most 30s, with ±1 step tolerance for clock skew (so effectively up to 90s). The 6-digit truncation reduces the brute-force space to 10^6 = ~20 bits per attempt.
+
 ## References
 
 - **RFC 9106** — Argon2 Memory-Hard Function for Password Hashing and Proof-of-Work Applications.

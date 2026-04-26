@@ -625,6 +625,151 @@ For multi-state: pick a baseline (CCPA or strictest applicable). Implement featu
 
 The "treat strictest as baseline" approach trades implementation simplicity for some over-compliance. Acceptable when the marginal cost of state-by-state branching exceeds the gain.
 
+## CCPA vs GDPR Side-by-Side Engineering Decisions
+
+| Engineering Decision | CCPA | GDPR | Universal recommendation |
+|---|---|---|---|
+| Default consent for analytics cookies | Opt-out OK (CCPA) | Opt-in REQUIRED | **Opt-in** (GDPR-strictest baseline) |
+| First-party functional cookies | Allowed without consent | "Strictly necessary" exception | Allow |
+| Email marketing consent | Implicit-from-purchase tolerated | Explicit opt-in REQUIRED | **Explicit opt-in** |
+| User data export format | "Reasonable" — JSON or CSV | "Machine-readable" — JSON / structured | JSON with documented schema |
+| Response time for DSAR | 45 days (extendable +45) | 30 days (extendable to 90) | **30 days** baseline |
+| Right-to-correct | Required (CPRA) | Required | Universal correction UI |
+| Breach notification | Cal Civ Code §1798.82 (no fixed hours) | 72 hours to authority | **72-hour SOP** |
+| Children's data | Under 13: parental consent (CCPA) | Under 16: parental consent (GDPR) | Higher of the two = 16 |
+| Sensitive data category | CPRA SPI (defined list) | GDPR Art. 9 special categories | Treat all as Art. 9 |
+| Data sale consent | Opt-out (CCPA) | N/A directly; processed under lawful basis | Default no sale; opt-in if needed |
+
+## CPRA Sensitive Personal Information — Engineering Implications
+
+The CPRA-defined SPI categories (Cal Civ Code §1798.140(ae)):
+
+```text
+1. Government identifiers: SSN, driver's license, state ID, passport
+2. Account credentials: account login + password/access code
+3. Precise geolocation: within 1,850 feet (~565m)
+4. Racial or ethnic origin
+5. Religious or philosophical beliefs
+6. Union membership
+7. Mail/email/text contents (where the business is not the sender/recipient)
+8. Genetic data
+9. Biometric data for unique identification
+10. Personal information collected/analyzed concerning health
+11. Personal information collected/analyzed concerning sex life or sexual orientation
+```
+
+Engineering implications:
+
+- **Encryption at rest**: SPI fields MUST be encrypted (vendor-specific guidance, but de facto requirement).
+- **Limit-use right**: consumer can request that SPI use be limited to "necessary services + legally permitted purposes." UI requires a "Limit the Use of My Sensitive Personal Information" link prominently displayed.
+- **Audit logging**: every read/write of SPI logged; retain logs ≥1 year for compliance audits.
+- **Key segregation**: SPI encryption keys held separately from regular PI keys; rotation cadence at least annually.
+- **Data lineage**: track every system that holds SPI; ensure deletion cascades to all of them.
+
+## "Sale vs Share" Engineering Decision Tree
+
+The CPRA distinguishes "selling" (monetary or other valuable consideration) from "sharing" (cross-context behavioral advertising). Both subject to opt-out.
+
+```text
+Are you sending PI to a third party?
+├── No → not a sale, not a share
+└── Yes
+    ├── Is the third party a "service provider" with §1798.140(ag) contract restrictions?
+    │   ├── Yes → not a sale, not a share (carve-out)
+    │   └── No
+    │       ├── Are they paying you (or providing valuable consideration)?
+    │       │   └── Yes → SALE (opt-out required)
+    │       └── Is the data being used for cross-context behavioral advertising?
+    │           ├── Yes → SHARE (opt-out required)
+    │           └── No → "disclosure for business purpose" (lower obligation)
+    └── Most ad-tech (GAds remarketing, Meta CAPI, etc.) is SHARING under CPRA
+        even if no money changes hands.
+```
+
+The Service Provider carve-out requires a written contract with these clauses (§1798.140(ag)):
+
+1. Specifies purposes for which data is processed
+2. Restricts processing to those purposes
+3. Prohibits selling/sharing the PI
+4. Prohibits combining with other PI from other sources
+5. Includes audit rights
+6. Specifies sub-processor approval mechanism
+
+Without all six, you have a sale/share regardless of payment.
+
+## Verifiable Consumer Request Engineering
+
+```python
+class VCRWorkflow:
+    def submit_request(self, request_type, contact_info):
+        # Step 1: Receive request via web form / email / toll-free phone
+        request = ConsumerRequest(
+            type=request_type,  # know / delete / correct / opt-out / limit-spi
+            email=contact_info['email'],
+            received_at=now(),
+        )
+
+        # Step 2: Verify the requester is who they say they are
+        # CCPA mandates "reasonable degree of certainty"
+        if request_type in ['know', 'delete', 'correct']:
+            # Higher bar: send verification email with one-time code
+            send_verification_email(request)
+            request.verification_method = 'email_code'
+        elif request_type in ['opt-out-sale', 'opt-out-share', 'limit-spi']:
+            # Lower bar: opt-outs don't require strong verification
+            request.verification_method = 'minimal'
+
+        request.status = 'awaiting_verification'
+        return request
+
+    def fulfill_request(self, request):
+        if request.status != 'verified':
+            raise NotVerified()
+
+        if request.type == 'know':
+            data = collect_pi_for_user(request.user_id)  # must include 12-month look-back
+            return present_data(data)
+        elif request.type == 'delete':
+            cascade_delete(request.user_id, exceptions=DELETION_EXCEPTIONS)
+        elif request.type == 'correct':
+            update_pi(request.user_id, request.corrections)
+        elif request.type == 'opt-out-sale':
+            set_flag(request.user_id, 'do_not_sell', True)
+            propagate_to_processors(request.user_id, 'do_not_sell')
+        elif request.type == 'opt-out-share':
+            set_flag(request.user_id, 'do_not_share', True)
+            propagate_to_ad_tech(request.user_id, 'do_not_share')
+        elif request.type == 'limit-spi':
+            set_flag(request.user_id, 'limit_spi_use', True)
+
+        # Response within 45 days (extendable to 90)
+        send_completion_notice(request)
+        log_for_audit(request, retention='2 years')
+```
+
+## Penalties Math — Worked Examples
+
+```text
+Scenario 1: Misconfigured SDK leaks 50,000 user emails to third party.
+  Per-violation: $2,500 (negligent) or $7,500 (intentional)
+  Tier: Likely $2,500 (negligence); 50,000 × $2,500 = $125 million
+  Mitigation: AG can show good-faith remediation reduces fine
+
+Scenario 2: SDK leaks 5,000 children's (under 16) records intentionally.
+  Per-violation: $7,500 (involves minors) and intentional
+  5,000 × $7,500 = $37.5 million
+  Plus civil class action under §1798.150 for breach: $100-$750 per consumer
+  5,000 × $750 = additional $3.75M, parallel exposure
+
+Scenario 3: Refused 1,000 verifiable consumer requests.
+  Each refusal is a violation: 1,000 × $2,500 = $2.5 million
+  CPRA removed the 30-day cure window for repeat offenders, so AG can
+  proceed directly to enforcement action.
+
+Scenario 4: $7,500 ceiling × 50,000 violations × 4 years statutory limit:
+  $1.5 billion theoretical max. In practice settlements run 2-10% of theoretical.
+```
+
 ## References
 
 - California Consumer Privacy Act (CCPA) text — Cal Civ Code §1798.100-1798.199

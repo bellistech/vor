@@ -1084,6 +1084,290 @@ rtpengine_offer("direction=v4=v6 replace-origin replace-session-connection");
 - **"Test RTCP-mux explicitly per leg."** WebRTC requires it, legacy SIP often doesn't, and the bridge needs `RTCP-mux-demux`.
 - **"Renew DTLS certs and reload rtpengine in the same hook."** Otherwise the new cert sits unused and silently breaks fingerprint validation eventually.
 
+## Worked ng-Protocol Examples
+
+### Bencoded offer command (full request)
+
+```text
+d10:call-idi  20:abc123-call-id-99...e
+8:from-tag20:tag-from-A...
+4:flagsl4:SDES7:trust-address9:replace=eOf 8:replace-origin18:replace-session-connection7:rtcp-muxe
+3:sdpL...full SDP body as bencoded string...
+7:commande5:offere
+```
+
+Decoded:
+
+```text
+{
+  "command": "offer",
+  "call-id": "abc123-call-id-99",
+  "from-tag": "tag-from-A",
+  "flags": ["SDES", "trust-address", "replace-origin", "replace-session-connection", "rtcp-mux"],
+  "sdp": "v=0\r\no=alice 1 1 IN IP4 192.0.2.1\r\ns=-\r\nc=IN IP4 192.0.2.1\r\n..."
+}
+```
+
+### Answer command
+
+```text
+{
+  "command": "answer",
+  "call-id": "abc123-call-id-99",
+  "from-tag": "tag-from-A",
+  "to-tag": "tag-from-B",
+  "flags": ["SDES", "rtcp-mux"],
+  "sdp": "v=0\r\no=bob 2 2 IN IP4 198.51.100.5\r\n..."
+}
+```
+
+### Delete command
+
+```text
+{
+  "command": "delete",
+  "call-id": "abc123-call-id-99",
+  "from-tag": "tag-from-A",
+  "flags": []
+}
+
+# Response:
+{
+  "result": "ok",
+  "totals": {
+    "RTP": {"input": {"packets": 1234, "bytes": 197440}, "output": {"packets": 1234, "bytes": 197440}},
+    "RTCP": {"input": {"packets": 28, "bytes": 1456}, "output": {"packets": 28, "bytes": 1456}}
+  }
+}
+```
+
+### Query command
+
+```text
+{ "command": "query", "call-id": "abc123-call-id-99" }
+
+# Response:
+{
+  "result": "ok",
+  "created": 1714048823,
+  "last signal": 1714049124,
+  "tags": {
+    "tag-from-A": {
+      "created": 1714048823,
+      "media": [
+        {
+          "index": 1,
+          "type": "audio",
+          "protocol": "RTP/AVP",
+          "streams": [
+            {
+              "local port": 30002,
+              "endpoint": {"family": "IP4", "address": "192.0.2.1", "port": 50000},
+              "stats": {"packets": 1234, "bytes": 197440, "errors": 0}
+            }
+          ]
+        }
+      ]
+    },
+    "tag-from-B": { ... }
+  }
+}
+```
+
+### Start recording
+
+```text
+{
+  "command": "start recording",
+  "call-id": "abc123-call-id-99",
+  "from-tag": "tag-from-A",
+  "output-destination": "wav",
+  "output-name": "/var/spool/rtpengine/abc123.wav"
+}
+```
+
+### List active calls
+
+```text
+{ "command": "list", "limit": 10 }
+
+# Response:
+{
+  "result": "ok",
+  "calls": ["abc123-call-id-99", "def456-call-id-87", ...]
+}
+```
+
+## iptables Rule Recipes
+
+### Standard single-instance
+
+```bash
+# Insert at top of FORWARD; rtpengine table 0
+iptables -I FORWARD -p udp --dport 30000:40000 -j RTPENGINE --id 0
+ip6tables -I FORWARD -p udp --dport 30000:40000 -j RTPENGINE --id 0
+```
+
+### Multi-instance (separate kernel tables)
+
+```bash
+# Instance 1 on port range 30000-40000, table 0
+iptables -I FORWARD -p udp --dport 30000:40000 -j RTPENGINE --id 0
+
+# Instance 2 on port range 40001-50000, table 1
+iptables -I FORWARD -p udp --dport 40001:50000 -j RTPENGINE --id 1
+```
+
+Each rtpengine daemon must specify `table = 0` or `table = 1` in its config.
+
+### Mark-based selection (advanced multi-tenant)
+
+```bash
+# Match calls coming from tenant1 (marked upstream by Kamailio with -j MARK --set-mark 0x1)
+iptables -I FORWARD -p udp -m mark --mark 0x1 -j RTPENGINE --id 0
+
+# Tenant2
+iptables -I FORWARD -p udp -m mark --mark 0x2 -j RTPENGINE --id 1
+```
+
+### IPv6 + dual-stack
+
+```bash
+iptables  -I FORWARD -p udp --dport 30000:40000 -j RTPENGINE --id 0
+ip6tables -I FORWARD -p udp --dport 30000:40000 -j RTPENGINE --id 0
+```
+
+The kernel module bridges across address families when configured with `--interface=public/PUBLIC_V4!PUBLIC_V6`.
+
+## DTLS-SRTP Cert Configuration
+
+```ini
+# /etc/rtpengine/rtpengine.conf
+[rtpengine]
+listen-ng = 127.0.0.1:22222
+interface = public/198.51.100.10
+recording-dir = /var/spool/rtpengine
+table = 0
+foreground = false
+
+# DTLS-SRTP for WebRTC termination
+dtls-cert-cipher = ec
+dtls-mtu = 1200
+dtls-signature = sha-256
+```
+
+Generate the DTLS cert (rtpengine auto-generates per-startup if missing, but pinning a long-lived one across restarts is useful for fingerprint pinning by clients):
+
+```bash
+openssl req -x509 -newkey ec:<(openssl ecparam -name prime256v1) \
+  -keyout /etc/rtpengine/dtls.key \
+  -out    /etc/rtpengine/dtls.crt \
+  -days 365 -nodes -subj '/CN=rtpengine.example.com'
+```
+
+Reference in config:
+
+```ini
+dtls-cert-file = /etc/rtpengine/dtls.crt
+dtls-key-file  = /etc/rtpengine/dtls.key
+```
+
+## Transcoding Combinations
+
+```text
+# G.711 PCMU (caller) ↔ Opus (callee)
+flags: ["transcode-PCMU", "transcode-opus"]
+# rtpengine accepts whichever is offered, emits both, transcodes per leg
+
+# G.711 PCMA ↔ G.722 (wideband upgrade)
+flags: ["transcode-PCMA", "transcode-G722"]
+
+# G.729 ↔ Opus (full transcoding through G.711 bridge in some impls)
+flags: ["transcode-G729", "transcode-opus"]
+
+# AMR-WB ↔ Opus (mobile interconnect)
+flags: ["transcode-AMR-WB", "transcode-opus"]
+codec-options: { "codec-options-AMR-WB": "mode-set=8", "codec-options-opus": "useinbandfec=1" }
+```
+
+CPU-cost rule of thumb:
+- G.711 ↔ Opus: ~3% CPU per call on a modern x86 core
+- G.729 ↔ anything: ~5% per call (G.729 itself is the expensive end)
+- AMR-WB ↔ anything: ~6% per call
+- Plain RTP relay (no transcoding): kernel-fastpath, ~0.05% per call
+
+Size your transcoding pool: 100 concurrent G.729↔Opus calls ≈ 5 cores at 100% utilization. Always reserve 50% headroom.
+
+## Kamailio rtpengine_module Integration
+
+```text
+# kamailio.cfg
+loadmodule "rtpengine.so"
+
+modparam("rtpengine", "rtpengine_sock", "udp:127.0.0.1:22222")
+modparam("rtpengine", "rtpengine_tout_ms", 1000)
+modparam("rtpengine", "extra_id_pv", "$avp(extra_id)")
+
+# Inside the route block handling INVITE
+route[NAT_OFFER] {
+    if (is_method("INVITE")) {
+        rtpengine_offer("trust-address replace-origin replace-session-connection ICE=force-relay RTP/SAVPF SDES");
+    }
+}
+
+# In branch_route or onreply_route on 200 OK
+onreply_route[REPLY_FROM_LEG] {
+    if (status =~ "(183)|(200)") {
+        rtpengine_answer("trust-address replace-origin replace-session-connection RTP/AVP");
+    }
+}
+
+# In failure_route or BYE handling
+route[NAT_DELETE] {
+    if (is_method("BYE")) {
+        rtpengine_delete();
+    }
+}
+```
+
+The flag set per call is the differential: rtpengine offer can specify "I want WebRTC fingerprint here," answer can specify "but the answer leg is plain SIP/AVP." rtpengine bridges both transparently.
+
+### Kamailio + rtpengine + multi-tenant
+
+```text
+# Kamailio sets rtpengine instance via marker
+modparam("rtpengine", "setid_avp", "$avp(rtpengine_set)")
+
+route[ROUTE_BY_TENANT] {
+    if ($au =~ "^.*@tenant1\.example$") {
+        $avp(rtpengine_set) = 0;
+    } else if ($au =~ "^.*@tenant2\.example$") {
+        $avp(rtpengine_set) = 1;
+    }
+    rtpengine_manage();
+}
+```
+
+Two rtpengine instances on different ports + different kernel tables; Kamailio routes calls between them.
+
+## Flag/Option Combinations
+
+| Goal | flags |
+|---|---|
+| Plain RTP relay | `[]` (defaults; just relay) |
+| WebRTC ↔ SIP bridge | `["SDES", "DTLS=passive", "ICE=force-relay", "RTP/AVP", "RTP/SAVPF", "rtcp-mux", "rtcp-mux-demux"]` |
+| Force SDES (server-side termination) | `["SDES", "RTP/SAVP"]` |
+| Force DTLS-SRTP | `["DTLS=passive", "RTP/SAVPF"]` |
+| Recording on | `["start-recording"]` (or send separate "start recording" command) |
+| Replace SDP IPs | `["replace-origin", "replace-session-connection"]` |
+| Trust source address (behind LB) | `["trust-address"]` |
+| Symmetric RTP (one-way LBs) | `["symmetric"]` |
+| Strict source port enforcement | `["strict-source"]` |
+| Asymmetric (different ports for read/write) | `["asymmetric"]` |
+| Disable RTCP entirely | `["no-rtcp"]` |
+| Add ICE candidates | `["ICE=force"]` (rtpengine offers as if it had been negotiated) |
+| Drop ICE candidates | `["ICE=remove"]` (strip ICE attributes from SDP) |
+
 ## See Also
 
 - kamailio

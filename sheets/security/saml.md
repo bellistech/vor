@@ -1321,6 +1321,351 @@ RelayState=4f1ab2c3
 | **Accept clock skew ≤ 5 minutes** — not 60                                        | Long skew = long replay window                               |
 | **Test with samltest.id, mock-saml, Keycloak** before contacting your enterprise IdP team | Faster iteration                                     |
 
+## More Verbatim XML Samples
+
+### Signed Response with embedded Assertion (full)
+
+```xml
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+                ID="_response_a73c8d72e4f1"
+                Version="2.0"
+                IssueInstant="2026-04-25T10:14:23.450Z"
+                Destination="https://sp.example.com/saml/acs"
+                InResponseTo="_request_b62a7f81c235">
+  <saml:Issuer>https://idp.example.com</saml:Issuer>
+  <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+    <ds:SignedInfo>
+      <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+      <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+      <ds:Reference URI="#_response_a73c8d72e4f1">
+        <ds:Transforms>
+          <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+          <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+        </ds:Transforms>
+        <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+        <ds:DigestValue>HV5jpvf6...</ds:DigestValue>
+      </ds:Reference>
+    </ds:SignedInfo>
+    <ds:SignatureValue>q1Yvr6X...</ds:SignatureValue>
+    <ds:KeyInfo>
+      <ds:X509Data>
+        <ds:X509Certificate>MIIDXTCCAkWgAwIBAgIJAKw...</ds:X509Certificate>
+      </ds:X509Data>
+    </ds:KeyInfo>
+  </ds:Signature>
+  <samlp:Status>
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+  </samlp:Status>
+  <saml:Assertion ID="_assertion_d927ff14a3e9"
+                  Version="2.0"
+                  IssueInstant="2026-04-25T10:14:23.450Z">
+    <saml:Issuer>https://idp.example.com</saml:Issuer>
+    <saml:Subject>
+      <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">
+        alice@example.com
+      </saml:NameID>
+      <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <saml:SubjectConfirmationData NotOnOrAfter="2026-04-25T10:19:23.450Z"
+                                      Recipient="https://sp.example.com/saml/acs"
+                                      InResponseTo="_request_b62a7f81c235"/>
+      </saml:SubjectConfirmation>
+    </saml:Subject>
+    <saml:Conditions NotBefore="2026-04-25T10:14:23.450Z"
+                     NotOnOrAfter="2026-04-25T10:19:23.450Z">
+      <saml:AudienceRestriction>
+        <saml:Audience>https://sp.example.com</saml:Audience>
+      </saml:AudienceRestriction>
+      <saml:OneTimeUse/>
+    </saml:Conditions>
+    <saml:AuthnStatement AuthnInstant="2026-04-25T10:14:20.000Z"
+                         SessionIndex="_session_8e1f2c45"
+                         SessionNotOnOrAfter="2026-04-25T18:14:20.000Z">
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>
+          urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+        </saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+    <saml:AttributeStatement>
+      <saml:Attribute Name="urn:oid:0.9.2342.19200300.100.1.3"
+                      NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+                      FriendlyName="mail">
+        <saml:AttributeValue xsi:type="xs:string"
+                             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          alice@example.com
+        </saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="urn:oid:2.5.4.42" FriendlyName="givenName">
+        <saml:AttributeValue xsi:type="xs:string">Alice</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="urn:oid:2.5.4.4" FriendlyName="sn">
+        <saml:AttributeValue xsi:type="xs:string">Anderson</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="urn:oid:1.3.6.1.4.1.5923.1.1.1.1" FriendlyName="eduPersonAffiliation">
+        <saml:AttributeValue xsi:type="xs:string">staff</saml:AttributeValue>
+        <saml:AttributeValue xsi:type="xs:string">member</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="http://schemas.microsoft.com/ws/2008/06/identity/claims/groups">
+        <saml:AttributeValue>cn=engineering,ou=groups,dc=example,dc=com</saml:AttributeValue>
+        <saml:AttributeValue>cn=admins,ou=groups,dc=example,dc=com</saml:AttributeValue>
+      </saml:Attribute>
+    </saml:AttributeStatement>
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### Encrypted Assertion (XML Encryption)
+
+```xml
+<samlp:Response>
+  <saml:Issuer>https://idp.example.com</saml:Issuer>
+  <samlp:Status><samlp:StatusCode Value="...:Success"/></samlp:Status>
+  <saml:EncryptedAssertion>
+    <xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#"
+                        Type="http://www.w3.org/2001/04/xmlenc#Element">
+      <xenc:EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#aes256-gcm"/>
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <xenc:EncryptedKey>
+          <xenc:EncryptionMethod Algorithm="http://www.w3.org/2009/xmlenc11#rsa-oaep">
+            <xenc:OAEPparams/>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+            <xenc11:MGF Algorithm="http://www.w3.org/2009/xmlenc11#mgf1sha1"
+                        xmlns:xenc11="http://www.w3.org/2009/xmlenc11#"/>
+          </xenc:EncryptionMethod>
+          <ds:KeyInfo>
+            <ds:X509Data><ds:X509Certificate>MII...</ds:X509Certificate></ds:X509Data>
+          </ds:KeyInfo>
+          <xenc:CipherData><xenc:CipherValue>encrypted-AES-key...</xenc:CipherValue></xenc:CipherData>
+        </xenc:EncryptedKey>
+      </ds:KeyInfo>
+      <xenc:CipherData><xenc:CipherValue>encrypted-assertion-payload...</xenc:CipherValue></xenc:CipherData>
+    </xenc:EncryptedData>
+  </saml:EncryptedAssertion>
+</samlp:Response>
+```
+
+### LogoutRequest (SP-initiated SLO)
+
+```xml
+<samlp:LogoutRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+                     xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+                     ID="_logout_req_3a2b91"
+                     Version="2.0"
+                     IssueInstant="2026-04-25T11:00:00Z"
+                     Destination="https://idp.example.com/saml/slo"
+                     NotOnOrAfter="2026-04-25T11:05:00Z">
+  <saml:Issuer>https://sp.example.com</saml:Issuer>
+  <saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">
+    alice@example.com
+  </saml:NameID>
+  <samlp:SessionIndex>_session_8e1f2c45</samlp:SessionIndex>
+</samlp:LogoutRequest>
+```
+
+### LogoutResponse
+
+```xml
+<samlp:LogoutResponse ID="_logout_resp_3a2b92"
+                      Version="2.0"
+                      IssueInstant="2026-04-25T11:00:01Z"
+                      Destination="https://sp.example.com/saml/slo"
+                      InResponseTo="_logout_req_3a2b91">
+  <saml:Issuer>https://idp.example.com</saml:Issuer>
+  <samlp:Status>
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+  </samlp:Status>
+</samlp:LogoutResponse>
+```
+
+## NameID Format Reference
+
+| Format URI | Use case | Example value |
+|---|---|---|
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` | Email as identifier | `alice@example.com` |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified` | App decides interpretation | varies |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` | Opaque pairwise (per-SP) pseudonym | `9b1c8e6f-3a4d-...` |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` | Per-session opaque (anonymous) | `_4f8a2b...` |
+| `urn:oasis:names:tc:SAML:2.0:nameid-format:entity` | SAML entity (system-to-system) | `https://idp.example.com` |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName` | X.509 subject DN | `CN=Alice,O=Example,C=US` |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName` | Windows DOMAIN\user | `EXAMPLE\alice` |
+| `urn:oasis:names:tc:SAML:1.1:nameid-format:kerberos` | Kerberos principal | `alice@EXAMPLE.COM` |
+
+## AuthnContext Class Refs Reference
+
+| URI | Meaning |
+|---|---|
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:Password` | Plain password |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport` | Password over TLS (most common) |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:TLSClient` | Client certificate (mutual TLS) |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:X509` | X.509 certificate |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:Smartcard` | Smartcard |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:SmartcardPKI` | Smartcard with PKI cert |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:Kerberos` | Kerberos ticket |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:MultiFactorContract` | MFA (any combination) |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:TimeSyncToken` | TOTP / hardware token |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:PreviousSession` | Existing SSO session reused |
+| `urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified` | IdP doesn't disclose method |
+
+The `<saml:Conditions>` `<samlp:RequestedAuthnContext Comparison="exact|minimum|maximum|better">` element on the AuthnRequest lets the SP demand a particular factor strength.
+
+## Library-Specific Error Catalog
+
+### python3-saml (OneLogin)
+
+```text
+OneLogin_Saml2_Error: SAML Response not found, Only supported HTTP_POST Binding
+# Cause: GET request to ACS endpoint or missing SAMLResponse parameter
+# Fix: ensure HTTP-POST binding for the AssertionConsumerService
+
+OneLogin_Saml2_Error: SAML Response could not be processed
+# Cause: malformed XML, base64 decoding failed
+# Fix: check intermediate URL-decoding, ensure base64 padding intact
+
+OneLogin_Saml2_ValidationError: The response was received at X but expected Y
+# Cause: Destination attribute mismatch with configured ACS URL (case-sensitive!)
+# Fix: align Destination and AssertionConsumerService URL exactly
+
+OneLogin_Saml2_ValidationError: The response has an invalid signed element
+# Cause: signature wraps wrong element (XSW), or KeyInfo doesn't reference signed cert
+# Fix: validate library defends against XSW (this one does); check IdP cert in trust store
+
+OneLogin_Saml2_ValidationError: Signature validation failed. SAML Response rejected.
+# Cause: cert mismatch, RSA key changed without metadata update
+# Fix: refresh metadata; verify x509cert in settings.json matches IdP
+
+OneLogin_Saml2_ValidationError: NotBefore and NotOnOrAfter conditions failed.
+# Cause: clock skew between SP and IdP
+# Fix: NTP both sides; allow up to 300s skew if network unreliable
+```
+
+### Sustainsys.Saml2 (.NET)
+
+```text
+Sustainsys.Saml2.SignatureValidationException: Signature didn't verify.
+# Cause: cert in metadata doesn't match cert that signed the response
+# Fix: ensure SPOptions.IdentityProviders has correct signing cert
+
+Sustainsys.Saml2.SamlException: Invalid status code <Responder>
+# Cause: IdP returned an error status (often AuthnRequest issue)
+# Fix: inspect response StatusMessage / SecondLevelStatus
+
+Sustainsys.Saml2.SamlException: Configured to require encryption but assertion is not encrypted.
+# Cause: SP options demand encrypted assertions; IdP not configured to encrypt
+# Fix: configure IdP to encrypt; or relax SP requirement
+```
+
+### Spring Security SAML
+
+```text
+org.springframework.security.saml2.Saml2Exception: Invalid status code [Responder]
+org.springframework.security.saml2.Saml2Exception: Could not parse encrypted attribute
+org.springframework.security.saml2.Saml2Exception: Invalid signature for object
+org.springframework.security.saml2.Saml2Exception: Did not decrypt response
+org.springframework.security.saml2.Saml2Exception: The destination [X] does not match
+org.springframework.security.saml2.Saml2Exception: assertion contains AuthnStatement that is too old
+```
+
+### Shibboleth SP
+
+```text
+ERROR Shibboleth.SSO.SAML2 [1]: Authentication failed.
+ERROR XMLTooling.TrustEngine.PKIX [1]: certificate path could not be validated
+ERROR Shibboleth.NameIDPolicy [1]: format URI not supported
+ERROR Shibboleth.SAML2.SSO [1]: AssertionConsumerService not found in metadata for SP
+```
+
+## XSW Attack Variants Catalog
+
+XML Signature Wrapping (XSW) — the "signature is valid but verifier is checking the wrong element" class. There are eight named variants:
+
+### XSW1 — duplicated Response with attacker payload
+
+```xml
+<Response>
+  <Response>  <!-- attacker-injected wrapper, no signature -->
+    <Assertion>...attacker's claim...</Assertion>
+  </Response>
+  <Signature>...covers the original (now-displaced) Response...</Signature>
+  <Assertion>...legitimate but unused...</Assertion>
+</Response>
+```
+
+If the verifier looks up the signed assertion by its SHA digest but processes the *first* Assertion encountered (the attacker's), authentication is bypassed.
+
+### XSW2 — signature precedes assertion
+
+Similar to XSW1 but signature placed before the legitimate assertion, with attacker assertion inserted afterward at sibling level.
+
+### XSW3 — wrap with extension
+
+Attacker injects an `<Extensions>` element containing the original signed assertion, then adds their own assertion as a sibling.
+
+### XSW4 — wrap entire response
+
+Attacker injects a new `<Response>` wrapping the attacker's assertion, with the original (signed) Response as its child.
+
+### XSW5 — wrap with pre-existing extension
+
+Like XSW3 but exploits an existing Extensions element from the IdP, hiding the malicious element among legitimate ones.
+
+### XSW6 — signature in extension
+
+Move the signature itself into an Extensions element so xmlsec processes it but the parser sees attacker's data first.
+
+### XSW7 — wrap inside assertion
+
+Attacker injects an assertion wrapper inside the original (signed) assertion.
+
+### XSW8 — combination
+
+Recombine multiple wrapping techniques (e.g., XSW1 + XSW7 nested) to bypass libraries that defend against single-variant XSW.
+
+### Defense
+
+- Validate the assertion's parent is the Response root (check `parentNode === Response`).
+- Reject any document with multiple Assertion elements.
+- Reject any document whose `<ds:Reference URI>` doesn't match the structurally-first Assertion ID.
+- Use libraries that explicitly defend against all 8 variants (`python3-saml`, OpenSAML 4+).
+
+## IdP Discovery Patterns
+
+### Common Domain Cookie (legacy, deprecated)
+
+```text
+Set-Cookie: _saml_idp=https://idp.example.com; Domain=.federation.example;
+            Secure; HttpOnly; SameSite=None
+```
+
+User's browser visits `wayf.federation.example` and SP redirects via this domain to read the cookie identifying user's home IdP. Deprecated due to third-party-cookie phase-out.
+
+### WAYF Service (Where Are You From)
+
+Federation-hosted discovery service; user picks their IdP from a list. Sample InCommon WAYF: `https://discovery.incommon.org/DS/WAYF`.
+
+### Email Domain Mapping
+
+Most modern: ask the user for email, parse the domain, route to the IdP for that domain.
+
+```python
+def find_idp(email: str) -> str:
+    domain = email.split("@", 1)[1].lower()
+    mapping = {
+        "example.com": "https://idp.example.com",
+        "subsidiary.example": "https://idp.subsidiary.example",
+    }
+    return mapping.get(domain) or DEFAULT_IDP_DISCOVERY_URL
+```
+
+### Subdomain-based
+
+Each tenant gets `tenant.app.example`; SP introspects host header.
+
+### Explicit IdP Selector Buttons
+
+"Sign in with Google / Microsoft / Okta" — user picks visually. Cleanest UX, no auto-detection.
+
 ## See Also
 
 - `owasp-auth` — broader authentication threats and defenses

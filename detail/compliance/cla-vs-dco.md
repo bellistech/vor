@@ -72,6 +72,96 @@ Linux's response:
   - Strong project culture (rejected contributions stay rejected)
 ```
 
+## Joint Authorship — Doctrinal Detail
+
+Joint authorship in 17 USC §101 requires:
+
+> a work prepared by two or more authors with the intention that their contributions be merged into inseparable or interdependent parts of a unitary whole.
+
+Two requirements separate joint works from collective works (17 USC §201(c) — "contributions to collective works"):
+
+1. **Intent**: at the time of creation, each author intends the contributions merge into a unitary whole. Patches sent to a public mailing list with no objection from maintainers usually meet this.
+2. **Independent copyrightability**: each contribution must itself meet copyright's originality threshold. Trivial typo fixes ("the" → "they") are not separately copyrightable; substantive function additions are.
+
+The combination produces a single work where every author is a co-owner of the **whole**, not just their portion. This is counterintuitive — it means the contributor of one function is a co-owner of the entire codebase's copyright.
+
+**Co-owner rights and obligations:**
+- Each co-owner can grant non-exclusive licenses to third parties
+- Each co-owner must account to other co-owners for profits (varies by jurisdiction; US default is yes)
+- Exclusive licenses require all co-owners' consent
+- Co-owner can sue infringers but must include other co-owners or account to them
+
+**Aalmuhammed v. Lee** (9th Cir. 2000) tightened the joint-authorship test in the US: requires "control" over the creative contribution. A contributor whose code was rewritten by a maintainer might fail Aalmuhammed's control prong, complicating their claim. This case is mixed news for OSS — it raises the bar for would-be joint authors to establish status, reducing some hijack-risk scenarios.
+
+**The unanimous-consent reality:**
+
+For a 1,000-contributor project to relicense, you'd need 1,000 signatures or affirmative consents. With contributor mortality (~1% per year for older projects), retirement, name changes, disappearance, and outright disagreement, unanimous consent for non-trivial relicensing is functionally impossible after a few years.
+
+Projects that achieved relicensing without contributor-level CLA infrastructure (e.g., Mozilla migrating MPL to MPL-2.0) did so through years of contributor outreach, removal of opposed contributors' code, and clean-room rewrites. The cost is enormous.
+
+## Work-for-Hire Doctrine
+
+17 USC §101 defines a "work made for hire" as:
+
+> (1) a work prepared by an employee within the scope of his or her employment; or
+> (2) a work specially ordered or commissioned for use as [enumerated categories: contributions to collective works, parts of motion pictures or other audiovisual works, translations, supplementary works, compilations, instructional texts, tests, answer materials, atlases]... if the parties expressly agree in a written instrument signed by them that the work shall be considered a work made for hire.
+
+For **employee** contributions:
+- Default: employer owns the copyright (no agreement needed)
+- "Scope of employment" is determined by Restatement (Second) of Agency §228 factors (kind of work hired to do, time, place, motivation to serve employer)
+- Patches written on a personal laptop on weekends may still be within scope if they relate to job duties
+
+For **contractor** contributions:
+- Default: contractor owns the copyright
+- Work-for-hire status requires (i) signed written agreement, AND (ii) work falls in one of nine enumerated categories
+- "Software" is not one of the enumerated categories, so even a written agreement saying "work for hire" does not transfer copyright in software absent a separate assignment clause
+
+**The contributor-employer claim trap:**
+
+Scenario: Engineer Eve at Company C contributes patches to open source project P. The patches relate to Eve's job. C never reviewed the contribution.
+
+**Question 1: Who owns the copyright?**
+
+Under work-for-hire (employee + scope of employment), C owns the copyright. Eve has no copyright to license to P.
+
+**Question 2: Was Eve authorized to contribute on C's behalf?**
+
+If C has no policy or has a policy forbidding open source contributions: Eve's grant to P is invalid. C can claim the contribution back. P has incorporated unauthorized code.
+
+**Question 3: What does P do?**
+
+This is exactly why CLAs include §4 representations:
+- "You represent that you are legally entitled to grant the above license."
+- "If your employer(s) has rights to intellectual property that you create, you represent that you have received permission to make Contributions on behalf of that employer..."
+
+These shift the burden to the contributor: if Eve signs and is wrong, Eve is liable to P for the false representation. P has legal standing to seek indemnification.
+
+**Real-world enforcement:**
+
+**Disney v. ABC contractor** types of disputes happen, but for open source the typical outcome is:
+- Company discovers employee contributions, evaluates business relevance
+- If irrelevant: implicitly tolerated, no claim made
+- If relevant: company contributes through proper channels going forward
+- If hostile (e.g., employee leaked trade secrets): company demands removal, project removes contribution
+
+**Why CCLAs matter:**
+
+The Apache Corporate CLA (CCLA) preempts the work-for-hire problem by having a corporate signatory expressly authorize employee contributions. The CCLA pre-grants what Eve's employment agreement would otherwise need to grant. Once the CCLA is signed and Eve is on the designated employee list, contributions are clearly authorized — no §4 representation gap.
+
+For projects without CCLAs, the §4 representation is the only safeguard. And it can fail if employees over-claim authority.
+
+```
+Employee contribution flow:
+  Eve writes patch
+       ↓
+  Patch within scope of employment? → Y → C owns copyright
+       ↓
+  Did C authorize OSS contribution?
+       ├─ Y (CCLA / written policy) → contribution valid
+       ├─ N → contribution unauthorized (C can claim back)
+       └─ Unclear → §4 representation gap → litigation risk
+```
+
 ## The Apache CLA Anatomy — Section-by-Section
 
 The Apache Individual Contributor License Agreement (ICLA) is the canonical CLA template. Most modern CLAs (Google's, Microsoft's, Linux Foundation's) derive from it.
@@ -129,6 +219,109 @@ ICLA flow:
 CCLA flow:
   Executive signs CCLA → designates employees → employee contributions covered
   New employee → corp adds to designation list → covered
+```
+
+## Apache ICLA — Deeper Section-by-Section Analysis
+
+The Apache ICLA's individual sections deserve focused unpacking — each clause exists to close a specific legal exposure.
+
+**§1 — Definitions detail:**
+
+The "Contribution" definition explicitly says "intentionally submitted." The "intentionally" word matters because it excludes accidental disclosures (someone accidentally CCing a maintainer with code, unintentionally posting code to a forum). Without "intentionally," ASF could face claims that an accidental disclosure binds the contributor.
+
+The "Not a Contribution" carve-out lets contributors include third-party code (e.g., showing a vendor library snippet for context) without licensing it under the CLA. The contributor must mark the carve-out explicitly: most projects do this with `Not a Contribution:` in commit messages or PR descriptions.
+
+**§2 — Why "sublicense" matters:**
+
+Without "sublicense," ASF's grant from the contributor would not extend ASF's right to grant downstream licensees. Downstream Apache-2.0 users would technically need a license directly from each individual contributor. ASF could not unilaterally grant Apache-2.0 to the public if each contributor had to be a separate licensor.
+
+With "sublicense," ASF aggregates contributor grants and re-grants them to the public under Apache-2.0. The public's license traces through ASF as the intermediary, simplifying the chain of title.
+
+**§3 — Patent grant scope mechanics:**
+
+The phrase "patent claims licensable by You" has a specific meaning: only patents the contributor *can* license. If the contributor doesn't own a patent (it's owned by their employer who hasn't authorized them), the contributor can't license it via the CLA. The §4 representation backstops this — the contributor swears they are entitled to grant, so if they're wrong, the contributor (not ASF) bears the liability.
+
+The combination clause "alone or by combination of Your Contribution(s) with the Work" extends to patents reading on the integrated work, not just the patch in isolation. This handles the case where a patent reads on the algorithm only when the contribution is combined with other Apache code — a narrow but real scenario.
+
+**§4 — Representation practical implications:**
+
+The representations are sworn statements. If a contributor signs falsely, this is potentially actionable (fraud, breach of warranty). In practice, ASF doesn't sue individual contributors over small misrepresentations — but the existence of the representation provides legal cover for ASF when downstream users challenge a contribution's authenticity.
+
+The "permission from employer" language is what makes CCLAs preemptive: a CCLA satisfies this representation in advance for designated employees.
+
+**§5 — Disclaimer of warranties:**
+
+Contributions come "as is" — ASF doesn't represent that contributions are bug-free or fit for purpose. This protects the contributor from liability when ASF or downstream users encounter problems with the contributed code.
+
+**§6 — Inaccuracy notification:**
+
+The contributor agrees to notify if §4 representations later become false. Example: contributor changes employers; the new employer might have IP claims. The notification obligation gives ASF a chance to address coverage gaps.
+
+This obligation is rarely enforced in practice but creates a legal duty: a contributor who knowingly fails to notify after their representations become false is in clearer breach.
+
+**§7 — Non-original submission marking:**
+
+When contributing third-party code (e.g., a useful function from another open-source project), the contributor must mark the source and license. This lets ASF audit whether the third-party license is compatible.
+
+In practice, this section is often ignored. Maintainers should review imports and add comments referencing the source license in the file.
+
+## CLA Variants — Eclipse, .NET Foundation, CNCF EasyCLA
+
+The Apache CLA template inspired several variants. Each adds wrinkles for its hosting foundation's needs.
+
+**Eclipse Contributor Agreement (ECA):**
+
+The Eclipse Foundation uses a streamlined ECA, signed once per contributor, covering all Eclipse projects:
+
+- Single agreement, not per-project
+- Covers contributions to any Eclipse project
+- Asserts compatibility with the project's license (which is Eclipse Public License 2.0 by default)
+- Does NOT include broad sublicensing rights — Eclipse can use the contribution under EPL-2.0 but cannot unilaterally relicense
+- Includes "Eclipse Foundation Specification License" coverage for spec contributions
+
+The ECA is narrower than Apache's CLA. Eclipse projects cannot simply relicense — contributors retain copyright with grants limited to EPL-2.0 use. Eclipse views this as a feature: contributors trust the EPL-2.0 commitment is permanent.
+
+**.NET Foundation CLA:**
+
+The .NET Foundation operates Microsoft-derived OSS (.NET Core, ASP.NET, Roslyn). Its CLA is closer to Apache's, with broad sublicensing rights:
+
+- Both individual and corporate variants
+- Grants broad copyright + patent licenses
+- Includes provisions for moral rights waiver (relevant in EU jurisdictions)
+- Allows .NET Foundation to relicense — important since Microsoft has historically relicensed components
+
+The CLA was controversial when Microsoft moved .NET to OSS in 2014. Critics worried it could enable Microsoft to relicense back to proprietary. Microsoft mitigated by transferring rights to the .NET Foundation (a separate entity), reducing single-company control.
+
+**CNCF EasyCLA (and DCO mode):**
+
+The Cloud Native Computing Foundation initially used Linux Foundation's standard CLA, then in 2018 launched **EasyCLA** — a tooling system that supports both CLA and DCO modes per-project.
+
+EasyCLA features:
+- Per-project choice of CLA, DCO, or both
+- Automated GitHub integration: PR check blocks merge until contributor signs (CLA) or signs off (DCO)
+- Corporate domain mapping: companies pre-authorize all employees with `@company.com` emails
+- CCLA hierarchy: corporate signatory designates approvers, approvers can authorize specific employees
+- Audit and reporting: query who signed when, for relicensing or due diligence
+
+Most CNCF projects (Kubernetes, Prometheus, Envoy) use **DCO mode** rather than CLA. The choice was deliberate: CNCF's leadership saw CLA friction as harmful and favored Linux-style DCO. EasyCLA still supports CLA mode for projects that prefer it (some legacy projects retained CLAs).
+
+**The Linux Foundation Project CLA:**
+
+LF projects often use a uniform CLA template:
+- Corporate signatory delegates to "Authorized Approvers"
+- Authorized Approvers can authorize/deauthorize individual contributors
+- Centralized through EasyCLA platform
+- Audit-ready for relicensing decisions
+
+LF projects that adopted the LF CLA template include Hyperledger, OpenJS Foundation, OpenAPI Initiative.
+
+```
+CLA variant comparison:
+  Apache CLA       — broad sublicense, relicensable, foundational template
+  Eclipse ECA      — narrower, EPL-2.0 only, no relicensing
+  .NET Foundation  — broad sublicense, relicensable, with moral rights waiver
+  LF Project CLA   — broad sublicense, EasyCLA-managed
+  CNCF EasyCLA     — supports DCO or CLA, project's choice
 ```
 
 ## Patent Grant in CLAs — Apache CLA §3
@@ -214,6 +407,109 @@ DCO is **lighter weight** than CLA:
 - No "click-through legal document" friction
 
 This is why Linux kernel uses DCO — Linus values low contribution friction more than relicensing flexibility.
+
+## Worked DCO Scenarios — Linux Kernel Rules
+
+The Linux kernel codifies DCO behavior in `Documentation/process/submitting-patches.rst`. Walk through canonical scenarios:
+
+**Scenario 1: Contributor writes a fresh patch.**
+
+Contributor Alice writes a patch fixing a bug. She signs off:
+
+```
+Subject: net: fix race in tcp_v4_destroy_sock
+
+The teardown sequence for tcp_v4_destroy_sock had a race where ...
+
+Signed-off-by: Alice Author <alice@example.com>
+```
+
+This invokes DCO clause (a) — Alice created the patch herself, has the right to submit it under GPL-2.0 (the kernel's license).
+
+**Scenario 2: Contributor takes patch from another contributor.**
+
+Bob receives Alice's patch via email (not directly from Linux kernel mailing list), then forwards it. Bob must NOT modify the patch and must add his own sign-off below Alice's:
+
+```
+Signed-off-by: Alice Author <alice@example.com>
+Signed-off-by: Bob Forwarder <bob@example.com>
+```
+
+Bob's sign-off invokes DCO clause (c) — the contribution came from someone who certified (a), (b), or (c), and Bob hasn't modified it.
+
+If Bob HAD modified the patch, he'd need to sign off via clause (a) or (b), and the chain would be broken. Linux convention requires Bob to either (i) keep the patch unchanged and add (c) sign-off, or (ii) modify and rewrite as his own contribution with a clear acknowledgment of Alice's prior work.
+
+**Scenario 3: Cherry-pick preserving sign-off.**
+
+Maintainer Carol cherry-picks Alice's commit from kernel mainline to a stable branch:
+
+```bash
+git cherry-pick -s abc1234
+```
+
+The `-s` flag adds Carol's `Signed-off-by` while preserving Alice's. The resulting commit:
+
+```
+Subject: net: fix race in tcp_v4_destroy_sock
+
+[ Upstream commit abc1234 ]
+
+The teardown sequence for tcp_v4_destroy_sock had a race where ...
+
+Signed-off-by: Alice Author <alice@example.com>
+Signed-off-by: Carol Maintainer <carol@example.com>
+```
+
+The chain shows: Alice authored under (a), Carol propagated under (c) (or (b) if cherry-pick involved adjustments — common for stable-tree adaptations).
+
+**Scenario 4: Trailer additions during review.**
+
+Reviewers add `Reviewed-by:`, `Tested-by:`, `Acked-by:` trailers without sign-off. These are not DCO clauses (a)/(b)/(c) — they're attestations of review, not authorship. They DO appear in the commit message but don't make the reviewer a contributor under DCO.
+
+```
+Signed-off-by: Alice Author <alice@example.com>
+Reviewed-by: David Reviewer <david@example.com>
+Tested-by: Eve Tester <eve@example.com>
+Signed-off-by: Carol Maintainer <carol@example.com>
+```
+
+Carol's sign-off (the maintainer applying the patch) is required; David and Eve's are advisory.
+
+**Scenario 5: Co-developed-by trailer (multi-author commits).**
+
+When two developers genuinely co-author a patch:
+
+```
+Signed-off-by: Alice Author <alice@example.com>
+Co-developed-by: Bob Coauthor <bob@example.com>
+Signed-off-by: Bob Coauthor <bob@example.com>
+```
+
+Both must sign off (clause (a)). The `Co-developed-by` is a Linux convention indicating shared authorship; the kernel maintainers require sign-off from both.
+
+**Scenario 6: Reverting a commit.**
+
+A revert is a new commit, not a deletion. The reverter signs off:
+
+```
+Subject: Revert "net: fix race in tcp_v4_destroy_sock"
+
+This reverts commit abc1234 because it caused a regression on ARM64.
+
+Signed-off-by: Frank Reverter <frank@example.com>
+```
+
+The revert is Frank's contribution under (a). Alice's original sign-off remains in the original commit's history.
+
+**Why these rules matter:**
+
+The chain of sign-offs creates a complete audit trail. If years later someone challenges a contribution's authenticity, the kernel can produce git log showing:
+- Original author (Alice)
+- Each propagation step (Bob, Carol)
+- Maintainer who applied (Carol)
+- Each step's email and timestamp
+
+The chain is immutable (rewriting history breaks the DCO chain — kernel maintainers reject force-pushes to mainline). Litigation discovery can reconstruct the chain decades later.
 
 ## The Linux Kernel Decision — Linus + Greg KH's Stance
 
@@ -442,6 +738,44 @@ DCO tooling:
 
 Both models leave permanent records. CLA records sit in a centralized DB; DCO records sit in git history. Both survive forks (clones carry history).
 
+## Tools Comparison Table
+
+| Tool | Type | Hosting | Cost | Storage | Notable Features |
+|------|------|---------|------|---------|------------------|
+| **cla-assistant.io** | CLA | Hosted SaaS / self-host option | Free hosted | GitHub commits in dedicated repo | Open source, simple GitHub App, supports ICLA + CCLA |
+| **EasyCLA** | CLA / DCO | LF-hosted | Free for LF projects | LF databases | Corporate domain mapping, audit reports, hierarchical approvers |
+| **CLA-bot** (CLA-Assistant clone) | CLA | Self-hosted | Free | Local DB | Lightweight, suitable for single projects |
+| **probot/dco** | DCO | GitHub App | Free | Git history (no separate DB) | Validates `Signed-off-by` trailer per commit; rejects unsigned PRs |
+| **Salesforce CLA Bot** | CLA | Self-hosted Salesforce | Free for SF projects | Salesforce DB | Internal SF tool; used by SF OSS projects |
+| **Microsoft CLA service** | CLA | Microsoft-hosted | Free for participating projects | Microsoft DB | Used by .NET Foundation, Azure projects |
+| **GitHub CLA Action** (custom) | CLA | GitHub Actions | Free | Repository-as-DB or external | Project-specific custom workflows |
+
+**Detailed feature comparison:**
+
+| Feature | cla-assistant | EasyCLA | probot/dco |
+|---------|---------------|---------|------------|
+| Per-commit validation | No (per-PR) | No (per-PR) | Yes |
+| Per-PR validation | Yes | Yes | Yes |
+| Corporate (CCLA) support | Yes | Yes (extensive) | N/A (DCO is per-commit) |
+| Audit export | Yes (manual) | Yes (built-in reports) | git log |
+| GitHub native | Yes | Yes | Yes |
+| GitLab support | Limited | No | Yes (via webhook) |
+| Self-hosted option | Yes | No | Yes |
+| Multi-project bulk signing | No | Yes (corporate domain) | N/A |
+| Re-sign on agreement change | Yes (configurable) | Yes | N/A |
+| Contributor metadata capture | Email, GitHub | Full corporate hierarchy | Email, name from sign-off |
+
+**Project examples:**
+- **cla-assistant**: VSCode-style CLAs, GitHub Action ecosystem
+- **EasyCLA**: Kubernetes (originally), Hyperledger, ONAP, OpenAPI
+- **probot/dco**: Docker, CNCF projects (Kubernetes since migration), Node.js
+- **Custom**: Large projects (Mozilla, Apache) often roll their own
+
+**Migration paths:**
+- cla-assistant → EasyCLA: export CLA records from GitHub repo, re-import via EasyCLA admin
+- EasyCLA → probot/dco: stop CLA enforcement, enable DCO bot, ask contributors to sign-off going forward
+- probot/dco → CLA: install cla-assistant or EasyCLA, request all active contributors sign
+
 ## The Failure Modes
 
 CLAs and DCOs both have failure modes:
@@ -511,13 +845,19 @@ Another: **CNCF projects** standardize on DCO. When a project joins CNCF (e.g., 
 - Apache ICLA — https://www.apache.org/licenses/contributor-agreements.html#clas
 - Apache CCLA — https://www.apache.org/licenses/contributor-agreements.html#clas
 - FSF Copyright Assignment FAQ — https://www.gnu.org/licenses/why-assign.html
+- Eclipse Contributor Agreement — https://www.eclipse.org/legal/ECA.php
+- .NET Foundation CLA — https://cla.dotnetfoundation.org/
+- CNCF DCO policy — https://github.com/cncf/foundation/blob/main/policies-guidance/dco.md
+- Linux Foundation EasyCLA — https://easycla.lfx.linuxfoundation.org/
 - Software Freedom Law Center, "A Legal Issues Primer for Open Source and Free Software Projects" — https://www.softwarefreedom.org/resources/2008/foss-primer.html
 - "The Legal Mechanics of Open Source Contributions," Heather Meeker
 - Linus Torvalds on CLAs (lkml) — search lkml.org for "CLA"
 - Greg KH on CLAs — various blog posts, e.g., http://www.kroah.com/log/blog/
 - cla-assistant.io — https://cla-assistant.io/
-- EasyCLA (Linux Foundation) — https://easycla.lfx.linuxfoundation.org/
 - DCO GitHub App — https://github.com/apps/dco
+- Aalmuhammed v. Lee, 202 F.3d 1227 (9th Cir. 2000) — joint authorship test
+- Community for Creative Non-Violence v. Reid, 490 U.S. 730 (1989) — work-for-hire factors
+- 17 USC §101 (definitions, work for hire) — https://www.law.cornell.edu/uscode/text/17/101
 - 17 USC §201 (joint authorship) — https://www.law.cornell.edu/uscode/text/17/201
 - 28 USC §1746 (sworn statements / unsworn declarations) — https://www.law.cornell.edu/uscode/text/28/1746
 - Open Invention Network — https://openinventionnetwork.com/
@@ -529,5 +869,6 @@ Another: **CNCF projects** standardize on DCO. When a project joins CNCF (e.g., 
 - Redis license change announcement — https://redis.io/blog/redis-adopts-dual-source-available-licensing/
 - Valkey fork — https://valkey.io/
 - "Contributor Covenant" (different topic, but adjacent governance norm) — https://www.contributor-covenant.org/
-- CNCF DCO policy — https://github.com/cncf/foundation/blob/main/policies-guidance/dco.md
 - SCO v. IBM case background — Wikipedia, "SCO–Linux disputes"
+- Kernel kernel.org submitting-patches with Signed-off-by, Co-developed-by, etc. — https://docs.kernel.org/process/submitting-patches.html
+- Restatement (Second) of Agency §228 (scope of employment factors)

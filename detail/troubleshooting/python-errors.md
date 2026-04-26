@@ -810,6 +810,269 @@ except Exception as e:
 
 Cleaner than wrapping in a new exception class when you just want to attach context.
 
+## Frame Object Internals
+
+The `PyFrameObject` (Include/cpython/frameobject.h) is the runtime stack frame for each Python function call. Key fields used in exception handling:
+
+```c
+typedef struct _frame {
+    PyObject_VAR_HEAD
+    struct _frame *f_back;      /* previous frame (caller) — frame chain */
+    PyCodeObject  *f_code;      /* compiled code object — bytecode */
+    PyObject      *f_builtins;  /* builtin namespace */
+    PyObject      *f_globals;   /* module-level namespace */
+    PyObject      *f_locals;    /* local variables (when accessed via locals()) */
+    PyObject     **f_valuestack; /* the value stack used by bytecode */
+    PyObject      *f_trace;     /* trace function (set by sys.settrace) */
+    char           f_trace_lines;
+    char           f_trace_opcodes;
+    int            f_lasti;     /* index of last attempted instruction (in bytecode) */
+    int            f_lineno;    /* current line number (computed from f_lasti via line table) */
+    int            f_iblock;    /* depth of try-block / loop-block stack */
+} PyFrameObject;
+```
+
+When an exception unwinds, the interpreter walks `f_back` building the traceback. Each `PyTracebackObject` holds:
+
+```c
+typedef struct _traceback {
+    PyObject_HEAD
+    struct _traceback *tb_next;
+    PyFrameObject     *tb_frame;
+    int                tb_lasti;
+    int                tb_lineno;
+} PyTracebackObject;
+```
+
+## Bytecode-Level Try/Except (Python 3.10 and Earlier)
+
+Pre-3.11, try/except was implemented with a block-stack via SETUP_EXCEPT and POP_BLOCK opcodes:
+
+```python
+# Python source:
+try:
+    risky()
+except ValueError:
+    handle()
+
+# Bytecode (3.10):
+  2           0 SETUP_FINALLY            14 (to 16)
+  3           2 LOAD_GLOBAL              0 (risky)
+              4 CALL_FUNCTION            0
+              6 POP_TOP
+              8 POP_BLOCK
+             10 JUMP_FORWARD            22 (to 34)
+  4     >>   16 DUP_TOP
+             18 LOAD_GLOBAL              1 (ValueError)
+             20 JUMP_IF_NOT_EXC_MATCH    32
+             22 POP_TOP
+             24 POP_TOP
+             26 POP_TOP
+  5          28 LOAD_GLOBAL              2 (handle)
+             30 CALL_FUNCTION            0
+             32 POP_EXCEPT
+             34 LOAD_CONST               0 (None)
+             36 RETURN_VALUE
+```
+
+Each try block pushed a frame onto the `f_iblock` stack; exception unwind popped to find handlers.
+
+## Bytecode-Level Try/Except (Python 3.11+)
+
+Python 3.11 replaced the block-stack with a static **exception table** stored alongside bytecode:
+
+```python
+# Python source same as above
+
+# Bytecode (3.11+):
+  2           0 RESUME                   0
+  3           2 LOAD_GLOBAL              1 (NULL + risky)
+             14 PRECALL                  0
+             18 CALL                     0
+             28 POP_TOP
+             30 LOAD_CONST               0 (None)
+             32 RETURN_VALUE
+  4     >>   34 PUSH_EXC_INFO
+             36 LOAD_GLOBAL              2 (ValueError)
+             48 CHECK_EXC_MATCH
+             50 POP_JUMP_FORWARD_IF_FALSE 14 (to 80)
+             52 POP_TOP
+  5          54 LOAD_GLOBAL              5 (NULL + handle)
+             66 PRECALL                  0
+             70 CALL                     0
+             80 POP_TOP
+             82 POP_EXCEPT
+             84 LOAD_CONST               0 (None)
+             86 RETURN_VALUE
+
+# Exception table (compact format, see Python/compile.c):
+#   start_offset, end_offset, target, depth, lasti
+#       2          30          34       0      0
+```
+
+The table is parsed when an exception is raised: find the smallest range containing the current `f_lasti` and jump to the handler. **Zero-cost on the no-exception path** — there's no SETUP_EXCEPT to execute.
+
+## sys.settrace at the C Level
+
+The `sys.settrace(fn)` API hooks into `tstate->c_tracefunc` and `tstate->use_tracing`:
+
+```c
+// In ceval.c, the eval loop checks tstate->use_tracing before each opcode dispatch:
+if (cframe.use_tracing) {
+    if (call_trace_protected(tstate->c_tracefunc, tstate->c_traceobj,
+                             tstate, frame, &instr_prev, PyTrace_LINE, Py_None) < 0) {
+        goto error;
+    }
+}
+```
+
+`tstate->use_tracing` is a bitfield combining global trace state and per-frame `f_trace_lines` / `f_trace_opcodes` flags. The trace function is called with `(frame, event, arg)` where `event` is one of:
+
+- `'call'` — entering a function
+- `'line'` — about to execute a new line (the most common — used by pdb breakpoints)
+- `'return'` — function returning
+- `'exception'` — exception raised
+- `'opcode'` — about to execute an instruction (only if `f_trace_opcodes` set)
+
+The performance cost is significant: tracing slows execution by ~10x, which is why pdb is sluggish during step-through.
+
+## PEP 657 Fine-Grained Tracebacks
+
+Python 3.11 introduced position-aware tracebacks. The code object now stores a `co_positions` table mapping each instruction to (start_line, end_line, start_col, end_col). When formatting a traceback:
+
+```python
+def f():
+    a = obj.x.y.z
+    #        ^   ← traceback caret points here
+
+# Pre-3.11: just "line 2, in f"
+# 3.11+: shows the carets:
+#   File "X.py", line 2, in f
+#     a = obj.x.y.z
+#         ~~~~~^^^^
+```
+
+The `co_positions` table is encoded in `PyCode_LinesIterator` via a varint sequence; each entry is the delta from the previous instruction.
+
+## PEP 654 Exception Groups (3.11+)
+
+Multiple unrelated exceptions surfaced together (typical in async / concurrent code):
+
+```python
+async def process_all(urls):
+    async with asyncio.TaskGroup() as tg:
+        for url in urls:
+            tg.create_task(fetch(url))
+
+# If 3 of N tasks raise different exceptions, raises:
+#   ExceptionGroup("unhandled errors in a TaskGroup", [
+#     HTTPError("404 for url1"),
+#     TimeoutError("url2 took too long"),
+#     ConnectionError("url3 reset"),
+#   ])
+
+# Pattern matching with except* (PEP 654):
+try:
+    asyncio.run(process_all(urls))
+except* HTTPError as eg:
+    for exc in eg.exceptions:
+        log.warning("HTTP error: %s", exc)
+except* (TimeoutError, ConnectionError) as eg:
+    for exc in eg.exceptions:
+        log.error("Network error: %s", exc)
+```
+
+`except* X` matches any exception in the group whose type is `X` (or descended); other exceptions in the group are re-raised in a new ExceptionGroup. The `.split()` and `.subgroup()` methods on ExceptionGroup let you partition programmatically.
+
+## PEP 626 Code Object Line Tables
+
+Pre-3.10: `co_lnotab` was a sequence of `(byte_delta, line_delta)` pairs.
+3.10+: `co_linetable` uses a more compact varint-based encoding with negative deltas and "no line" markers (for compiler-generated bytecode that has no source line).
+
+The `co_lines()` generator iterates entries:
+
+```python
+import dis
+for start, end, line in code.co_lines():
+    print(f"bytecode {start:4}-{end:4} → source line {line}")
+```
+
+This enables PEP 657's column-aware tracebacks: each (byte_offset, line) pair is augmented with column info via `co_positions()`.
+
+## CPython Memory Model + Exceptions
+
+Exceptions are heap-allocated PyObjects. Reference cycles are common because:
+
+```text
+exc.__traceback__ → frame
+frame.f_locals    → all local vars
+local "exc" var   → exc itself  ← cycle!
+```
+
+CPython's reference-counting GC won't free this; the cyclic GC eventually collects it. Best practice: explicitly `del exc` in the handler or use `try/except/else/finally` to ensure the local goes out of scope.
+
+The `traceback` module's `format_exception` walks `__traceback__` allocating new strings per frame; for a deep stack this can be expensive (10s of µs per frame).
+
+## Library Exception Patterns Catalog
+
+### Pydantic v2 ValidationError
+
+```python
+from pydantic import BaseModel, ValidationError
+
+class User(BaseModel):
+    name: str
+    age: int
+
+try:
+    User(name="Alice", age="not a number")
+except ValidationError as e:
+    # e.errors() returns a list of dicts, each with type/loc/msg/input
+    for err in e.errors():
+        print(f"{err['loc']}: {err['msg']} (input: {err['input']!r})")
+    # e.json() for JSON-serializable
+    # str(e) for human-readable multi-line summary
+```
+
+### asyncio TaskGroup error aggregation
+
+Exceptions from spawned tasks are gathered into ExceptionGroup. CancelledError suppression: a CancelledError in the body of TaskGroup propagates to siblings via cancel scope.
+
+### contextlib.ExitStack exception aggregation
+
+```python
+with contextlib.ExitStack() as stack:
+    files = [stack.enter_context(open(p)) for p in paths]
+    # If any file's __exit__ raises during cleanup:
+    # ExitStack chains the new exception to __context__ but doesn't aggregate.
+    # In 3.11+, you can use contextlib.aclosing for async with similar semantics.
+```
+
+### sqlalchemy DetachedInstanceError
+
+```python
+sqlalchemy.orm.exc.DetachedInstanceError: Instance <Foo> is not bound to a Session
+# Cause: object accessed after its session was closed; lazy-loaded attribute traversal
+# Fix: eager-load (joinedload, selectinload) or keep session open longer
+```
+
+### requests SSLError chain
+
+```text
+requests.exceptions.SSLError: HTTPSConnectionPool(host='example.com', port=443):
+  Max retries exceeded with url: /api/...
+  (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] ...')))
+
+# The .__cause__ chain: requests.exceptions.SSLError ← urllib3 SSLError ← ssl.SSLCertVerificationError
+# To inspect:
+try:
+    requests.get(...)
+except requests.exceptions.SSLError as e:
+    while e:
+        print(type(e).__name__, str(e))
+        e = e.__cause__ or e.__context__
+```
+
 ## References
 
 - Python Language Reference, "Exceptions": https://docs.python.org/3/reference/executionmodel.html#exceptions

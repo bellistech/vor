@@ -1371,6 +1371,443 @@ Authorization: Bearer <scim-token>
 - **Bug bounty + pen-test** — auth subsystems benefit from external eyes more than almost any other code.
 - **Patch promptly** — auth lib CVEs ship monthly; you want CI to flag stale deps daily.
 
+## Library-Specific Error Catalog
+
+Verbatim error messages from major auth libraries with cause + fix.
+
+### Spring Security
+
+```text
+org.springframework.security.authentication.BadCredentialsException: Bad credentials
+# Cause: password mismatch (or username unknown — same exception by design to prevent enumeration)
+# Fix: log the actual reason at DEBUG (never INFO/WARN); always return 401 with same message regardless
+
+org.springframework.security.authentication.LockedException: User account is locked
+# Cause: too many failed attempts; account-lockout policy fired
+# Fix: provide unlock flow via verified email; never auto-unlock without 2nd factor
+
+org.springframework.security.authentication.DisabledException: User is disabled
+# Cause: user.enabled=false (often unverified email, admin disable, or SAML deprovisioned)
+# Fix: route to "verify your email" or "contact admin"
+
+org.springframework.security.authentication.CredentialsExpiredException: User credentials have expired
+# Cause: password-rotation policy reached
+# Fix: redirect to /change-password; OWASP says don't force rotation without breach signal
+
+org.springframework.security.web.csrf.InvalidCsrfTokenException: Invalid CSRF token found for X
+# Cause: CSRF token missing / mismatched / expired
+# Fix: client must include X-CSRF-Token header (read from /csrf endpoint); session expired re-auth
+
+org.springframework.security.oauth2.jwt.BadJwtException: Signed JWT rejected: Invalid signature
+# Cause: JWT signature doesn't match expected key
+# Fix: verify your JWT decoder is configured with the right JWK Set URI; check kid header
+```
+
+### Django
+
+```text
+django.contrib.auth.backends.RemoteUserBackend: Remote user authentication failed
+django.contrib.sessions.exceptions.InvalidSessionKey: Session key X does not exist
+django.core.exceptions.PermissionDenied: User does not have permission to view this resource
+# Cause: user not in required group or has insufficient privilege
+# Fix: check user.groups.all() and the @permission_required decorator scope
+
+django.core.exceptions.SuspiciousOperation: WSGI request's SCRIPT_NAME contains invalid characters
+# Cause: path injection attempt or proxy-misconfig
+# Fix: trust list of allowed prefixes; sanitize at proxy
+
+django.middleware.csrf.RejectRequest: CSRF cookie not set
+# Cause: client didn't include csrftoken cookie + X-CSRFToken header
+# Fix: ensure CSRF middleware is enabled; client AJAX must read csrftoken cookie value
+
+django.contrib.auth.models.AnonymousUser: Object has no attribute 'X'
+# Cause: code assumed authenticated user but request.user is AnonymousUser
+# Fix: @login_required decorator on the view; or check request.user.is_authenticated first
+```
+
+### FastAPI / Pydantic / python-jose
+
+```python
+from jose import jwt, JWTError, ExpiredSignatureError, JWTClaimsError
+
+# JWTError: Invalid algorithm specified
+#   Cause: algorithms=[] not specified or wrong list
+#   Fix: ALWAYS specify algorithms=["RS256"] explicitly — never omit (default allows alg=none in old versions)
+
+# ExpiredSignatureError: Signature has expired
+#   Cause: exp claim past current time + leeway
+#   Fix: refresh token; allow leeway=30s for clock skew between issuer + verifier
+
+# JWTClaimsError: Invalid issuer
+#   Cause: iss claim doesn't match expected value
+#   Fix: verify(token, key, algorithms=["RS256"], issuer="https://my-idp.example.com")
+
+# fastapi.security.OAuth2PasswordBearer: Not authenticated
+#   Cause: missing Authorization: Bearer X header
+#   Fix: client must send Authorization: Bearer <access_token>
+```
+
+### Auth0 + Okta + Entra ID Common Errors
+
+```text
+Auth0 / OIDC userinfo: invalid_token
+# Cause: access token expired, revoked, or for wrong audience
+# Fix: refresh token via /oauth/token grant_type=refresh_token
+
+Auth0 rule: insufficient_scope
+# Cause: app requested scope X but token only has scope Y
+# Fix: re-authorize with requested scopes; user may need consent re-grant
+
+Okta MFA_REQUIRED
+# Cause: policy demands second factor before token issuance
+# Fix: complete the MFA challenge per Okta's /api/v1/authn/factors API
+
+Entra ID AADSTS50105: The signed in user is not assigned to a role for the application
+# Cause: enterprise-app assignment missing in Entra
+# Fix: Admin: assign user/group via App registrations → Users and groups
+
+Entra ID AADSTS65001: The user or administrator has not consented to use the application
+# Cause: consent prompt not yet completed for this app/scope
+# Fix: redirect to /authorize with prompt=consent
+
+Entra ID AADSTS90100: The 'redirect_uri' in this request does not match the registered URLs
+# Cause: redirect URL mismatch (case-sensitive, trailing slash matters)
+# Fix: register exact URL in Entra app registration → Authentication
+```
+
+### passport.js (Node)
+
+```javascript
+// passport.use(new LocalStrategy(...)) — common error patterns
+
+// Error: Failed to serialize user into session
+//   Cause: passport.serializeUser not configured (or returning undefined)
+//   Fix: passport.serializeUser((user, done) => done(null, user.id))
+
+// Error: Failed to deserialize user out of session
+//   Cause: passport.deserializeUser not configured
+//   Fix: passport.deserializeUser(async (id, done) => {
+//     const user = await User.findById(id);
+//     done(null, user);
+//   })
+
+// AuthorizationError: Authorization request requires "state" parameter
+//   Cause: OAuth strategy missing state token (CSRF defense)
+//   Fix: ensure express-session is configured BEFORE passport.session()
+
+// TokenError: invalid_grant
+//   Cause: code expired, already used, or PKCE verifier mismatch
+//   Fix: don't reuse codes; verify pkce-verifier matches the original challenge
+```
+
+## More OAuth 2.1 + PKCE Worked Examples
+
+### Python authlib — full flow
+
+```python
+from authlib.integrations.requests_client import OAuth2Session
+
+# Step 1: generate PKCE code_verifier + code_challenge
+import secrets
+import base64
+import hashlib
+
+code_verifier = secrets.token_urlsafe(64)  # 43-128 chars per RFC 7636
+code_challenge = base64.urlsafe_b64encode(
+    hashlib.sha256(code_verifier.encode("ascii")).digest()
+).rstrip(b"=").decode("ascii")
+
+# Step 2: redirect user to authorize endpoint
+client = OAuth2Session(
+    client_id="my-spa",
+    redirect_uri="https://myapp.example.com/callback",
+    scope="openid profile email",
+)
+authorization_url, state = client.create_authorization_url(
+    "https://idp.example.com/oauth/authorize",
+    code_challenge=code_challenge,
+    code_challenge_method="S256",
+)
+# user is redirected to authorization_url; on completion they hit /callback?code=X&state=Y
+
+# Step 3: exchange code for tokens
+token = client.fetch_token(
+    "https://idp.example.com/oauth/token",
+    authorization_response=request.url,
+    code_verifier=code_verifier,
+)
+
+# token = {"access_token": "...", "refresh_token": "...", "id_token": "...",
+#          "expires_in": 3600, "token_type": "Bearer", "scope": "openid profile email"}
+```
+
+### Go golang.org/x/oauth2 — full flow
+
+```go
+package main
+
+import (
+    "context"
+    "crypto/rand"
+    "crypto/sha256"
+    "encoding/base64"
+    "golang.org/x/oauth2"
+)
+
+func main() {
+    conf := &oauth2.Config{
+        ClientID:     "my-app",
+        ClientSecret: "",  // public client (PKCE)
+        RedirectURL:  "https://myapp.example.com/callback",
+        Scopes:       []string{"openid", "profile", "email"},
+        Endpoint: oauth2.Endpoint{
+            AuthURL:  "https://idp.example.com/oauth/authorize",
+            TokenURL: "https://idp.example.com/oauth/token",
+        },
+    }
+
+    // Generate PKCE verifier
+    verifier := make([]byte, 32)
+    _, _ = rand.Read(verifier)
+    verifierStr := base64.RawURLEncoding.EncodeToString(verifier)
+
+    h := sha256.Sum256([]byte(verifierStr))
+    challenge := base64.RawURLEncoding.EncodeToString(h[:])
+
+    state := "..." // CSRF token
+
+    authURL := conf.AuthCodeURL(state,
+        oauth2.SetAuthURLParam("code_challenge", challenge),
+        oauth2.SetAuthURLParam("code_challenge_method", "S256"),
+    )
+
+    // ... user redirected, callback receives ?code=X
+    code := "..."
+    token, err := conf.Exchange(context.Background(), code,
+        oauth2.SetAuthURLParam("code_verifier", verifierStr),
+    )
+    _ = err
+    _ = token
+}
+```
+
+### Node openid-client — full flow
+
+```javascript
+const { Issuer, generators } = require('openid-client');
+
+const issuer = await Issuer.discover('https://idp.example.com/.well-known/openid-configuration');
+const client = new issuer.Client({
+  client_id: 'my-spa',
+  redirect_uris: ['https://myapp.example.com/callback'],
+  response_types: ['code'],
+  token_endpoint_auth_method: 'none',  // public client
+});
+
+const code_verifier = generators.codeVerifier();
+const code_challenge = generators.codeChallenge(code_verifier);
+
+const authUrl = client.authorizationUrl({
+  scope: 'openid profile email',
+  code_challenge,
+  code_challenge_method: 'S256',
+});
+
+// Server stores code_verifier + state in session
+// On /callback:
+const params = client.callbackParams(req);
+const tokenSet = await client.callback(
+  'https://myapp.example.com/callback',
+  params,
+  { code_verifier: req.session.code_verifier },
+);
+// tokenSet.access_token, tokenSet.id_token, tokenSet.refresh_token
+```
+
+## Cookie Attribute Combinations Reference
+
+| Use Case | Set-Cookie Recipe |
+|---|---|
+| Session for high-security web app | `Set-Cookie: SID=X; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=900` |
+| Session for normal web app (some cross-site nav) | `Set-Cookie: SID=X; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=3600` |
+| Cross-origin SPA + iframe (rare) | `Set-Cookie: SID=X; HttpOnly; Secure; SameSite=None; Path=/` |
+| Anti-CSRF token (must be JS-readable) | `Set-Cookie: XSRF-TOKEN=X; Secure; SameSite=Lax; Path=/` (no HttpOnly) |
+| Persistent "remember me" | `Set-Cookie: remember=X; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000; Path=/` |
+| Apex-only cookie (most secure) | `Set-Cookie: __Host-SID=X; HttpOnly; Secure; SameSite=Strict; Path=/` (no Domain) |
+| Subdomain-shared session | `Set-Cookie: __Secure-SID=X; HttpOnly; Secure; SameSite=Lax; Domain=.example.com; Path=/` |
+| OAuth state | `Set-Cookie: oauth_state=X; HttpOnly; Secure; SameSite=Lax; Max-Age=600; Path=/auth` |
+
+## JWT Decode Examples + Vulnerable Patterns
+
+### Decoding a token — reading without verifying (debugging only)
+
+```python
+import json, base64
+
+def decode_jwt_unsafe(token):
+    """For debugging only. Never trust output until verified."""
+    parts = token.split(".")
+    header = json.loads(base64.urlsafe_b64decode(parts[0] + "==").decode())
+    payload = json.loads(base64.urlsafe_b64decode(parts[1] + "==").decode())
+    return header, payload
+
+# Example output:
+# header  = {"alg": "RS256", "typ": "JWT", "kid": "abc123"}
+# payload = {"sub": "alice@example.com", "iss": "https://idp.example.com",
+#            "aud": "my-api", "exp": 1700000000, "iat": 1699999000,
+#            "scope": "read write admin"}
+```
+
+### Vulnerable: alg=none
+
+```text
+# Header: {"alg":"none","typ":"JWT"}
+# Payload: {"sub":"alice","admin":true}
+# Signature: (empty)
+
+# Result: token has no signature. A naive decoder that accepts alg=none
+# will trust this. ALL modern decoders MUST reject alg=none unless it's
+# explicitly the only allowed algorithm (rare and dangerous).
+
+# Defense: pyjwt rejects alg=none unless options={"verify_signature": False}
+#          jose-jwt rejects alg=none unless algorithms=[None]
+#          jjwt rejects alg=none entirely since 0.10.0
+```
+
+### Vulnerable: algorithm confusion (HS256 vs RS256)
+
+```text
+# Server expects: RS256 (signed with private key, verified with public key)
+# Attacker crafts a token with header alg=HS256 (HMAC with shared secret)
+# If the verifier loads the RSA *public key* and uses it as the HMAC secret,
+# the attacker can sign their token with the public key (which is, well, public)
+# and the server will accept it as valid.
+
+# Defense: explicit algorithm allowlist:
+#   jwt.decode(token, public_key, algorithms=["RS256"])  # only RS256
+# NOT: jwt.decode(token, public_key)  # accepts whatever the header says
+```
+
+### Vulnerable: kid header injection
+
+```text
+# Header: {"alg":"HS256","kid":"../../../../../dev/null"}
+# If the server uses kid to look up keys from filesystem or DB without
+# sanitization, attacker can point at /dev/null (HMAC of empty string is
+# predictable) or a known file.
+
+# Defense: kid lookup MUST be from an allowlist of known keys, never an
+# arbitrary path or query.
+```
+
+## Argon2id Parameter Tables for Different Workloads
+
+OWASP 2024 recommends as a starting point:
+
+| Workload | Time (tCost iterations) | Memory (mCost MiB) | Parallelism | Wall clock |
+|---|---:|---:|---:|---:|
+| Web auth (typical web server) | 2 | 19 | 1 | ~50ms |
+| Web auth (high-end server) | 3 | 64 | 4 | ~100ms |
+| Workstation app login | 4 | 256 | 8 | ~250ms |
+| Mobile app (battery-aware) | 3 | 12 | 2 | ~100ms |
+| Disk encryption (rare login) | 10 | 1024 | 8 | ~3s |
+
+The trade-off: more time/memory = better attacker cost (each guess takes longer/more RAM) but more user-visible latency. Tune to fit your latency budget; never go below `tCost=2, mCost=19MB, parallelism=1`.
+
+## More WebAuthn Ceremony JSON
+
+### Registration response (from authenticator → RP)
+
+```json
+{
+  "id": "AdGmI...base64url",
+  "rawId": "AdGmI...base64url",
+  "response": {
+    "clientDataJSON": "eyJ0e...base64url",
+    "attestationObject": "o2NmbXR...base64url"
+  },
+  "type": "public-key",
+  "clientExtensionResults": {},
+  "authenticatorAttachment": "platform"
+}
+```
+
+### Authentication response (assertion)
+
+```json
+{
+  "id": "AdGmI...base64url",
+  "rawId": "AdGmI...base64url",
+  "response": {
+    "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MBAAAAAQ",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0Iiwi...",
+    "signature": "MEUCIQDD...base64url",
+    "userHandle": "Y3VzdG9tZXIxMjM"
+  },
+  "type": "public-key",
+  "clientExtensionResults": {}
+}
+```
+
+### Decoded clientDataJSON (registration)
+
+```json
+{
+  "type": "webauthn.create",
+  "challenge": "Y2hhbGxlbmdlMTIz",
+  "origin": "https://app.example.com",
+  "crossOrigin": false
+}
+```
+
+### Decoded clientDataJSON (assertion)
+
+```json
+{
+  "type": "webauthn.get",
+  "challenge": "Y2hhbGxlbmdlNDU2",
+  "origin": "https://app.example.com",
+  "crossOrigin": false
+}
+```
+
+The origin field in clientDataJSON is the cryptographic anchor: even if a man-in-the-middle proxies the registration ceremony, the signature is over the *attacker's* origin, not the real RP, so the RP rejects it. This is what makes WebAuthn phishing-resistant.
+
+## OIDC Discovery Document Examples
+
+```json
+{
+  "issuer": "https://idp.example.com",
+  "authorization_endpoint": "https://idp.example.com/oauth/authorize",
+  "token_endpoint": "https://idp.example.com/oauth/token",
+  "userinfo_endpoint": "https://idp.example.com/userinfo",
+  "jwks_uri": "https://idp.example.com/.well-known/jwks.json",
+  "registration_endpoint": "https://idp.example.com/oauth/register",
+  "revocation_endpoint": "https://idp.example.com/oauth/revoke",
+  "introspection_endpoint": "https://idp.example.com/oauth/introspect",
+  "end_session_endpoint": "https://idp.example.com/oauth/logout",
+  "scopes_supported": ["openid","profile","email","offline_access"],
+  "response_types_supported": ["code","id_token","token id_token","code id_token","code token"],
+  "response_modes_supported": ["query","fragment","form_post"],
+  "grant_types_supported": ["authorization_code","refresh_token","password","client_credentials","urn:ietf:params:oauth:grant-type:device_code","urn:ietf:params:oauth:grant-type:jwt-bearer"],
+  "subject_types_supported": ["public","pairwise"],
+  "id_token_signing_alg_values_supported": ["RS256","RS384","RS512","ES256","ES384","ES512","PS256","PS384","PS512"],
+  "id_token_encryption_alg_values_supported": ["RSA-OAEP","RSA-OAEP-256","ECDH-ES","ECDH-ES+A128KW","ECDH-ES+A192KW","ECDH-ES+A256KW","A128KW","A192KW","A256KW","dir"],
+  "id_token_encryption_enc_values_supported": ["A128CBC-HS256","A192CBC-HS384","A256CBC-HS512","A128GCM","A192GCM","A256GCM"],
+  "userinfo_signing_alg_values_supported": ["none","RS256","RS384","RS512","ES256","ES384","ES512","PS256","PS384","PS512","HS256","HS384","HS512"],
+  "request_object_signing_alg_values_supported": ["none","RS256","RS384","RS512","ES256","ES384","ES512","PS256","PS384","PS512","HS256","HS384","HS512"],
+  "token_endpoint_auth_methods_supported": ["client_secret_basic","client_secret_post","client_secret_jwt","private_key_jwt","none"],
+  "claims_supported": ["sub","name","given_name","family_name","middle_name","nickname","preferred_username","profile","picture","website","email","email_verified","gender","birthdate","zoneinfo","locale","phone_number","phone_number_verified","address","updated_at"],
+  "code_challenge_methods_supported": ["S256","plain"],
+  "request_parameter_supported": true,
+  "request_uri_parameter_supported": true,
+  "require_request_uri_registration": false,
+  "claims_parameter_supported": true,
+  "service_documentation": "https://idp.example.com/docs",
+  "ui_locales_supported": ["en-US","en-GB","de","fr","es","pt-BR","ja","zh-CN"]
+}
+```
+
 ## See Also
 
 - tls

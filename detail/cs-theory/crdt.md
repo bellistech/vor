@@ -171,6 +171,10 @@ MV preserves all concurrent writes. The application must define merge logic. For
 
 MV-Register is used in Riak, Cassandra (with last-write-wins disabled), and many NoSQL stores.
 
+**LWW-Element-Set:** A set CRDT where each element has add-timestamp and remove-timestamp. Element is in the set iff add-timestamp > remove-timestamp. Concurrent add and remove resolve by timestamp comparison; ties broken by replica ID. Simpler than OR-Set but lossy for concurrent operations on the same element. Used in some Cassandra schema designs.
+
+**MV-Map (Multi-Value Map):** A map where each key maps to an MV-Register. Concurrent writes to the same key produce a set of concurrent values, which the application resolves on read. Useful for shopping carts, document tags, anywhere conflict resolution is application-specific.
+
 **Trade-off:** LWW is simple but loses data; MV preserves data but requires application-level merging. The choice is application-specific.
 
 ## Map Algebra
@@ -187,6 +191,8 @@ Concurrent put(k, v1) and update(k, op) on different replicas: both are visible.
 Recursive composition: an OR-Map can hold OR-Maps as values. Automerge and Yjs support arbitrary JSON tree CRDTs by recursive composition.
 
 **Limitation:** "Add-wins" for keys. If A adds a key and B deletes it concurrently, the key persists. This is usually desired but should be confirmed for the application.
+
+**OR-Map causal-stability cleanup:** Like OR-Set, OR-Map accumulates tags. Periodic causal-stability sweeps can collapse tag sets to a single representative tag once all replicas have observed the entry. Yjs's Y.Map and Automerge's Map both implement variants of this with explicit tombstone tables and stability frontiers.
 
 ## Sequence CRDTs
 
@@ -230,7 +236,7 @@ The order of operations within an item's predecessor must be deterministic. The 
 
 **Garbage Collection:** Once all replicas have seen a delete, the item can be physically removed. This requires causal stability tracking — knowing when an operation is "stable" across all replicas.
 
-## Yjs Internal Format
+## Yjs Internal Format and YText Algorithm
 
 Yjs encodes operations as a binary stream. Each "item" has:
 - ID: 8 bytes (clientID + clock)
@@ -243,6 +249,31 @@ Yjs encodes operations as a binary stream. Each "item" has:
 Items can be **structurally shared**: contiguous insertions by the same client form a single item. This drastically reduces overhead for typical typing patterns. When items split (due to interleaved concurrent inserts), Yjs splits the structure dynamically.
 
 Yjs's binary format is compact and supports efficient sync: replicas exchange "state vectors" (per-client clocks) to identify missing updates, then exchange only the missing portion.
+
+**The YText core insertion algorithm:**
+
+```
+Insert(content, leftItemID, rightItemID, clientID, clock):
+  newItem = Item(id=(clientID, clock), origin=leftItemID, rightOrigin=rightItemID, content=content)
+  // Walk from leftItem.right toward rightItem to find the correct insertion point.
+  cursor = leftItem.right
+  while cursor != rightItem:
+    if cursor.origin == leftItemID:
+      // Concurrent insert at the same origin. Resolve by clientID order.
+      if cursor.id.clientID > newItem.id.clientID:
+        cursor = cursor.right
+        continue
+      else:
+        break
+    if cursor.origin happens-before newItem.origin:
+      // cursor's origin was inserted later in the conflict chain; skip it.
+      cursor = cursor.right
+      continue
+    break
+  splice newItem before cursor
+```
+
+The algorithm guarantees that all replicas, given the same set of operations, splice each item at the same position regardless of receipt order. Determinism comes from the clientID tiebreaker and the origin walk.
 
 The garbage collection of deleted struct chains: once all replicas have acknowledged a delete, Yjs removes the item from memory. Stability is tracked via "delete sets" — explicit records of deletes that can be pruned.
 
@@ -276,6 +307,71 @@ Computing the stable frontier requires explicit "ack" messages or out-of-band tr
 **Approximate stability:** Some systems use timeouts (assume stability after T seconds without conflicting writes). This is unsafe in the worst case but pragmatic for many workloads.
 
 Tombstone GC is a major engineering concern in long-running CRDT systems. Without GC, state grows unboundedly. With GC, complex synchronization is required.
+
+## Tombstone GC Algorithm — Pseudocode
+
+```
+// Per-replica state
+my_clock: Map[ReplicaID -> int]
+peer_clocks: Map[ReplicaID -> Map[ReplicaID -> int]]  // last-known clock of each peer
+tombstones: List[(opID, vectorClock)]
+
+// Periodic exchange — every T seconds
+broadcast_clock():
+  send(my_clock) to all peers
+
+on_receive_clock(peer, clk):
+  peer_clocks[peer] = clk
+
+// Compute stability frontier
+compute_stable_frontier() -> VectorClock:
+  // The minimum clock across all replicas (including self)
+  frontier = my_clock.copy()
+  for peer, clk in peer_clocks:
+    for replica, count in clk:
+      frontier[replica] = min(frontier[replica], count)
+  return frontier
+
+// Run GC
+gc_step():
+  frontier = compute_stable_frontier()
+  for (opID, opClock) in tombstones:
+    // An op is stable if its clock is dominated by the frontier
+    if opClock <= frontier:  // pointwise
+      // Safe to remove: no replica can later refer to this op as concurrent
+      remove tombstone(opID)
+      remove all metadata associated with opID
+```
+
+**Correctness sketch:** When `opClock <= frontier`, every replica has acknowledged seeing op (because frontier is the min of all replicas' clocks). Any subsequent op generated at any replica will have a clock dominating opClock — so any future "concurrent" reference is impossible. The tombstone is genuinely no longer needed.
+
+**Safety boundary:** If a peer is silently offline (not reporting its clock), `frontier` stalls. This is the safe fallback: GC pauses rather than risk premature collection. Real systems include timeouts: if a peer is unresponsive for >T_dead, it is considered crashed and removed from the frontier computation. This is a liveness/safety trade-off — premature peer removal can cause divergence on rejoin.
+
+**Implementation in Yjs:** Yjs maintains a `deleteSet` mapping each clientID to ranges of deleted clocks. When state vectors are exchanged, deletions older than the minimum clock for each client are eligible for memory reclamation. Yjs runs this opportunistically during sync.
+
+## Causal-Stability Proof
+
+**Theorem (Causal Stability):** Let op be an operation with vector clock V_op generated at replica r. Op is causally stable iff for every replica r', the local clock V_r'[r] ≥ V_op[r] (and similarly for all other components).
+
+**Proof sketch (one direction — stability ⟹ no concurrent ops):**
+
+Suppose op is stable. We show that no future op op' generated at any replica r' can be concurrent with op.
+
+Consider any future op'. By causal delivery, when r' generates op', it has already applied all ops in V_r'. Since stability means V_r' dominates V_op (component-wise), r' has already applied op. Therefore op happens-before op', not concurrent.
+
+So once stable, op is in the causal past of every future operation.
+
+**Proof sketch (other direction — no concurrent ⟹ stable):**
+
+Suppose no future op can be concurrent with op. We show V_r'[k] ≥ V_op[k] for every component k at every replica r'.
+
+By contradiction: suppose V_r'[k] < V_op[k] for some k at some r'. Then r' has not yet seen op_k (the kth operation from replica k that op depended on). r' could generate an op' concurrent with op_k — and transitively concurrent with op. Contradicts assumption.
+
+Hence stability is equivalent to "fully replicated and acknowledged."
+
+**Corollary:** Tombstones can be safely garbage-collected once stable, because the "concurrent add" scenario that the tombstone was protecting against is impossible by the theorem.
+
+This proof is the formal justification for tombstone GC. It connects the abstract "stability frontier" to a concrete safety property.
 
 ## CRDT Limitations
 
@@ -404,60 +500,84 @@ Active research in CRDTs:
 
 CRDTs are a young field — only ~15 years old since the seminal Shapiro paper. The fundamentals are settled, but the practical engineering, the scaling, and the adversarial extensions are evolving rapidly.
 
-## Worked Example: Two-Replica G-Counter Convergence
+## Worked Example: G-Counter Convergence Trace
 
 Two replicas A and B start with G-Counter [0, 0]. The vector position 0 is for replica A; position 1 is for replica B.
 
-**Step 1:** A increments. State_A = [1, 0].
-**Step 2:** B increments twice. State_B = [0, 2].
-**Step 3:** A and B exchange states.
-- A receives [0, 2], merges with [1, 0] via pointwise max. State_A = [max(1,0), max(0,2)] = [1, 2].
-- B receives [1, 0], merges with [0, 2]. State_B = [max(0,1), max(2,0)] = [1, 2].
+| step | event                       | State_A     | State_B     | observed value |
+|------|-----------------------------|-------------|-------------|----------------|
+| 0    | initial                     | [0, 0]      | [0, 0]      | 0              |
+| 1    | A increments locally        | [1, 0]      | [0, 0]      | A=1, B=0       |
+| 2    | B increments twice locally  | [1, 0]      | [0, 2]      | A=1, B=2       |
+| 3    | A and B exchange states     | [1, 2]      | [1, 2]      | 3              |
+| 4    | A increments again          | [2, 2]      | [1, 2]      | A=4, B=3       |
+| 5    | B disconnects, restarts from snapshot [1, 2] (loses RAM but keeps disk) | [2, 2] | [1, 2] | A=4, B=3 |
+| 6    | B increments after recovery | [2, 2]      | [1, 3]      | A=4, B=4       |
+| 7    | exchange                    | [2, 3]      | [2, 3]      | 5              |
 
-**Step 4:** Both replicas have State = [1, 2]. Counter value = 1 + 2 = 3.
-
-**Step 5:** A increments again. State_A = [2, 2].
-**Step 6:** B doesn't sync; instead it crashes and restarts from [1, 2].
-**Step 7:** B increments. State_B = [1, 3].
-**Step 8:** A and B exchange.
-- A merges [1, 3] with [2, 2] = [2, 3].
-- B merges [2, 2] with [1, 3] = [2, 3].
-
-Convergence: both at [2, 3], total = 5. The pointwise-max LUB ensures that even after B's crash and re-increment, the merge correctly accumulates all updates.
+The pointwise-max LUB ensures that even after B's crash and re-increment, the merge correctly accumulates all updates. B's state [1, 2] was a valid lower-bound element of the semilattice; merging [1, 3] (B's post-recovery state) with [2, 2] (A's state) gives [2, 3] — correct.
 
 This worked example shows: idempotence (B's repeated state isn't double-counted), commutativity (order of merges doesn't matter), associativity (multi-step merges produce the same result).
 
-## Worked Example: OR-Set Add and Remove
+## Worked Example: OR-Set ABA Scenario
 
-Two replicas A and B operate on an OR-Set.
+Consider the classic ABA problem: a value is added, removed, then re-added. Does the OR-Set handle it correctly?
 
-**Step 1:** A adds "apple" with tag (A, 1). State_A = {apple: {(A,1)}}.
-**Step 2:** B receives the operation, applies it. State_B = {apple: {(A,1)}}.
-**Step 3:** A removes "apple". A removes the tag (A,1) it has observed. State_A = {apple: {}} (empty tag set means absent).
-**Step 4:** Concurrently, B adds "apple" again. B generates tag (B, 1). State_B = {apple: {(A,1), (B,1)}}.
-**Step 5:** A and B exchange.
-- A: merge {apple: {(A,1), (B,1)}} with {apple: {}}. The merge preserves all tags ever added but tracks removed tags. The remove operation removed (A,1) only — it had not observed (B,1). So the result tracks: added = {(A,1), (B,1)}, removed = {(A,1)}. Effective: {(B,1)}. State = {apple: present (via tag B,1)}.
-- B: same logic. State = {apple: present}.
+| step | event                                                | State_A                         | State_B                         |
+|------|------------------------------------------------------|---------------------------------|---------------------------------|
+| 0    | initial                                              | {}                              | {}                              |
+| 1    | A adds "apple" with tag (A, 1)                       | {apple: {(A,1)}}                | {}                              |
+| 2    | B receives op, applies                               | {apple: {(A,1)}}                | {apple: {(A,1)}}                |
+| 3    | A removes "apple"; remove-set = {(A,1)}              | {apple: {}, removed: {(A,1)}}   | {apple: {(A,1)}}                |
+| 4    | B receives remove                                    | {apple: {}, removed: {(A,1)}}   | {apple: {}, removed: {(A,1)}}   |
+| 5    | A re-adds "apple" with tag (A, 2)                    | {apple: {(A,2)}, removed: {(A,1)}} | {apple: {}, removed: {(A,1)}}   |
+| 6    | B receives re-add                                    | {apple: {(A,2)}, removed: {(A,1)}} | {apple: {(A,2)}, removed: {(A,1)}} |
 
-The "apple" element is present in the converged state — even though A intended to remove it. This is "add-wins" semantics: a concurrent add wins over a remove that didn't observe it.
+The element "apple" is correctly present after re-add because the new tag (A, 2) is not in the remove-set. This is what distinguishes OR-Set from 2P-Set: tombstones are *per-tag*, not *per-element*, allowing re-add.
 
-This is a feature for many applications (collaborative editing: don't lose B's recent add) but might be wrong for others (deletion is intentional and should propagate).
+**The harder ABA case — concurrent re-add with remove:**
 
-## Worked Example: RGA Sequence Insert
+| step | event                                                            | State_A                              | State_B                              |
+|------|------------------------------------------------------------------|--------------------------------------|--------------------------------------|
+| 0    | initial after step 4 above                                       | {apple: {}, removed: {(A,1)}}        | {apple: {}, removed: {(A,1)}}        |
+| 1    | A locally re-adds "apple" with (A, 2)                            | {apple: {(A,2)}, removed: {(A,1)}}   | {apple: {}, removed: {(A,1)}}        |
+| 2    | B locally adds "apple" with (B, 1) (didn't see A's re-add)       | {apple: {(A,2)}, removed: {(A,1)}}   | {apple: {(B,1)}, removed: {(A,1)}}   |
+| 3    | A and B exchange                                                 | {apple: {(A,2),(B,1)}, removed: {(A,1)}} | {apple: {(A,2),(B,1)}, removed: {(A,1)}} |
 
-Document is "AB" with characters at positions (A: id=(R1,1), B: id=(R1,2)). Two replicas A1 and A2.
+Both tags survive. "apple" is present, supported by two tags. Future removes target individual tags, not the element. This is the add-wins property: concurrent adds accumulate.
 
-**Step 1:** A1 inserts "C" between A and B, referencing predecessor id=(R1,1). New char id=(R1,3). Sequence: "ACB".
-**Step 2:** A2 also inserts at the same location. A2 inserts "X" referencing predecessor id=(R1,1). New char id=(R2,1). Sequence: "AXB".
-**Step 3:** A1 and A2 sync.
-- A1 receives X. X has predecessor (R1,1). Among items at this position: C (id=(R1,3)) and X (id=(R2,1)). Order by id: (R1,3) < (R2,1) (assuming R1=1, R2=2 in tiebreaker). So order is C before X. Result: "ACXB".
-- A2 receives C. Same reasoning. Result: "ACXB".
+**The pathological case — concurrent remove of one tag while another adds:**
 
-Both replicas converge to "ACXB". The insertion order at the conflict point is determined by ID ordering — deterministic.
+| step | event                                                                 | State_A                              | State_B                              |
+|------|-----------------------------------------------------------------------|--------------------------------------|--------------------------------------|
+| 0    | shared state                                                          | {apple: {(A,1)}}                     | {apple: {(A,1)}}                     |
+| 1    | A removes (A, 1) — remove-set adds (A, 1)                             | {apple: {}, removed: {(A,1)}}        | {apple: {(A,1)}}                     |
+| 2    | B concurrently re-adds with new tag (B, 1)                            | {apple: {}, removed: {(A,1)}}        | {apple: {(A,1),(B,1)}}               |
+| 3    | merge                                                                 | {apple: {(B,1)}, removed: {(A,1)}}   | {apple: {(B,1)}, removed: {(A,1)}}   |
 
-This example shows how RGA handles concurrent inserts at the same position. Without unique IDs and ordering, replicas could see "ACXB" or "AXCB" depending on order of receipt — diverging.
+The element survives via (B,1). A's intent to remove (A,1) is honored — that specific tag is gone — but the concurrent add by B adds a fresh tag that A's remove never observed. Add-wins by design.
 
-## Worked Example: Yjs Document Sync
+## Worked Example: RGA Insertion-Deletion-Resolution
+
+Document is initially "AB" with characters at positions (A: id=(R1,1), B: id=(R1,2)). Two replicas R1 and R2.
+
+| step | event                                                         | R1's view                                   | R2's view                                   |
+|------|---------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+| 0    | initial                                                       | A(R1,1) → B(R1,2)                           | A(R1,1) → B(R1,2)                           |
+| 1    | R1 inserts "C" between A and B; new id=(R1,3), pred=(R1,1)    | A(R1,1) → C(R1,3) → B(R1,2)                 | A(R1,1) → B(R1,2)                           |
+| 2    | R2 inserts "X" between A and B (concurrent); new id=(R2,1), pred=(R1,1) | A(R1,1) → C(R1,3) → B(R1,2) | A(R1,1) → X(R2,1) → B(R1,2)                 |
+| 3    | R1 receives X (predID=(R1,1)). Items sharing pred (R1,1): {C, X}. Order by id: (R1,3) < (R2,1)? Compare clientID: R1=1, R2=2 → (R1,3) < (R2,1). So C before X. | A → C → X → B | (unchanged)                  |
+| 4    | R2 receives C (predID=(R1,1)). Same logic: C before X.        | A → C → X → B                               | A → C → X → B                               |
+| 5    | R1 deletes C; tombstone on id=(R1,3)                          | A → C[†] → X → B                            | A → C → X → B                               |
+| 6    | R2 deletes X; tombstone on id=(R2,1)                          | A → C[†] → X → B                            | A → C → X[†] → B                            |
+| 7    | exchange tombstones                                           | A → C[†] → X[†] → B                         | A → C[†] → X[†] → B                         |
+| 8    | rendered output (skip tombstones)                             | "AB"                                        | "AB"                                        |
+
+Both replicas converge to "AB" — the original document, with C and X both inserted then deleted. The tombstones for C and X persist until causal stability allows GC. Once stable (all replicas have observed both deletes), the items are removable from memory.
+
+**Performance note:** Yjs would compress the contiguous tombstones [†][†] into a single deletion-range entry in its delete set, reducing the per-tombstone overhead from ~32 bytes to ~8 bytes amortized.
+
+## Worked Example: Yjs Document Sync via State Vectors
 
 Two clients C1 and C2 are editing a Yjs document via a y-websocket server.
 
@@ -500,6 +620,38 @@ Total bandwidth: O(log(N)) Bloom + O(missing ops). For small differences, sync i
 | Automerge JSON| O(history, compressed)        | O(history)  | O(missing-ops)  | JSON tree                     |
 
 For high-throughput systems: G-Counter and LWW are cheapest. For collaborative editing: Yjs YText is currently the fastest. For complex JSON: Automerge offers richer semantics at higher cost.
+
+## Performance Numbers — Yjs vs Automerge
+
+Concrete benchmark results (from Yjs author's published numbers and Diamond Types' comparison suite):
+
+**Document size after 100K random edits (typing pattern, 5 clients interleaved):**
+- Yjs: ~250 KB binary log (compressed structure-shared items).
+- Automerge (v2): ~720 KB columnar binary.
+- Automerge (v1): ~3.5 MB JSON-encoded.
+- Diamond Types: ~180 KB (most compact for text).
+
+**Apply 1000 remote ops:**
+- Yjs: ~1.0 ms (1 µs per op).
+- Automerge-rs: ~3.5 ms (3.5 µs per op).
+- Automerge JS: ~12 ms.
+- Diamond Types: ~0.6 ms.
+
+**Materialize entire document of 1M characters:**
+- Yjs: ~25 ms.
+- Automerge: ~120 ms.
+- Diamond Types: ~15 ms.
+
+**Per-character byte overhead (steady state, no GC):**
+- Yjs: ~5-10 bytes per character (after structural sharing of contiguous typing).
+- Automerge: ~25-40 bytes per character (richer metadata).
+- Diamond Types: ~3-5 bytes per character.
+
+**Sync latency (LAN, 10ms RTT):**
+- Yjs state-vector sync, 100-op delta: ~12 ms total (one round trip + small payload).
+- Automerge Bloom-filter sync, 100-op delta: ~25 ms total (typically two rounds).
+
+These numbers shift over time as libraries optimize; consult the CRDT-benchmarks GitHub repo for current results.
 
 ## Tracking Causality with Vector Clocks
 
@@ -779,6 +931,182 @@ Optimizations specific to CRDT implementations:
 **Batching:** Apply many ops in batch, single materialization.
 
 These engineering details determine the difference between research-quality and production-ready CRDT libraries.
+
+## Worked Example: G-Counter Convergence Trace
+
+Three replicas A, B, C, starting from `{}`. Each replica maintains a per-replica-id increment count.
+
+```text
+T=0:   A: {}             B: {}             C: {}                       value=0
+T=1:   A: {A:1}                                            (A.inc())   value=1
+T=2:                     B: {B:5}                          (B.inc x5)  value=5
+T=3:                                       C: {C:2}        (C.inc x2)  value=2
+
+# A and B sync (e.g., gossip exchange):
+T=4:   A merges B's state: max({A:1}, {B:5}) per key = {A:1, B:5}     value=6
+       B merges A's state: max({B:5}, {A:1}) per key = {A:1, B:5}     value=6
+
+# A and B both increment after sync:
+T=5:   A: {A:2, B:5}     B: {A:1, B:6}                                 A.value=7, B.value=7
+T=6:                                       C still: {C:2}              value=2
+
+# C learns about A's state (via gossip):
+T=7:                                       C merges {A:2, B:5}, {C:2}
+                                          = {A:2, B:5, C:2}            value=9
+
+# Final convergence (everyone gossips):
+T=8:   A: {A:2, B:6, C:2}    B: {A:2, B:6, C:2}    C: {A:2, B:6, C:2}  value=10
+
+# Note: at T=5 A had {A:2,B:5} and B had {A:1,B:6}. After they sync
+# (in either order, multiple times), they converge to {A:2,B:6}. Order doesn't
+# matter; idempotent under repeat.
+```
+
+The merge function is associative + commutative + idempotent — these are exactly the requirements for SEC by Shapiro's theorem.
+
+## Worked Example: OR-Set ABA Scenario
+
+Two replicas A, B. Sequence of operations that demonstrates why OR-Set's tags are necessary.
+
+```text
+T=0:  A: {}           B: {}
+T=1:  A.add(x)        // A creates tag t1 for x; A: {(x, {t1})}
+T=2:  A.remove(x)     // A removes all observed tags for x; A: {(x, {}), tombstones: {t1}}
+T=3:  A.add(x)        // A creates new tag t2 for x; A: {(x, {t2}), tombstones: {t1}}
+
+# Now A and B sync (B has only seen up to T=1's state):
+T=4:  B receives A's state through T=3
+      B.add at this point: B: {(x, {t2}), tombstones: {t1}} — x is in the set
+      The "ABA" sequence (add-remove-add) preserved x because t2 ≠ t1
+
+# Without tags (a naive 2P-Set with element-level tombstone):
+T=2:  A.remove(x)     // permanent tombstone for x
+T=3:  A.add(x)        // ignored! x is in the tombstone set
+      Result: x is NOT in the set after re-add — incorrect for use cases
+      where re-add is meaningful (e.g., adding back a friend you unfriended).
+```
+
+OR-Set's per-add unique tag is what enables re-adding the same element after removal — the tag of the new add wasn't observed at the time of removal, so it survives.
+
+## Worked Example: RGA Insertion-Deletion-Resolution
+
+Two replicas editing collaboratively. RGA (Replicated Growable Array) uses per-character unique IDs:
+
+```text
+Initial state: empty document.
+
+Replica A: insert('H', after=∅, id=(A,1))
+           insert('i', after=(A,1), id=(A,2))
+           Document A: H[A,1] - i[A,2]
+
+(no sync yet)
+
+Replica B: insert('B', after=∅, id=(B,1))
+           insert('y', after=(B,1), id=(B,2))
+           Document B: B[B,1] - y[B,2]
+
+Sync A→B and B→A.
+
+Conflict: both replicas have insertions referencing 'after=∅' (the start).
+
+RGA tie-break: when two characters reference the same predecessor, sort
+by their ID's replica component (lexicographic). A < B, so A's chars come first:
+
+Document (after merge): H[A,1] - i[A,2] - B[B,1] - y[B,2]
+Result text: "HiBy"
+
+# Alternatively, B inserts at start with B[B,1] after empty, A inserts H[A,1]:
+# - Both have predecessor=∅
+# - Tie-break: A < B → A's H first → "HiBy"
+```
+
+Now insert + delete trace:
+
+```text
+A: insert('!', after=(A,2), id=(A,3))   →  H i ! (with explicit id chain)
+A: delete (A,2)  → soft-delete via tombstone (mark id (A,2) as deleted)
+   The 'i' character is not removed from the data structure — its tombstone is
+   set so that future operations referencing 'after=(A,2)' still resolve.
+
+B (concurrent, hasn't seen A's delete): insert('?', after=(A,2), id=(B,3))
+   B's insert references the tombstoned 'i'.
+   On merge:
+     H[A,1] - i[A,2,tombstoned] - !{B,3 child of i} - !{A,3 child of i}
+   Tie-break siblings of (A,2): id-sorted A < B, so A's child first:
+   "H!?" (with i tombstoned and rendered invisible)
+```
+
+## Yjs Internal Format Details
+
+Yjs serializes operations in a packed binary format (Y.encodeStateAsUpdate).
+
+```text
+[update bytes header]
+  client_id        varint
+  clock            varint    (sequence number for this client's struct)
+  struct_count     varint    (number of structs in this update)
+
+For each struct:
+  origin_left      (optional) ID = (client_id, clock)   varint pair
+  origin_right     (optional) ID = (client_id, clock)
+  parent_info       compressed reference to parent shared type
+  content_type      tag byte (string, embed, format, deleted)
+  content_payload   length-prefixed bytes
+
+[delete set]
+  per-client deletion ranges as (clock_start, length) pairs
+```
+
+The columnar packing means a 100-character text edit + 50 deletions can compress to ~150 bytes (vs. naive JSON serialization ~10kB).
+
+Y.encodeStateVector returns a state vector summarizing what each peer has seen:
+
+```text
+{client_id_1: clock_1, client_id_2: clock_2, ...}
+```
+
+When two peers sync via Yjs y-websocket-server, they exchange state vectors first, then the receiver computes "structs you have but I don't" and ships only those.
+
+## Automerge Columnar Storage
+
+Automerge groups changes into columns by attribute (one column for action types, one for actor IDs, one for sequence numbers, one for property keys). This achieves compression via:
+
+- RLE (run-length encoding): repeated values like "all 100 ops by actor=alice" stored once
+- Delta encoding: sequence numbers stored as deltas from previous
+- Dictionary encoding: actor IDs replaced with small integer indices into a header table
+
+Result: a 10,000-op history can fit in <100KB. Automerge 2.x's binary format is roughly 100x more compact than the JSON-based 1.x format.
+
+## Causal-Stability Garbage Collection (full algorithm)
+
+The goal: when can a tombstone be reclaimed? Answer: when ALL replicas have observed the operation that caused it.
+
+```text
+algorithm GC_tombstones(replica R):
+  causal_min := min(version[a] for a in known_actors) for each actor's clock at R
+  # The "causal frontier" — the lowest clock value any replica has seen
+
+  for each tombstone t in R.tombstones:
+    if t.creation_clock < causal_min[t.actor]:
+      # All replicas have observed t's creation; safe to reclaim
+      remove(t)
+```
+
+Practical issue: computing `causal_min` requires querying every replica's current state. In practice this is done out-of-band via gossip protocols or admin coordination. Yjs and Automerge punt on this — they keep tombstones forever, accepting the metadata growth (mitigated by columnar compression).
+
+## When CRDTs Are Wrong
+
+| Use case | Why CRDT fails | Right tool |
+|---|---|---|
+| Bank account balance ≥ 0 invariant | Concurrent debits can both succeed → negative balance | Paxos / Raft + 2PC |
+| Username uniqueness | Two replicas can both register "alice" | Centralized registry / Paxos |
+| Inventory: "only 1 item left" | Two buyers both purchase the last item | Lock + transaction |
+| Global ordering of events (audit log) | CRDTs don't agree on total order | Raft replicated log |
+| Strict access control | Permission revocation racing with use | Centralized auth check |
+| Settlement / financial reconciliation | Final-amount disagreement intolerable | Paxos + manual reconciliation |
+| Schema-validated data with strict invariants | Concurrent edits can violate schema | Operational Transform with validation, or central validation |
+
+For all of the above, you need a single source of truth and synchronous coordination — exactly what CRDTs by design avoid.
 
 ## References
 

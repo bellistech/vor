@@ -1657,6 +1657,342 @@ qualify_frequency=60
 <param name="enable-3pcc"     value="true"/>
 ```
 
+## Worked Digest Authentication Example
+
+The full HMAC-MD5 computation showing exactly what each side computes. This is the most common SIP auth flow and the one most often misconfigured.
+
+Server challenge:
+
+```text
+SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK-abc123
+From: Alice <sip:alice@example.com>;tag=1928301774
+To: Bob <sip:bob@example.com>;tag=as73c2f4a8
+Call-ID: a84b4c76e66710@pc33.example.com
+CSeq: 314159 INVITE
+WWW-Authenticate: Digest realm="example.com",
+   qop="auth",
+   nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093",
+   opaque="5ccc069c403ebaf9f0171e9517f40e41",
+   algorithm=MD5,
+   stale=FALSE
+Content-Length: 0
+```
+
+Client computes (assume password = "secret"):
+
+```text
+HA1 = MD5("alice:example.com:secret")
+    = MD5("alice:example.com:secret")
+    = 939e7578ed9e3c518a452acee763bce9
+
+HA2 = MD5("INVITE:sip:bob@example.com")
+    = 39aff3a2bab6126f332b942af96d3366
+
+# qop=auth requires nc + cnonce
+nc      = 00000001  (nonce-count, hex 8-digit)
+cnonce  = 0a4f113b  (client nonce, random)
+
+response = MD5(HA1:nonce:nc:cnonce:qop:HA2)
+         = MD5("939e7578ed9e3c518a452acee763bce9:dcd98b7102dd2f0e8b11d0f600bfb0c093:00000001:0a4f113b:auth:39aff3a2bab6126f332b942af96d3366")
+         = 6629fae49393a05397450978507c4ef1
+```
+
+Client retry:
+
+```text
+INVITE sip:bob@example.com SIP/2.0
+Via: SIP/2.0/UDP 192.0.2.1:5060;branch=z9hG4bK-abc124
+From: Alice <sip:alice@example.com>;tag=1928301774
+To: Bob <sip:bob@example.com>
+Call-ID: a84b4c76e66710@pc33.example.com
+CSeq: 314160 INVITE
+Authorization: Digest username="alice",
+   realm="example.com",
+   nonce="dcd98b7102dd2f0e8b11d0f600bfb0c093",
+   uri="sip:bob@example.com",
+   qop=auth,
+   nc=00000001,
+   cnonce="0a4f113b",
+   response="6629fae49393a05397450978507c4ef1",
+   opaque="5ccc069c403ebaf9f0171e9517f40e41",
+   algorithm=MD5
+Contact: <sip:alice@192.0.2.1:5060>
+Max-Forwards: 70
+Content-Length: 0
+```
+
+For algorithm=MD5-sess: HA1 is recomputed as `MD5(MD5(user:realm:pass):nonce:cnonce)`. For qop=auth-int: HA2 includes message-body digest as `MD5(method:uri:MD5(entity-body))`. The SHA-256/SHA-512-256 RFC 7616 variants substitute the hash function but keep the same overall structure.
+
+## INVITE Client Transaction Timer Progression
+
+Concrete timeline showing what happens when a UDP INVITE encounters packet loss. Numbers come from RFC 3261 §17.1.1.2 with default timer values.
+
+```text
+T = 0.0s   →  send INVITE         (Calling state, Timer A starts at 500ms)
+T = 0.5s   →  Timer A fires       resend INVITE; Timer A doubles to 1.0s
+T = 1.5s   →  Timer A fires       resend INVITE; Timer A doubles to 2.0s
+T = 3.5s   →  Timer A fires       resend INVITE; Timer A doubles to 4.0s
+T = 7.5s   →  Timer A fires       resend INVITE; Timer A doubles to 8.0s
+T = 15.5s  →  Timer A fires       resend INVITE; Timer A doubles to 16.0s
+T = 31.5s  →  Timer A fires       resend INVITE; Timer A doubles to 32.0s
+T = 32.0s  →  Timer B fires       transaction terminated (no response received)
+              UAC reports 408 Request Timeout to TU
+```
+
+If a 1xx provisional response arrives during Calling state:
+
+```text
+T = 0.0s   →  send INVITE
+T = 0.4s   →  receive 100 Trying  → state moves Calling → Proceeding
+              Timer A cancels; no more retransmissions until Proceeding ends
+              Timer B continues; remains armed at original 32.0s deadline
+T = 0.6s   →  receive 180 Ringing
+T = 30.0s  →  receive 200 OK      → state moves Proceeding → Terminated
+              UAC sends ACK; transaction completes successfully
+```
+
+If a 4xx-6xx final arrives:
+
+```text
+T = 0.0s   →  send INVITE
+T = 0.5s   →  receive 486 Busy    → state moves Calling → Completed
+              UAC sends ACK; Timer D starts (32s for UDP)
+T = 32.5s  →  Timer D fires       state moves Completed → Terminated
+```
+
+Timer D's purpose: absorb retransmitted final responses from a slow server. Without Timer D, a delayed retransmission of "486 Busy Here" arriving after the transaction ended would be treated as a new transaction.
+
+For TCP (reliable transport), Timer A is unused (no retransmissions); Timer B fires immediately when the connection closes; Timer D = 0s (no need to absorb retransmissions).
+
+## More Verbatim 4xx-6xx Examples
+
+```text
+SIP/2.0 480 Temporarily Unavailable
+Via: SIP/2.0/UDP 192.0.2.10:5060;branch=z9hG4bK-...;received=192.0.2.10
+From: Alice <sip:alice@example.com>;tag=...
+To: Bob <sip:bob@example.com>;tag=server-tag
+Call-ID: ...
+CSeq: 314 INVITE
+Retry-After: 30
+Content-Length: 0
+```
+
+```text
+SIP/2.0 482 Loop Detected
+Via: SIP/2.0/UDP proxy3.example.com:5060;branch=...
+From: ...
+To: ...
+Reason: SIP;cause=482;text="Routing loop detected via Via headers"
+Content-Length: 0
+```
+
+```text
+SIP/2.0 483 Too Many Hops
+Via: SIP/2.0/UDP proxy7.example.com:5060;branch=...
+From: ...
+To: ...
+Max-Forwards: 0
+Content-Length: 0
+```
+
+```text
+SIP/2.0 485 Ambiguous
+Contact: <sip:bob@10.1.0.5>
+Contact: <sip:bob@10.1.0.6>
+Content-Length: 0
+```
+
+```text
+SIP/2.0 488 Not Acceptable Here
+Warning: 304 example.com "Incompatible media format - codec mismatch"
+Reason: Q.850;cause=88;text="Incompatible destination"
+Content-Length: 0
+```
+
+```text
+SIP/2.0 491 Request Pending
+# Sent in response to a re-INVITE while another re-INVITE is in flight
+# (the "glare" condition); UAC waits and retries with random backoff
+```
+
+```text
+SIP/2.0 503 Service Unavailable
+Retry-After: 30
+Reason: SIP;cause=503;text="Backend overloaded"
+Content-Length: 0
+```
+
+## Sample SDP Variants
+
+### Basic G.711 audio offer
+
+```text
+v=0
+o=alice 2890844526 2890844526 IN IP4 192.0.2.1
+s=-
+c=IN IP4 192.0.2.1
+t=0 0
+m=audio 49170 RTP/AVP 0 8 101
+a=rtpmap:0 PCMU/8000
+a=rtpmap:8 PCMA/8000
+a=rtpmap:101 telephone-event/8000
+a=fmtp:101 0-16
+a=ptime:20
+a=sendrecv
+```
+
+### WebRTC audio + video with BUNDLE + DTLS-SRTP
+
+```text
+v=0
+o=- 1591574623 2 IN IP4 127.0.0.1
+s=-
+t=0 0
+a=group:BUNDLE 0 1
+a=msid-semantic:WMS *
+
+m=audio 9 UDP/TLS/RTP/SAVPF 111 103 9 0 8 105 13 110 113 126
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=ice-ufrag:F7gG
+a=ice-pwd:x9cml/YzichV2+XlhiMu8g
+a=ice-options:trickle
+a=fingerprint:sha-256 75:74:5A:A6:A4:E5:52:F4:A7:67:4C:01:C7:E9:31:F1:84:24:3C:CC:77:34:A1:74:1A:DA:C8:14:6F:DC:F0:43
+a=setup:actpass
+a=mid:0
+a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level
+a=sendrecv
+a=msid:- a-stream-id
+a=rtcp-mux
+a=rtpmap:111 opus/48000/2
+a=fmtp:111 minptime=10;useinbandfec=1
+a=rtpmap:103 ISAC/16000
+a=rtpmap:9 G722/8000
+a=rtpmap:0 PCMU/8000
+a=rtpmap:8 PCMA/8000
+a=rtcp-fb:111 transport-cc
+a=ssrc:1234567890 cname:abc123
+
+m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 121 127 120 125 107 108 109 124 119 123
+c=IN IP4 0.0.0.0
+a=rtcp:9 IN IP4 0.0.0.0
+a=ice-ufrag:F7gG
+a=ice-pwd:x9cml/YzichV2+XlhiMu8g
+a=fingerprint:sha-256 75:74:5A:A6:A4:E5:52:F4:A7:67:4C:01:C7:E9:31:F1:84:24:3C:CC:77:34:A1:74:1A:DA:C8:14:6F:DC:F0:43
+a=setup:actpass
+a=mid:1
+a=sendrecv
+a=msid:- v-stream-id
+a=rtcp-mux
+a=rtcp-rsize
+a=rtpmap:96 VP8/90000
+a=rtcp-fb:96 goog-remb
+a=rtcp-fb:96 transport-cc
+a=rtcp-fb:96 ccm fir
+a=rtcp-fb:96 nack
+a=rtcp-fb:96 nack pli
+a=rtpmap:97 rtx/90000
+a=fmtp:97 apt=96
+a=rtpmap:98 H264/90000
+a=fmtp:98 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f
+```
+
+### IPv6 SDP
+
+```text
+v=0
+o=- 1591574999 1 IN IP6 2001:db8::1
+s=-
+c=IN IP6 2001:db8::1
+t=0 0
+m=audio 50000 RTP/AVP 0 101
+a=rtpmap:0 PCMU/8000
+a=rtpmap:101 telephone-event/8000
+a=sendrecv
+```
+
+## ICE Candidate-Pair Scoring Walk-Through
+
+Two endpoints behind separate NATs. Each gathered candidates:
+
+```text
+Alice (controlling):
+  host        192.168.1.10:50000  prio=2113929471
+  srflx       203.0.113.5:50000   prio=1677729535  (via STUN at 203.0.113.5)
+  relay       198.51.100.99:55000 prio=8388607     (TURN)
+
+Bob (controlled):
+  host        10.0.0.42:60000     prio=2113929471
+  srflx       198.51.100.42:60000 prio=1677729535
+  relay       198.51.100.99:65000 prio=8388607
+```
+
+Pair priority (RFC 8445 §6.1.2.3): pair_priority = 2^32 * MIN(G, D) + 2*MAX(G, D) + (G > D ? 1 : 0), where G is the controlling agent's component priority and D is the controlled agent's. The candidate-pair list is then sorted descending and STUN connectivity checks are sent in priority order.
+
+```text
+Pair 1: host-host        Alice 192.168.1.10:50000  ↔ Bob 10.0.0.42:60000
+        # Different LANs — packets dropped, fails
+Pair 2: srflx-srflx      Alice 203.0.113.5:50000   ↔ Bob 198.51.100.42:60000
+        # Public IPs but different NAT types — may succeed depending on NAT behavior
+Pair 3: host-srflx       Alice 192.168.1.10:50000  ↔ Bob 198.51.100.42:60000
+        # Alice's private IP not reachable; fails
+Pair 4: relay-host       Alice 198.51.100.99:55000 ↔ Bob 10.0.0.42:60000
+        # Alice has public TURN, but Bob's host is private; fails
+Pair 5: relay-relay      Alice 198.51.100.99:55000 ↔ Bob 198.51.100.99:65000
+        # Both relay — guaranteed to work via TURN; nominate as last resort
+```
+
+In practice ICE finds the best working pair within ~200ms over WebSocket-signaled candidates; the 3-RTT-worst-case for STUN connectivity check is amortized by parallelism.
+
+## More Common Errors With Cause + Fix
+
+```text
+SIP/2.0 408 Request Timeout
+# Cause: Server side of UDP transaction never replied; client retransmissions exhausted Timer B (32s).
+# Fix: 1) confirm UAS is reachable (ping, dig, traceroute);
+#      2) confirm rport is set so server can reply through symmetric NAT;
+#      3) increase tcp_connection_timeout if using TCP.
+```
+
+```text
+SIP/2.0 482 Loop Detected
+# Cause: Outgoing INVITE has matched a Via header value already in the request.
+# Fix: Inspect the proxy chain: an upstream proxy is forwarding back to a node
+#      that already touched the request. Common with misconfigured ENUM/DNS SRV.
+#      Use sngrep to trace the Via stack.
+```
+
+```text
+SIP/2.0 488 Not Acceptable Here
+# Warning: 304 example.com "Incompatible media format"
+# Cause: SDP offer specified codecs not supported by callee.
+# Fix: Inspect a=rtpmap lines on both sides; ensure overlap.
+#      For G.722 vs G.722.1 (different specs!) check the clock rate.
+```
+
+```text
+SIP/2.0 491 Request Pending
+# Cause: re-INVITE arrived while another mid-dialog transaction is in flight.
+# Fix: UAC waits T1 + T2 random backoff and retries.
+#      In practice this means the application must serialize re-INVITEs.
+```
+
+```text
+ERR pjsip Endpoint X has no AORs configured
+# Cause: PJSIP endpoint has no aors= line referencing a defined [aor X] block.
+# Fix: Add aors=X to the [endpoint X] block, and define a [aor X] section
+#      with at least a contact= line (or set max_contacts=N for registrar mode).
+```
+
+```text
+ERR rtp_io: ssl_handshake: tls error: certificate verify failed
+# Cause: TLS peer certificate not trusted; usually missing CA in trust store.
+# Fix: Add the issuing CA to /etc/asterisk/keys/ or /etc/freeswitch/tls/ca-bundle.crt
+#      and reference it in cert_file/ca_file directives. Verify with:
+#        openssl s_client -connect host:5061 -showcerts -CAfile bundle.crt
+```
+
 ## See Also
 
 - [asterisk](../telephony/asterisk.md) — open-source PBX, chan_pjsip / chan_sip implementations

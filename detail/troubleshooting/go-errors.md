@@ -848,6 +848,336 @@ if errors.Is(err, io.EOF) { ... }
 
 If your function returns errors for specific conditions, write tests for those conditions. The test exercises the error construction (catches "I forgot to wrap" mistakes) and acts as documentation for callers.
 
+## runtime.gopanic Internals
+
+The `panic()` builtin calls `runtime.gopanic(v)` in `src/runtime/panic.go`. Simplified flow:
+
+```go
+// runtime.gopanic — when panic() is invoked
+func gopanic(e any) {
+    gp := getg()                  // current goroutine
+    if gp.m.curg != gp { ... }    // sanity check
+
+    // Build a _panic struct on the stack
+    var p _panic
+    p.arg = e
+    p.link = gp._panic            // chain to existing panic (in case of nested)
+    gp._panic = &p
+
+    // Walk deferred functions in LIFO order, looking for recover()
+    for {
+        d := gp._defer
+        if d == nil { break }
+
+        // ... call deferred function ...
+        d.started = true
+
+        // Execute the deferred function. If it calls recover(), the recover
+        // call sets p.recovered = true, and we'll bail out.
+        reflectcall(nil, unsafe.Pointer(d.fn), nil, ...)
+
+        gp._defer = d.link
+
+        if p.recovered {
+            // recover() succeeded — unwind to the deferred function's caller
+            // by jumping to runtime.deferreturn-style continuation
+            mcall(recovery)
+            // Never returns here on success.
+        }
+    }
+
+    // No deferred function recovered. Print stack trace and exit.
+    fatalpanic(gp._panic)
+}
+```
+
+The `_defer` struct is the linked-list node for deferred calls:
+
+```go
+type _defer struct {
+    started bool
+    heap    bool          // allocated on heap (post-1.13 escape) or stack?
+    openDefer bool         // open-coded defer (1.14+ optimization)
+    sp        uintptr     // sp at time of defer
+    pc        uintptr     // pc at time of defer
+    fn        *funcval
+    _panic    *_panic
+    link      *_defer
+    rcvr      any          // receiver of recover()
+}
+```
+
+## Open-Coded Defer (Go 1.14+)
+
+For functions with at most 8 defers and no defers in loops, the compiler emits inline code instead of a runtime _defer chain:
+
+```go
+// Source:
+func f() {
+    defer cleanup()
+    risky()
+}
+
+// Old (runtime):
+//   pushdefer(cleanup)
+//   risky()
+//   // function epilogue calls deferreturn() which pops the chain
+
+// 1.14+ open-coded:
+//   var deferred uint8 = 0
+//   risky()
+//   if deferred & 1 { cleanup() }
+```
+
+This is much cheaper (no heap allocation for the _defer struct), making defer-in-hot-path acceptable in many cases.
+
+## defer-in-loop Pitfall (and 1.22+ Fix)
+
+```go
+// PRE-1.22 BUG:
+for _, file := range files {
+    f, err := os.Open(file)
+    if err != nil { continue }
+    defer f.Close()  // ← all files held open until enclosing function returns!
+    // ... process f ...
+}
+```
+
+The fix pre-1.22 was to wrap the loop body in a closure:
+
+```go
+for _, file := range files {
+    func() {
+        f, err := os.Open(file)
+        if err != nil { return }
+        defer f.Close()
+        // ... process f ...
+    }()
+}
+```
+
+Go 1.22 changed `for` loop variable semantics so each iteration gets its own variable, but the defer-FIFO-vs-iteration ordering issue remains for `defer`. The closure pattern is still the correct fix.
+
+## Stack Unwinding Mechanics
+
+When `gopanic` walks defers, it must unwind the stack:
+
+```text
+[ frame: f()             ] ← panic raised here
+[ frame: g() defer h     ] ← _defer entry pointing at h
+[ frame: main()          ]
+```
+
+The deferred `h` is invoked, then `g`'s frame is popped. If `h` recovers, control returns to `g`'s caller via `mcall(recovery)`, which sets up the goroutine's pc to resume at `g`'s deferreturn site.
+
+The `lr` (link register on ARM) or return-address (x86) is used to find the caller's frame. The compiler emits frame-pointer info via `runtime.funcdata` (the `_FUNCDATA_LocalsPointerMaps` and `_FUNCDATA_StackObjects` sections of the binary).
+
+## errors.Is / errors.As / errors.Unwrap Walk
+
+```go
+// The standard library implementation, simplified:
+
+func Is(err, target error) bool {
+    if target == nil { return err == target }
+
+    isComparable := reflectlite.TypeOf(target).Comparable()
+    for {
+        if isComparable && err == target { return true }
+
+        // Check if err implements Is(error) bool
+        if x, ok := err.(interface{ Is(error) bool }); ok && x.Is(target) {
+            return true
+        }
+
+        // Walk to next
+        switch x := err.(type) {
+        case interface{ Unwrap() error }:
+            err = x.Unwrap()
+            if err == nil { return false }
+        case interface{ Unwrap() []error }:
+            for _, e := range x.Unwrap() {
+                if Is(e, target) { return true }
+            }
+            return false
+        default:
+            return false
+        }
+    }
+}
+```
+
+`errors.As(err, &target)` walks the same chain but checks whether `err` is assignable to `*target`'s type:
+
+```go
+func As(err error, target any) bool {
+    val := reflectlite.ValueOf(target)
+    if val.Kind() != reflectlite.Ptr || val.IsNil() {
+        panic("errors: target must be a non-nil pointer")
+    }
+
+    targetType := val.Type().Elem()
+    if targetType.Kind() != reflectlite.Interface && !targetType.Implements(errorType) {
+        panic("errors: *target must be interface or implement error")
+    }
+
+    for err != nil {
+        if reflectlite.TypeOf(err).AssignableTo(targetType) {
+            val.Elem().Set(reflectlite.ValueOf(err))
+            return true
+        }
+        if x, ok := err.(interface{ As(any) bool }); ok && x.As(target) {
+            return true
+        }
+        err = Unwrap(err)
+    }
+    return false
+}
+```
+
+## errors.Join (1.20+) Internals
+
+```go
+type joinError struct {
+    errs []error
+}
+
+func (e *joinError) Error() string {
+    var b []byte
+    for i, err := range e.errs {
+        if i > 0 { b = append(b, '\n') }
+        b = append(b, err.Error()...)
+    }
+    return string(b)
+}
+
+func (e *joinError) Unwrap() []error { return e.errs }
+
+func Join(errs ...error) error {
+    n := 0
+    for _, err := range errs {
+        if err != nil { n++ }
+    }
+    if n == 0 { return nil }
+
+    e := &joinError{errs: make([]error, 0, n)}
+    for _, err := range errs {
+        if err != nil { e.errs = append(e.errs, err) }
+    }
+    return e
+}
+```
+
+`errors.Is(joined, target)` and `errors.As(joined, &target)` recursively check each wrapped error via the new `Unwrap() []error` interface.
+
+## Race Detector ThreadSanitizer Internals
+
+`-race` instruments every memory access with a call to runtime.racewrite or runtime.raceread. These calls update a per-goroutine "vector clock" tracking happens-before relationships:
+
+```text
+T1: write x  → racewrite(x, [T1: 5])
+T2: read  x  → raceread(x, expected_clock=[T1: 5])
+              → if T2's vector clock for T1 < 5, RACE detected
+              (T2 doesn't have a synchronization edge from T1's write)
+```
+
+Synchronization primitives (channels, mutex Lock/Unlock, atomic ops, sync.Once) emit happens-before edges that update vector clocks correctly. The "WARNING: DATA RACE" output formats:
+
+```text
+WARNING: DATA RACE
+Read at 0xc0000180c0 by goroutine 7:
+  main.main.func1()
+      /home/x/main.go:15 +0x44
+
+Previous write at 0xc0000180c0 by goroutine 6:
+  main.main.func2()
+      /home/x/main.go:21 +0x44
+
+Goroutine 7 (running) created at:
+  main.main()
+      /home/x/main.go:14 +0x66
+Goroutine 6 (finished) created at:
+  main.main()
+      /home/x/main.go:20 +0x99
+```
+
+The `-race` build adds ~5x memory overhead and ~2-20x runtime overhead. ThreadSanitizer is fork-of-LLVM's TSan; it shares logic with C/C++/Rust race detection.
+
+## signal-as-panic Mechanism
+
+When a goroutine triggers SIGSEGV, the runtime's signal handler converts it to a Go panic:
+
+```go
+// runtime.sigpanic in src/runtime/signal_unix.go
+func sigpanic() {
+    g := getg()
+    if !canpanic(g) {
+        throw("unexpected signal during runtime execution")
+    }
+
+    switch g.sig {
+    case _SIGBUS:
+        if g.sigcode0 == _BUS_ADRERR && ... {
+            panicmem()       // → "invalid memory address or nil pointer dereference"
+        }
+    case _SIGSEGV:
+        if (g.sigcode0 == 0 || ...) && ... {
+            panicmem()
+        }
+    case _SIGFPE:
+        switch g.sigcode0 {
+        case _FPE_INTDIV: panicdivide()
+        case _FPE_INTOVF: panicoverflow()
+        case _FPE_FLTDIV: panicdivide()
+        }
+    }
+    panic(errorString("runtime error: " + ...))
+}
+```
+
+The `panicmem`, `panicdivide`, etc. helpers raise the canonical runtime errors. This is why a nil pointer dereference appears as a panic rather than crashing the process — the runtime catches the signal and converts it.
+
+## Common Library Pattern: io.EOF Sentinel
+
+`io.EOF = errors.New("EOF")`. The convention: `Read` returns `(0, io.EOF)` on clean stream end. Special: `errors.Is(err, io.EOF)` always works because EOF is a sentinel; never wrap it (always return io.EOF directly when stream ended normally).
+
+## Common Library Pattern: context cancellation
+
+`context.Canceled` and `context.DeadlineExceeded` are sentinels. Wrapping them via `fmt.Errorf("%w", ctx.Err())` is correct and `errors.Is(err, context.Canceled)` will still match — but be aware that the wrapping adds a frame to the chain.
+
+## When recover() Doesn't Work
+
+```go
+// FAILS: recover called outside of deferred function
+func f() {
+    defer log.Println("done")
+    if err := recover(); err != nil {  // always returns nil — not in deferred fn
+        ...
+    }
+    panic("X")
+}
+
+// FAILS: recover in different goroutine
+func main() {
+    defer func() {
+        if err := recover(); err != nil { log.Println(err) }
+    }()
+    go func() {
+        panic("oh no")  // ← crashes whole process; main's recover doesn't see it
+    }()
+    time.Sleep(time.Second)
+}
+
+// CORRECT: every goroutine that might panic should have its own top-level recover
+go func() {
+    defer func() {
+        if r := recover(); r != nil {
+            log.Printf("goroutine panic: %v\n%s", r, debug.Stack())
+        }
+    }()
+    risky()
+}()
+```
+
 ## References
 
 - Go Source `src/runtime/panic.go`: https://github.com/golang/go/blob/master/src/runtime/panic.go

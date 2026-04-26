@@ -190,26 +190,116 @@ The **System Library Exception** (GPL §1) and **mere aggregation** doctrine sof
 
 But these exceptions don't help when GPL'd code is statically linked or directly modified into your codebase.
 
-## The CDDL+GPL Incompatibility — Linux/ZFS
+## Worked Compatibility Chains — MIT → GPL → AGPL
 
-The most famous compatibility failure: ZFS (Sun's filesystem, CDDL) with the Linux kernel (GPL-2.0 only).
+Walk through the canonical permissive-to-network-copyleft chain step by step.
 
-**CDDL** (Common Development and Distribution License, 2004):
-- File-level copyleft: modifications to CDDL'd files must be CDDL'd
-- Combinations with non-CDDL code: fine, as long as CDDL files retain their license
-- Strict choice-of-venue clause (Santa Clara County, CA — incompatible with GPL's "no further restrictions")
+**Step 1: MIT library `libfoo` written in 2018, MIT-licensed.**
 
-**GPL-2.0**:
-- Whole-program copyleft: derivative works must be GPL-2.0
-- "No further restrictions" clause forbids adding any condition not in GPL itself
+`libfoo` source ships with the MIT notice. Anyone may copy, modify, sublicense. The only condition: include the copyright notice and disclaimer of warranty.
 
-The conflict:
-- CDDL says: ZFS files must remain CDDL
-- GPL says: any work derived from kernel must be GPL-2.0
-- A modified Linux kernel containing ZFS would need to be both CDDL and GPL-2.0
-- These are mutually exclusive — there is no umbrella
+**Step 2: Project `barproject` adopts `libfoo`, releases under GPL-3.0.**
 
-Result: ZFS-on-Linux ships as out-of-tree kernel modules, with the legal theory that the **user**, not the distributor, performs the linking. This is contested. Canonical's decision to ship ZFS-on-Linux modules in Ubuntu 16.04+ generated significant legal commentary; Canonical defends the position via the user-link argument and CDDL's permissive linking. The FSF disagrees.
+`barproject` imports `libfoo`. The combination is a derivative work. To distribute, `barproject` must:
+- Retain `libfoo`'s MIT notice (probably in a `THIRD_PARTY_NOTICES` file or per-file headers)
+- License the *combination* under GPL-3.0
+- Provide source for the entire combination on request
+- Add no further restrictions beyond GPL-3.0
+
+Result: downstream users get a GPL-3.0 work that contains MIT-licensed code. They may extract `libfoo` from the source tree and use it under MIT (the original MIT grant flows to them directly — GPL-3.0 cannot revoke an upstream MIT grant). But the *combined* binary is GPL-3.0.
+
+**Step 3: SaaS `bazcloud` modifies `barproject`, runs it as a service, never distributes binaries.**
+
+GPL-3.0's distribution trigger is not met (no binary leaves bazcloud's servers). Users interact via HTTP. GPL-3.0 imposes no source-disclosure obligation. This is the SaaS loophole AGPL closes.
+
+**Step 4: `bazcloud` adopts AGPL-3.0 to plug the hole.**
+
+`bazcloud` relicenses *its modifications* to AGPL-3.0. But the underlying `barproject` is GPL-3.0. Is GPL-3.0 → AGPL-3.0 allowed?
+
+Yes — GPL-3.0 §13 explicitly permits combination with AGPL-3.0. The text:
+
+> Notwithstanding any other provision of this License, you have permission to link or combine any covered work with a work licensed under version 3 of the GNU Affero General Public License into a single combined work, and to convey the resulting work.
+
+So the chain MIT → GPL-3.0 → AGPL-3.0 works. Each transition raises the copyleft ceiling. Downstream of `bazcloud`, network users may obtain the source via the §13 obligation.
+
+**Step 5: Try to relicense back to MIT.**
+
+Impossible. Once GPL-3.0 absorbs the work, MIT distribution would require removing the GPL portions and re-implementing — a clean-room rewrite. The original `libfoo` can still be extracted and used as MIT, but `barproject` and `bazcloud` modifications are stuck at GPL-3.0+.
+
+```
+MIT (libfoo)           [permissive]
+    ↓
+GPL-3.0 (barproject)   [strong copyleft, distribution trigger]
+    ↓
+AGPL-3.0 (bazcloud)    [network copyleft, SaaS trigger]
+    ↓
+[stuck — cannot return to MIT or weaker]
+```
+
+The lesson: copyleft is a one-way valve. Plan upstream license choices with downstream possibilities in mind.
+
+## Worked Compatibility — Apache 2.0 → GPL-3.0 via Patent Grant
+
+Apache-2.0 + GPL-3.0 was a deliberate compatibility win in 2007. Walk through the analysis.
+
+**Apache-2.0 §3** grants every contributor's downstream a patent license for "those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work." Plus patent-retaliation: filing a patent suit against the work terminates your patent grant.
+
+**GPL-2.0 §6** said:
+
+> Each time you redistribute the Program (or any work based on the Program), the recipient automatically receives a license from the original licensor to copy, distribute or modify the Program subject to these terms and conditions. You may not impose any further restrictions on the recipients' exercise of the rights granted herein.
+
+The "no further restrictions" clause meant Apache-2.0's patent retaliation — terminating patent grants on suit — counted as an "additional restriction" GPL-2.0 forbade. Combination was thus forbidden under GPL-2.0.
+
+**GPL-3.0 §11** rewrote this. It added its own patent grant and patent-retaliation clause, then in §7 explicitly listed Apache-2.0-style patent retaliation as an "additional permission" that GPL-3.0 tolerates. The §7 language:
+
+> Notwithstanding any other provision of this License, for material you add to a covered work, you may (if authorized by the copyright holders of that material) supplement the terms of this License with terms... [including] limitations of liability or warranty different from those of section 15 or 16.
+
+Plus §11 codified that GPL-3.0 itself imposes a patent-retaliation clause similar to Apache's.
+
+Result: Apache-2.0 + GPL-3.0 combination is allowed. Apache's patent retaliation is no longer "additional" because GPL-3.0 has its own patent terms.
+
+**Operational rule for compliance pipelines:**
+
+```
+if any(d.license == "Apache-2.0" for d in deps) and target == "GPL-2.0":
+    fail("Apache-2.0 incompatible with GPL-2.0 due to patent terms")
+if any(d.license == "Apache-2.0" for d in deps) and target == "GPL-3.0":
+    pass  # compatible since GPL-3.0 §7/§11
+```
+
+This single 2007 fix unlocked thousands of downstream combinations (Hadoop + GNU stack, Spark + Linux tools, Kubernetes + GPL-licensed components).
+
+## CDDL+GPL Impossibility Proof
+
+The most famous compatibility failure: ZFS (Sun's filesystem, CDDL) with the Linux kernel (GPL-2.0 only). Construct a formal impossibility proof.
+
+**Premise 1: CDDL §3.4** states modifications to CDDL-licensed files must remain CDDL.
+
+> All Covered Software, including any Modifications, that You distribute or otherwise make available in Executable form must... be made available in Source Code form... and that Source Code form must be distributed only under the terms of this License.
+
+**Premise 2: CDDL §6.3** has a venue clause:
+
+> Any litigation relating to this License may be brought only in the courts of a jurisdiction wherein the defendant maintains its principal place of business...
+
+**Premise 3: GPL-2.0 §6** has the no-further-restrictions clause forbidding any additional condition not in GPL-2.0 itself.
+
+**Premise 4: GPL-2.0 §2(b)** requires that any work derived from a GPL-2.0 work be licensed under GPL-2.0 in its entirety.
+
+**Combination attempt:** Build a kernel module by modifying the Linux kernel and incorporating ZFS source.
+
+The combined work must satisfy:
+- CDDL: ZFS files remain CDDL (Premise 1)
+- GPL-2.0: combined work licensed as GPL-2.0 in entirety (Premise 4)
+
+These are **mutually exclusive**: a single file cannot simultaneously be "CDDL only" (per CDDL §3.4) and "GPL-2.0" (per GPL-2.0 §2(b)). The umbrella license set is empty.
+
+Furthermore, even if Premise 4 were relaxed (e.g., file-level rather than work-level analysis), CDDL's venue clause (Premise 2) is an "additional restriction" beyond what GPL-2.0 imposes, violating Premise 3. Independent failure path.
+
+**Conclusion:** No umbrella license satisfies both CDDL and GPL-2.0. Combination is impossible.
+
+ZFS-on-Linux ships as out-of-tree kernel modules. The legal theory: the **user**, not the distributor, performs the linking at runtime via `modprobe`. This shifts the derivative-work formation from distributor to end-user, who is not bound by GPL-2.0's distribution conditions because they aren't distributing.
+
+Canonical's decision to ship ZFS-on-Linux modules pre-built in Ubuntu 16.04+ generated significant legal commentary. SFLC and Bradley Kuhn argue Canonical violates GPL-2.0; Canonical's counterargument cites CDDL's permissive linking and the user-as-linker theory. The matter has not been litigated to judgment.
 
 The lesson: **picking copyleft licenses without checking compatibility burns bridges**. CDDL was Sun's Solaris license — they chose it specifically to wall off Solaris from Linux. The mutually-incompatible-copyleft pattern is a feature, not a bug, when ecosystems compete.
 
@@ -298,6 +388,62 @@ This is the patent peace clause: filing a patent suit against the project termin
 
 The "Apache 2.0 + GPL 2.0 incompatibility" was rooted partly in patent terms — Apache's termination clause was an "additional restriction" GPL-2.0 forbade. GPL-3.0 §11 added a patent grant + peace, fixing the incompatibility going forward.
 
+## Apache 2.0 §3 vs GPL 3.0 §11 — Patent Clause Anatomy
+
+Both provisions cover the same ground (grant patents on contribution; terminate on suit) but with subtly different scopes.
+
+**Apache 2.0 §3 — scope of grant:**
+- Grants apply to "those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted"
+- Two sub-scopes: contribution alone, or contribution + Work
+- Does NOT cover patents reading on combinations of the contribution with code outside the Work (e.g., a downstream fork that adds new functionality)
+
+**GPL-3.0 §11 — scope of grant:**
+
+> Each contributor grants you a non-exclusive, worldwide, royalty-free patent license under the contributor's essential patent claims, to make, use, sell, offer for sale, import and otherwise run, modify and propagate the contents of its contributor version.
+
+Where "essential patent claims" are claims "owned or controlled by the contributor, whether already acquired or hereafter acquired, that would be infringed by some manner, permitted by this License, of making, using, or selling its contributor version."
+
+GPL-3.0's scope is the contributor's *contributor version* — the Program as it stood when the contributor delivered the contribution, not just the contribution alone. This is broader than Apache's "contribution alone or contribution + Work" because it covers patents reading on the entire Program at the moment of contribution.
+
+**Apache 2.0 §3 — termination trigger:**
+- Filing patent litigation alleging "the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement"
+- Termination is to the *suing party only*, applies to all licenses they hold under that Work
+- Does NOT terminate other contributors' grants, just the relationship between suer and project
+
+**GPL-3.0 §10 — termination trigger:**
+
+> An entity transacting with you using the program is granted patent licenses... You may not impose any further restrictions on the exercise of the rights granted... including, for example, you may not impose a license fee... on the rights granted... [and] If you cease all violation of this License, then your license from a particular copyright holder is reinstated...
+
+Plus §11 expressly addresses patent suits. Termination is reciprocal to GPL-3.0's downstream-grant model — once you sue, your right to use the Program goes away.
+
+**Defensive comparison:**
+
+| Property | Apache-2.0 §3 | GPL-3.0 §11 |
+|----------|---------------|-------------|
+| Grant scope | Contribution + Work | Contributor version (entire Program at contribution time) |
+| Implicit Combinations | Limited | Broader — covers integration patents |
+| Termination breadth | All licenses for that Work | Cumulative with §10 reinstatement |
+| Anti-laundering | Not explicit | §11 anti-laundering: cannot pay a third party to provide a discriminatory patent license |
+| Successor patents | Covered (irrevocable for irrevocable patents) | "Hereafter acquired" patents covered |
+
+GPL-3.0's anti-laundering (§11 paragraph 6) is the unique addition: contributors can't structure deals where a non-contributor third-party offers users a discriminatory patent license. The text targets the Microsoft-Novell deal of 2006, where Microsoft offered Novell customers patent peace but other Linux users none. GPL-3.0 forbids contributors from arranging such deals.
+
+```
+Patent suit against Apache Project X:
+  → suer's grant from §3 terminates
+  → other contributors' grants unaffected
+  → suer can no longer use Project X under Apache-2.0
+  → other users continue using Project X freely
+
+Patent suit against GPL-3.0 Project Y:
+  → §11 grants from suer terminate
+  → §10 license terminates (no further restrictions)
+  → §10 reinstatement possible if suer ceases violation
+  → §11 anti-laundering: cannot route patent claims through proxy
+```
+
+For a project receiving corporate contributions, both clauses materially reduce patent risk versus MIT/BSD (no patent grant).
+
 ## Trademark vs Copyright vs Patent — The Three Regimes
 
 | Regime | What It Protects | Duration | Origin |
@@ -378,6 +524,115 @@ The "rented commercial use" model: source visible, hack on it, but pay the vendo
    Proprietary                    — no source visibility
 ```
 
+## BUSL Conversion-to-Apache Mechanic
+
+BUSL-1.1 (Business Source License v1.1) ships with two interlocking provisions: a per-licensor "Additional Use Grant" describing what production use is allowed during the restricted window, and a "Change Date" with associated "Change License" defining what the source becomes after the window.
+
+The relevant text from the BUSL-1.1 standard form:
+
+> Effective on the Change Date, or the fourth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
+
+**Worked example — HashiCorp Terraform:**
+
+| Version | Released | BUSL Phase | Change Date (4 years) | Becomes |
+|---------|----------|------------|----------------------|---------|
+| 1.6.0   | Aug 2023 | BUSL-1.1   | Aug 2027             | MPL-2.0 |
+| 1.7.0   | Jan 2024 | BUSL-1.1   | Jan 2028             | MPL-2.0 |
+| 1.8.0   | Apr 2024 | BUSL-1.1   | Apr 2028             | MPL-2.0 |
+
+Each minor version has its own Change Date computed from its release. So in 2027, only Terraform 1.6.x converts to MPL-2.0; 1.7.x is still BUSL-restricted until 2028. The "rolling MPL window" creates a 4-year lag between innovation and full openness.
+
+**Conversion mechanic on Change Date:**
+
+1. Existing BUSL-1.1 grant terminates
+2. Change License (MPL-2.0 in Terraform's case, Apache-2.0 in many others) automatically applies
+3. The conversion is unilateral — no relicensing action required by the rightsholder
+4. Past distributions under BUSL retain their BUSL terms (rights from the date you received them); new distributions get the Change License
+
+**Additional Use Grant — Terraform's specific text:**
+
+> You may make production use of the Licensed Work, provided such use does not include offering the Licensed Work to third parties on a hosted or embedded basis which is competitive with HashiCorp's products.
+
+The "competitive" carve-out is what excludes managed Terraform services from third parties. End users running Terraform locally face no restriction. The mechanic is conceptually similar to Elastic's "compete with us" prohibition but with the time-bomb that eventually opens the code.
+
+**OpenTofu fork response:** When HashiCorp announced BUSL adoption in August 2023, the OpenTofu Foundation forked Terraform's MPL-2.0-licensed pre-conversion code and continues development under MPL-2.0 only. They cannot incorporate BUSL-licensed Terraform changes (BUSL → MPL is asymmetric — BUSL conditions don't fit MPL's umbrella) until each Change Date passes. So OpenTofu lives 4 years behind Terraform's main branch in feature parity for any BUSL-only changes.
+
+## SSPL §13 Cloud-Rehoster Trigger
+
+SSPL extends AGPL §13 with a cloud-specific clause that targets managed-service rehosters. The relevant text (SSPL v1, MongoDB-authored):
+
+> If you make the functionality of the Program or a modified version available to third parties as a service, you must make the Service Source Code available via network download to everyone at no charge, under the terms of this License. Making the functionality of the Program or modified version available to third parties as a service includes, without limitation, enabling third parties to interact with the functionality of the Program or modified version remotely through a computer network, offering a service the value of which entirely or primarily derives from the value of the Program or modified version, or offering a service that accomplishes for users the primary purpose of the Program or modified version.
+
+"Service Source Code" is then defined to include:
+
+> the Corresponding Source for the Program or the modified version, and the Corresponding Source for all programs that you use to make the Program or modified version available as a service, including, without limitation, management software, user interfaces, application program interfaces, automation software, monitoring software, backup software, storage software and hosting software, all such that a user could run an instance of the service using the Service Source Code you make available.
+
+**The trigger pattern:**
+
+```
+Provider A → Runs unmodified MongoDB-as-a-service → SSPL §13 fires
+   Required to release: MongoDB source + management plane + UI + API gateway
+   + monitoring + backup + storage + hosting orchestration
+```
+
+This is intentionally hostile to AWS DocumentDB (Amazon's MongoDB-compatible service launched January 2019, which dodged AGPL by re-implementing the wire protocol against a different storage engine). MongoDB's bet: any cloud provider running actual MongoDB code and offering it as a service must release their entire infrastructure stack — an unacceptable cost.
+
+**Operational impact:**
+- Self-hosters using MongoDB (run on internal servers): no §13 trigger (not "service to third parties")
+- ISVs building applications on MongoDB and selling the application: no §13 trigger (service is the app, not MongoDB)
+- Cloud providers offering "managed MongoDB" with users connecting to MongoDB ports: §13 fires → must release infra source
+
+**OSI rejection rationale (March 2019):**
+
+OSI's License Review Committee rejected SSPL primarily on OSD criteria 6 (no field-of-use discrimination) and 9 (no restriction on other software). The "Service Source Code" requirement bundles unrelated software (monitoring, backup, etc.) under SSPL's terms — OSI viewed this as restricting other software the user happens to combine with MongoDB.
+
+MongoDB withdrew the application but kept SSPL as the license. As of 2025 SSPL is widely deployed (Elastic, Redis 7.4+, others) but remains source-available rather than open source.
+
+## Elastic License v2 Prohibition List
+
+Elastic License v2 (ELv2) replaced Elastic Stack's Apache-2.0 license in February 2021. Unlike SSPL's broad source-disclosure requirement, ELv2 is a use-restriction license — source visible, but specific uses prohibited.
+
+The four prohibitions from ELv2:
+
+> You may not provide the software to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software.
+
+> You may not move, change, disable, or circumvent the license key functionality in the software, and you may not remove or obscure any functionality in the software that is protected by the license key.
+
+> You may not alter, remove, or obscure any licensing, copyright, or other notices of the licensor in the software. Any use of the licensor's trademarks is subject to applicable law.
+
+> Central to a Defined Term: "Software" means the software the licensor makes available under this license, as may be updated by the licensor from time to time.
+
+The "hosted or managed service" prohibition is the AWS-targeting clause. The "license key" prohibition is the commercial-feature-protection clause (Elastic's enterprise tier ships features gated by license keys; ELv2 forbids removing the gates).
+
+**Worked compliance flow for an enterprise:**
+
+1. **Self-host Elasticsearch internally for application search**: allowed (you are the user, not "third parties")
+2. **Embed Elasticsearch in a SaaS product as the search backend**: allowed if Elasticsearch is "incidental" — Elastic interprets this as the product's primary value not being Elasticsearch itself
+3. **Sell "Managed Elasticsearch" to customers**: prohibited — directly hits the hosted-service clause
+4. **Disable license-key checks in source to access enterprise features**: prohibited
+5. **Modify Elasticsearch and contribute back**: allowed (modifications permitted), but the modifications inherit ELv2
+
+**OpenSearch fork (AWS, April 2021):**
+
+AWS forked Elasticsearch 7.10 (the last Apache-2.0 version) into OpenSearch. The fork:
+- Stays Apache-2.0 (no ELv2 restrictions)
+- Cannot incorporate Elastic-authored ELv2 features without a clean-room reimplementation
+- AWS continues its OpenSearch Service offering on Apache-2.0 code
+- Trademark fork: cannot use "Elasticsearch" branding
+
+The fork is the ecosystem's response to ELv2: a permissive replacement maintained by AWS, with Apache, eBay, Adobe, and Bytedance contributing. OpenSearch as of 2025 has substantial divergent feature work versus Elasticsearch; the codebases are no longer line-by-line comparable.
+
+**ELv2 vs SSPL — Comparison:**
+
+| Property | ELv2 | SSPL |
+|----------|------|------|
+| Source visibility | Yes | Yes |
+| Modifications | Allowed | Allowed |
+| Restricted use | Hosted service + license key bypass | Hosted service (with broader source disclosure trigger) |
+| OSI status | Not approved (use restriction) | Rejected (2019) |
+| Conversion timer | None | None |
+| Forks | OpenSearch (Apache-2.0) | None for MongoDB; Valkey (BSD) for Redis |
+
 ## Dual-Licensing Theory
 
 Copyright holder can license the same code under multiple terms. Common pattern:
@@ -393,12 +648,115 @@ For dual-licensing to work, the rightsholder must own all the copyright. With co
 
 Without one of these, contributor copyrights are co-owned, and dual-licensing requires every contributor's permission for each license sale.
 
-Examples:
-- MySQL — GPL + commercial (Oracle owns all copyright via CLA)
-- Qt — LGPL + commercial (The Qt Company holds rights via CLA)
-- MongoDB pre-2018 — AGPL + commercial (10gen/MongoDB Inc. via CLA)
+## MySQL — Canonical GPL+Commercial Dual License
 
-The dual-license model funded much of the early FOSS-business era. It's largely been replaced by SaaS hosting (cloud providers undercut on-premise commercial licenses) and source-available licenses (which avoid the copyleft trigger).
+MySQL AB (later acquired by Sun, then Oracle) operated the canonical dual-license model from 1995 onward.
+
+**The two-track structure:**
+
+- **MySQL Community Edition** — GPL-2.0 (now GPL-2.0 only with FOSS exception)
+- **MySQL Enterprise Edition** — proprietary commercial license, paid subscription
+
+The same source code, same binaries technically — but distributed under different terms with different support and feature additions.
+
+**Why customers paid for the commercial license despite GPL availability:**
+
+1. **GPL incompatibility with their stack.** A vendor shipping a closed-source product that links MySQL client libraries cannot redistribute under GPL-2.0 + closed-source terms. Buying the commercial license avoided the linkage problem.
+2. **No copyleft propagation.** Commercial license customers could ship MySQL with proprietary modifications, no source disclosure required.
+3. **Indemnification.** Commercial license bundled IP indemnity, which GPL excluded.
+4. **Phone support, certifications.** Commercial-tier-only operational benefits.
+
+**The CLA was foundational:**
+
+MySQL AB required a Contributor License Agreement granting MySQL AB rights to relicense contributions. Without this, MySQL AB could not have offered the commercial license — every contributor's GPL-only grant would have prevented commercial relicensing. The CLA aggregated all copyright into MySQL AB's hands for licensing purposes (contributors retained copyright but granted MySQL AB sublicensing rights).
+
+**The Sun acquisition (2008):**
+
+When Sun bought MySQL AB for $1B, the dual-license stack came intact. The CLA chain meant Sun acquired the right to continue dual-licensing without re-asking contributors.
+
+**The Oracle acquisition (2010) and aftermath:**
+
+Oracle's stewardship led to community concerns about MySQL's openness. Two notable consequences:
+
+1. **MariaDB fork (2009)** — Monty Widenius, MySQL's original author, left Sun before the Oracle deal closed and forked MySQL into MariaDB. Initially used GPL-2.0; later versions adopted LGPL/BSD for client libraries to ease integration.
+2. **Drizzle fork (2008-2014)** — Brian Aker forked MySQL into Drizzle, an experimental cloud-optimized variant, ultimately abandoned.
+
+The MySQL/MariaDB split shows the dual-license model's failure mode: when stewardship changes, contributors who don't want commercial-licensing rights to flow to a new owner fork, taking the GPL-only option. The CLA is irreversible from MySQL's side; contributors' future contributions can flow elsewhere.
+
+## Qt — Same Pattern, LGPL+Commercial
+
+Qt Group operates a dual license very similar to MySQL's:
+
+- **Qt Open Source** — LGPL-3.0 (most modules), GPL-3.0 (some)
+- **Qt Commercial** — proprietary, paid
+
+The structural elements:
+- LGPL chosen instead of GPL because Qt is a library — LGPL allows linking from proprietary apps without copyleft propagation
+- CLA required from contributors granting The Qt Company sublicensing rights
+- Same dual-license offering: customers can use LGPL freely, or pay for commercial license to avoid LGPL's reverse-engineering and source-availability obligations
+
+**The Nokia → Digia → Qt Group transition (2008-2014):**
+
+Qt's ownership changed three times. Each transition validated the CLA structure: rights flowed cleanly to successor owners. Customers experienced no licensing disruption.
+
+**Why Qt's commercial license is more attractive than MySQL's:**
+
+LGPL's static-linking obligations and library-replacement requirement (must allow users to relink with a modified library) are operationally tedious for embedded products. Commercial Qt customers avoid these. MySQL's GPL is even more restrictive — customers paid more for commercial MySQL relative to LGPL Qt's pricing.
+
+**Lessons from Qt:**
+- Choice of free-tier license affects commercial premium: GPL → high premium; LGPL → moderate premium; permissive → low premium (commercial loses appeal)
+- CLA is mandatory; without it the dual license collapses
+- Branding ("Qt" trademark) reinforces the dual offering — customers buy "Qt" the brand, not just the bits
+
+## MongoDB-as-Warning — Dual License Death
+
+MongoDB pre-2018 followed the dual-license playbook:
+- AGPL-3.0 — community
+- Commercial — paid
+
+Why it failed and what it teaches:
+
+**Cloud providers neutralized the AGPL trigger.** AWS DocumentDB (2019) implemented MongoDB's wire protocol against an AWS-built storage engine — no AGPL-licensed code in their service. MongoDB's network-copyleft trigger never fired against AWS.
+
+**Cloud providers ran unmodified MongoDB.** AWS, Azure, and GCP also offered managed MongoDB, where they ran the AGPL binary unchanged. AGPL §13 only triggers on **modification** — running unmodified AGPL software as a service does not require source disclosure. Cloud providers complied with AGPL trivially (no modifications) while capturing significant revenue.
+
+**Commercial license sales declined.** Why pay MongoDB for commercial when you can use AWS DocumentDB? The commercial-license premium evaporated.
+
+**MongoDB's response was SSPL (October 2018).** The intent: force cloud providers running MongoDB-as-a-service to release their entire infrastructure stack — making the offering economically infeasible. Result:
+- AWS continued DocumentDB (their wire-compatible reimplementation, untouched by SSPL)
+- Smaller cloud providers and on-prem distributors migrated to alternatives (some Postgres-based)
+- OSI rejected SSPL; the project lost "open source" branding
+- Some enterprise customers shifted away due to license uncertainty
+
+**The dual-license death spiral:**
+
+1. Permissive/copyleft community license attracts users
+2. Cloud providers offer managed service
+3. Vendor's commercial-license value erodes (cloud is cheaper / better integrated)
+4. Vendor switches to source-available license (BSL/SSPL/ELv2)
+5. Forks emerge (Valkey, OpenTofu, OpenSearch)
+6. Community fragments
+
+**The pattern in 2024:**
+
+Almost every major open-source-with-commercial company has moved to source-available:
+- MongoDB (SSPL, 2018)
+- Elastic (SSPL/ELv2, 2021)
+- Redis (RSALv2/SSPL, 2024)
+- HashiCorp (BSL, 2023)
+- Sentry (FSL, 2023)
+- MariaDB MaxScale (BSL)
+- CockroachDB (BSL)
+
+The dual-license model — open source community + commercial enterprise — has been replaced by source-available time-bombs. The "free for most, paid for cloud rehosters" architecture is the new equilibrium.
+
+**The lesson for new projects:**
+- Pick a license that matches the business model from day one
+- Don't bait-and-switch (community remembers)
+- If hyperscalers are a competitive threat, bake the license restriction in from the start (Elastic License v2 from day one would have caused fewer fork-fights than re-licensing later)
+- CLA is necessary infrastructure for any future relicensing — but adoption of CLA itself signals intent to relicense, scaring contributors
+
+The dual-license era of 1995-2018 is largely over. The MySQL-Qt-MongoDB arc traces its rise and fall.
 
 ## The Compliance Audit Pipeline
 
@@ -502,6 +860,11 @@ For corporate users, the practical cost of a Tier-2 incident is typically the en
 - ZFS-on-Linux licensing FAQ — https://zfsonlinux.org/license.html
 - HashiCorp BSL adoption announcement (2023) — https://www.hashicorp.com/license-faq
 - MongoDB SSPL FAQ — https://www.mongodb.com/licensing/server-side-public-license/faq
+- Elastic License v2 text — https://www.elastic.co/licensing/elastic-license
+- OpenSearch fork announcement — https://aws.amazon.com/blogs/opensource/introducing-opensearch/
+- BUSL-1.1 specification — https://mariadb.com/bsl11/
+- OSI rejection of SSPL — https://opensource.org/blog/the-sspl-is-not-an-open-source-license
+- OpenTofu Foundation — https://opentofu.org/
 - ClearlyDefined — https://clearlydefined.io/
 - REUSE Specification — https://reuse.software/spec/
 - gpl-violations.org archive — https://gpl-violations.org/
@@ -509,3 +872,9 @@ For corporate users, the practical cost of a Tier-2 incident is typically the en
 - OIN (Open Invention Network) — https://www.openinventionnetwork.com/
 - TLDRLegal license summaries (informational, not legal advice) — https://www.tldrlegal.com/
 - Choose A License (GitHub) — https://choosealicense.com/
+- MySQL FOSS Exception — https://www.mysql.com/about/legal/licensing/foss-exception/
+- The Qt Company licensing — https://www.qt.io/licensing/
+- MongoDB SSPL announcement (2018) — https://www.mongodb.com/blog/post/mongodb-now-released-under-the-server-side-public-license
+- Redis license change announcement (2024) — https://redis.io/blog/redis-adopts-dual-source-available-licensing/
+- Valkey fork — https://valkey.io/
+- MariaDB Foundation — https://mariadb.org/
