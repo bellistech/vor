@@ -86,6 +86,61 @@ hash := argon2.IDKey([]byte(pw), salt, 2, 19456, 1, 32)
 // Encode: $argon2id$v=19$m=19456,t=2,p=1$<b64salt>$<b64hash>
 ```
 
+```javascript
+// Node — @node-rs/argon2 (Rust-backed, fastest)
+import { hash, verify, Algorithm } from "@node-rs/argon2";
+const encoded = await hash("correct horse battery staple", {
+  algorithm: Algorithm.Argon2id,
+  memoryCost: 19456,        // 19 MiB
+  timeCost: 2,
+  parallelism: 1,
+  outputLen: 32,
+  saltLength: 16,
+});
+const ok = await verify(encoded, "correct horse battery staple");
+```
+
+```java
+// Spring Security 5.8+ — Argon2PasswordEncoder
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+Argon2PasswordEncoder enc = new Argon2PasswordEncoder(16, 32, 1, 19456, 2);
+String stored = enc.encode("correct horse battery staple");
+boolean ok = enc.matches("correct horse battery staple", stored);
+// DelegatingPasswordEncoder for migration: PasswordEncoderFactories.createDelegatingPasswordEncoder()
+```
+
+```ruby
+# argon2 gem — passthrough to libargon2
+require "argon2"
+hasher = Argon2::Password.new(t_cost: 2, m_cost: 16, p_cost: 1) # m_cost is log2(KiB) so 16 == 64 MiB
+hash = hasher.create("correct horse battery staple")
+Argon2::Password.verify_password("correct horse battery staple", hash) # => true
+```
+
+- **Verbatim library errors you will see**
+  - `argon2-cffi` — `argon2.exceptions.VerifyMismatchError: The password does not match the supplied hash`
+  - `argon2-cffi` — `argon2.exceptions.InvalidHashError: Invalid hash. Please check the format.` (corrupted column or wrong scheme)
+  - `argon2-cffi` — `argon2.exceptions.HashingError: Could not hash password. Out of memory` (raise `memory_cost` or container limit)
+  - `argon2-cffi` — `argon2.exceptions.VerificationError: Verification failed` (generic — corrupt encoded string)
+  - `golang.org/x/crypto/argon2` — silently returns wrong-length output if you mis-specify `keyLen`; verify hash length explicitly
+  - Spring Security — `org.springframework.security.crypto.password.UnknownPasswordEncoderException: There is no PasswordEncoder mapped for the id "argon2"` — register `DelegatingPasswordEncoder` with `argon2` in `idToPasswordEncoder` map
+  - Spring Security — `IllegalArgumentException: Encoded password does not look like Argon2` — the encoded column is not in `$argon2id$v=19$...` form
+  - Node `@node-rs/argon2` — `Error: Argon2 hash verification failed` (generic mismatch); `Error: Provided hash is invalid` (parse error)
+  - PHP — `password_verify()` returns `false` on any mismatch including "wrong algorithm"; `password_get_info()` returns `["algoName" => "unknown"]` on a corrupt hash
+  - Rust `argon2` — `argon2::password_hash::Error::Password` (mismatch); `argon2::password_hash::Error::B64Encoding` (corrupt salt/hash field)
+  - PHP — `Warning: password_hash(): Memory cost is outside of allowed memory range` if you exceed `memory_limit` in php.ini
+
+| Param | Variable | OWASP 2024 floor | High-budget | Server impact |
+|-------|----------|------------------|-------------|---------------|
+| `m` (memory KiB) | `memoryCost` | 19456 (19 MiB) | 65536 (64 MiB) | RSS per concurrent verify |
+| `t` (iterations) | `timeCost` | 2 | 3-5 | CPU time per verify |
+| `p` (parallelism) | `parallelism` | 1 | 2-4 | Threads per verify (lock contention) |
+| `tagLen` (output) | `hashLen` | 32 | 32 | Bytes stored per row |
+| `saltLen` | `saltLen` | 16 | 16-32 | Bytes stored per row |
+| `version` | `v` | 0x13 (19 dec) | 0x13 | Argon2 v1.3 — pin this |
+
+- **OWASP capacity rule of thumb** — at `m=19 MiB`, plan for `concurrent_logins * 19 MiB` peak RAM. A box doing 100 concurrent verifies needs ~2 GiB headroom on top of app baseline.
+
 ## Password Storage — bcrypt
 
 - **bcrypt** — Blowfish-based, from 1999; still acceptable in 2024 if Argon2id unavailable (legacy systems, FIPS environments).
@@ -114,6 +169,54 @@ hashed, _ := bcrypt.GenerateFromPassword([]byte(pw), 12)
 err := bcrypt.CompareHashAndPassword(hashed, []byte(pw))
 ```
 
+```javascript
+// Node — bcrypt (native binding); avoid bcryptjs in prod (pure-JS, slow)
+import bcrypt from "bcrypt";
+const SALT_ROUNDS = 12;
+const hashed = await bcrypt.hash("correct horse battery staple", SALT_ROUNDS);
+const ok = await bcrypt.compare("correct horse battery staple", hashed);
+```
+
+```java
+// Spring Security — BCryptPasswordEncoder
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+BCryptPasswordEncoder enc = new BCryptPasswordEncoder(12);
+String stored = enc.encode("correct horse battery staple");
+boolean ok = enc.matches("correct horse battery staple", stored);
+```
+
+```ruby
+# bcrypt-ruby — used by Devise + ActiveRecord :has_secure_password
+require "bcrypt"
+hash = BCrypt::Password.create("correct horse battery staple", cost: 12)
+ok = BCrypt::Password.new(hash) == "correct horse battery staple"
+```
+
+- **Verbatim bcrypt errors**
+  - Python `bcrypt` — `ValueError: Invalid salt` (the encoded hash was hand-edited or wrong version `$2y$` vs `$2b$`)
+  - Python `bcrypt` — `ValueError: password cannot be longer than 72 bytes, truncate manually if necessary` (modern `bcrypt>=4.x`; older versions silently truncated)
+  - Python `bcrypt` — `TypeError: Unicode-objects must be encoded before hashing` — pass `pw.encode("utf-8")`, not `pw`
+  - Go — `bcrypt: hashedPassword is not the hash of the given password` (a sentinel error returned as `bcrypt.ErrMismatchedHashAndPassword`; never log the inputs)
+  - Go — `crypto/bcrypt: cost N is outside allowed range (4,31)` — passed cost outside `MinCost`..`MaxCost`
+  - Go — `crypto/bcrypt: hashedSecret too short to be a bcrypted password` (less than 59 bytes)
+  - Spring Security — `IllegalArgumentException: Encoded password does not look like BCrypt` (column corrupted or wrong scheme prefix)
+  - Spring Security — `IllegalArgumentException: rawPassword cannot be null` (front-end sent empty body)
+  - Devise (Rails) — `BCrypt::Errors::InvalidHash: invalid hash` if the `encrypted_password` column is not a `$2a$`/`$2b$` string
+  - PHP — `password_verify()` returns `false` for everything malformed; check `password_get_info($hash)["algo"] === PASSWORD_BCRYPT`
+  - .NET `BCrypt.Net-Next` — `BCrypt.Net.SaltParseException: Invalid salt version` for `$2y$` strings unless you allow it explicitly
+
+| Cost | Iterations (2^cost) | ~ms on 2024 CPU | Notes |
+|------|---------------------|-----------------|-------|
+| 4    | 16                  | <1              | Test/CI only — never prod |
+| 10   | 1024                | 70-100          | Old default; below OWASP 2024 floor |
+| 12   | 4096                | 250-400         | OWASP 2024 minimum; current sweet spot |
+| 13   | 8192                | 500-800         | Use if hardware allows |
+| 14   | 16384               | 1000-1600       | Batch / sensitive admin only |
+| 15   | 32768               | 2000-3200       | Risk of timeouts / DoS |
+| 17+  | 131072+             | >5000           | Don't — user abandonment |
+
+- **bcrypt prefix landscape** — `$2$` (original, NUL bug); `$2a$` (fixed NUL bug, broken on some libs); `$2b$` (canonical modern, OpenBSD); `$2x$` `$2y$` (PHP variants for Crypt_Blowfish bug). Most libs accept all and emit `$2b$`.
+
 ## Password Storage — scrypt
 
 - **scrypt** — memory-hard KDF from Colin Percival (2009); used by Bitcoin's Litecoin variant and 1Password.
@@ -137,6 +240,32 @@ hashed = hashlib.scrypt(pw.encode(), salt=salt, n=2**17, r=8, p=1, dklen=32)
 // golang.org/x/crypto/scrypt
 hash, err := scrypt.Key([]byte(pw), salt, 1<<17, 8, 1, 32)
 ```
+
+```javascript
+// Node stdlib — scrypt
+import { scrypt, randomBytes } from "node:crypto";
+const salt = randomBytes(16);
+scrypt("correct horse battery staple", salt, 32, { N: 1 << 17, r: 8, p: 1, maxmem: 192 * 1024 * 1024 }, (err, dk) => {
+  // store dk + salt
+});
+```
+
+- **scrypt verbatim errors**
+  - Go — `scrypt: parameters are too large` if `N > 2^32` or `r * p > 2^30`
+  - Go — `scrypt: N must be > 1 and a power of 2`
+  - Node — `Error: Invalid scrypt params` from native binding (typically `N` not power-of-2 or memory exceeds `maxmem`)
+  - Node — `RangeError: Invalid input, "N" must be a power of 2 greater than 1`
+  - Python `hashlib.scrypt` — `ValueError: Invalid parameter combination for n, r, p, maxmem.` (raise `maxmem` argument or lower N)
+  - Python `hashlib.scrypt` — `OverflowError: required memory exceeds maximum allowed` (default `maxmem=0` = 32 MiB; pass `maxmem=128 * 1024 * 1024` for N=2^17)
+
+| `N`     | log2 | Memory (r=8) | Suitability         |
+|---------|------|--------------|---------------------|
+| 2^14    | 14   | 16 MiB       | Below floor         |
+| 2^15    | 15   | 32 MiB       | Below floor         |
+| 2^16    | 16   | 64 MiB       | Below floor         |
+| 2^17    | 17   | 128 MiB      | OWASP 2024 floor    |
+| 2^18    | 18   | 256 MiB      | High-security       |
+| 2^20    | 20   | 1 GiB        | Batch-only, never per-request |
 
 ## Password Storage — PBKDF2
 

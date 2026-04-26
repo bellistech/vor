@@ -493,6 +493,101 @@ linekey.1.type = 15
 
 Server (BroadWorks / Asterisk app_sla / FreeSWITCH mod_sla) must understand `Event: dialog;sla` and the `BLA` AOR group. SCA is the BroadSoft variant; BLA is the older RFC.
 
+Full SCA / BLA parameter set:
+
+```ini
+account.1.shared_line = 2
+account.1.shared_call_appearance = 1
+account.1.number_of_calls_per_line_key = 2
+account.1.shared_line_callpull_code = "*11"
+account.1.bla_number = "100"
+account.1.bla_subscribe_period = 300
+account.1.outbound_proxy_enable = 1
+account.1.bla_subscribe_event = "dialog"
+account.1.shared_line_alert_tone_enable = 1
+account.1.shared_line.public_hold_priv_listen.enable = 0
+account.1.shared_line.barge_in_enable = 1
+sip.shared_appearance.barge_in_enable = 1
+sip.shared_appearance.silent_barge_in.enable = 0
+sip.shared_appearance.privacy.enable = 1
+sip.shared_appearance.public_hold.led_enable = 1
+sip.shared_appearance.private_hold.led_enable = 1
+features.line_seize.timeout = 15
+features.shared_line.led_idle_color = 0
+features.shared_line.led_seize_color = 1
+features.shared_line.led_progress_color = 1
+features.shared_line.led_active_color = 1
+features.shared_line.led_held_color = 1
+features.shared_line.led_held_private_color = 1
+```
+
+Server-side examples:
+
+```text
+# BroadWorks SCA: configure "Shared Call Appearance" service and add phone device
+# as a "Shared Call Appearance Location" with a unique linePort suffix.
+
+# Asterisk app_sla (chan_pjsip example):
+[100-bridge]
+type=sla_bridge
+device=100
+
+[100-sla]
+type=sla_station
+device=PJSIP/100
+trunk=100-bridge
+
+# FreeSWITCH mod_sla:
+<settings>
+  <param name="bridge-domain" value="100@example.com"/>
+</settings>
+```
+
+Useful behaviour matrix:
+
+```text
+Action          Local LED        Remote LED       Notes
+----------------|-----------------|-----------------|-----------------
+Idle            Off              Off              Both phones available
+Seize line      Green-fast       Red-solid        Local user got dial tone
+Active call     Green-solid      Red-solid        Cannot barge unless allowed
+Public hold     Green-blink      Red-blink        Anyone can pick up
+Private hold    Green-slow       Red-solid        Only originator resumes
+Bridge in       Green-solid      Green-solid      Both parties on call
+```
+
+Capacity limits — BroadWorks default is 35 SCA endpoints per AOR; Asterisk app_sla recommends ≤8; FreeSWITCH mod_sla scales to ~16 cleanly. Beyond that, NOTIFY storms become noticeable.
+
+Sample full per-MAC.cfg for a 5-line SCA reception:
+
+```ini
+#!version:1.0.0.1
+account.1.enable = 1
+account.1.label = "Reception"
+account.1.user_name = "100"
+account.1.auth_name = "100"
+account.1.password = "redacted"
+account.1.shared_line = 2
+account.1.shared_call_appearance = 1
+account.1.number_of_calls_per_line_key = 5
+account.1.bla_subscribe_event = "dialog"
+linekey.1.type = 15
+linekey.1.line = 1
+linekey.1.label = "100 (1)"
+linekey.2.type = 15
+linekey.2.line = 1
+linekey.2.label = "100 (2)"
+linekey.3.type = 15
+linekey.3.line = 1
+linekey.3.label = "100 (3)"
+linekey.4.type = 15
+linekey.4.line = 1
+linekey.4.label = "100 (4)"
+linekey.5.type = 15
+linekey.5.line = 1
+linekey.5.label = "100 (5)"
+```
+
 ## Expansion Modules
 
 EXP43 (color, 20 keys × 2 pages) and EXP50 (color, 20 keys × 3 pages, T5x compatible).
@@ -512,6 +607,49 @@ expansion_module.2.linekey.1.label = "Bob"
 Up to 6 modules can chain (model-dependent). The first module powered from phone; modules 2+ need their own PSU.
 
 EHS adapter (for wireless headsets) — `EHS35` (Plantronics-style), `EHS36` (Sennheiser DHSG), `EHS40` (USB→DECT), `EHS60/61` (USB-A direct headset adapters).
+
+Full EXP key parameter set:
+
+```ini
+expansion_module.X.linekey.Y.type = 16
+expansion_module.X.linekey.Y.line = 1
+expansion_module.X.linekey.Y.value = "1001"
+expansion_module.X.linekey.Y.extension = "1001@pbx"
+expansion_module.X.linekey.Y.label = "Alice"
+expansion_module.X.linekey.Y.pickup_value = "*8"
+expansion_module.X.linekey.Y.short_label = "Ali"
+expansion_module.X.linekey.Y.icon = ""
+expansion_module.X.linekey.Y.xml_phonebook = 0
+expansion_module.X.linekey.Y.attendant.barge_in_code = "*81"
+expansion_module.X.linekey.Y.attendant.transfer_mode_via_dsskey = 0
+expansion_module.X.lcd.backlight.power_saving_enable = 1
+expansion_module.X.lcd.brightness = 6
+expansion_module.X.lcd.contrast = 5
+```
+
+Compatibility & cabling:
+
+```text
+Module  Connector      Compatible phones                    Pages × keys  PSU
+EXP20   RJ-12 daisy    T27/T29/T46/T48 (mono LCD module)    1 × 40        from phone (1st only)
+EXP38   RJ-12 daisy    T26/T28 (legacy)                     1 × 38        from phone
+EXP40   RJ-12 daisy    T46G/T48G                            1 × 40        ext PSU after 2nd
+EXP43   USB-A          T43U/T46U/T48U/T53/T54/T57           2 × 20        bus-powered + ext PSU 2+
+EXP50   USB-A          T5x series, T58W                     3 × 20 LCD    ext PSU recommended
+```
+
+Key icons (3 letters max for compact display):
+
+```ini
+expansion_module.1.linekey.1.icon = "user"
+expansion_module.1.linekey.1.icon = "voicemail"
+expansion_module.1.linekey.1.icon = "park"
+expansion_module.1.linekey.1.icon = "transfer"
+```
+
+Daisy-chain limits — Yealink rates the bus at 6 modules max but real-world clean operation is typically 3 (USB) / 4 (RJ-12) before LED refresh stalls. Past chain length 3, run a dedicated EXP power supply on every module.
+
+Attendant console (turret) usage — set `linekey.X.type = 16` (BLF) on every key; reception of a 60-extension SMB drops cleanly into 3 EXP43 pages. Use `expansion_module.X.linekey.Y.attendant.transfer_mode_via_dsskey = 1` to make a tap = blind transfer when on a call, normal pickup when idle.
 
 ## Bluetooth / Wireless
 

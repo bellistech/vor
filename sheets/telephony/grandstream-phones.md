@@ -167,6 +167,49 @@ After first login the UI typically prompts to change the default password — st
 
 User-level credentials (`user / 123`) only see Status and a subset of Account/Settings; admin sees everything including Maintenance.
 
+### Default Credential Reference (Fleet)
+
+```
+Component               Default Username   Default Password   Notes
+GXP/GRP web UI admin    admin              123456             newer SKUs unique-per-device
+GXP/GRP web UI user     user               123                limited Status-only view
+DP750/DP752 base        admin              admin              admin/admin not admin/123456
+HT8xx ATA               admin              admin              also unique sticker on newer
+WP8xx                   admin              admin
+GVC/GVS3xxx Android     admin              admin              also has Google account login
+UCM63xx PBX (web)       admin              <serial>           random 8-char serial-derived
+UCM61xx PBX (web)       admin              admin              older default
+UCM SSH                 root               admin              hardened off in 1.0.20+
+GDMS portal             user-defined       user-defined       cloud account; MFA optional
+DECT subscription PIN   <none>             0000               4-digit DECT pairing
+Phone screen unlock PIN <none>             123                user-level menu lock
+```
+
+P-id mapping (web access toggle):
+
+```
+P196   web access mode      0=HTTP & HTTPS, 1=HTTPS only, 2=HTTP only, 3=Disabled
+P3637  HTTP web port        default 80
+P3638  HTTPS web port       default 443
+P22    user-level password  default "123"
+P2     admin-level password default "admin" (legacy) / "123456" (modern GXP/GRP)
+P1     admin-account name   default "admin"
+P3406  IP whitelist for web access (CIDR list, comma-separated)
+P273   web access expiry    auto-logout idle session after N seconds (default 600)
+```
+
+### Forgotten Password Recovery
+
+```
+GXP/GRP    Hold * + 9 during boot          → factory reset (10s power-cycle)
+DP base    Press subscribe button >5s      → factory reset
+HT8xx      Hold reset pinhole >7s          → factory reset (20s power-cycle)
+WP8xx      Menu → Factory Reset (PIN req)  OR  power+volume_down combo
+UCM        Console serial 115200 8N1, "RESET" boot prompt → admin/admin
+```
+
+After factory reset, the phone re-fetches provisioning if DHCP options 66/43/160 are set — so reset alone may not actually wipe a managed device long-term unless GDMS/provisioning binding is also cleared.
+
 ## Web UI Tour
 
 Six top-level sections (some models add Phonebook):
