@@ -73,6 +73,11 @@ func New(sources ...fs.FS) (*Registry, error) {
 		byCategory: make(map[string][]*Sheet),
 	}
 
+	// Track sheets per (category, name) to support same-name sheets across
+	// different categories (e.g. patterns/distributed-systems vs
+	// cs-theory/distributed-systems). Custom-source overrides still apply
+	// at the (category, name) granularity.
+	byKey := make(map[string]*Sheet)
 	for _, fsys := range sources {
 		err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
@@ -93,7 +98,7 @@ func New(sources ...fs.FS) (*Registry, error) {
 			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
 
 			sheet := ParseSheet(name, category, string(data))
-			r.sheets[name] = sheet
+			byKey[category+"/"+name] = sheet
 			return nil
 		})
 		if err != nil {
@@ -101,12 +106,19 @@ func New(sources ...fs.FS) (*Registry, error) {
 		}
 	}
 
-	// Build category index and sorted lists
+	// Build the flat-name lookup map. When two sheets share a name across
+	// categories, the longer/more-comprehensive sheet wins direct-lookup —
+	// `cs distributed-systems` returns the deepest reference. Both sheets
+	// remain in r.all so search ranks them both.
 	catSet := make(map[string]bool)
-	for _, s := range r.sheets {
+	for _, s := range byKey {
 		r.all = append(r.all, s)
 		r.byCategory[s.Category] = append(r.byCategory[s.Category], s)
 		catSet[s.Category] = true
+		existing, ok := r.sheets[s.Name]
+		if !ok || len(s.Content) > len(existing.Content) {
+			r.sheets[s.Name] = s
+		}
 	}
 
 	sort.Slice(r.all, func(i, j int) bool {
@@ -342,6 +354,9 @@ collect:
 		}
 		if hits[i].nameTokens != hits[j].nameTokens {
 			return hits[i].nameTokens < hits[j].nameTokens
+		}
+		if len(hits[i].sheet.Content) != len(hits[j].sheet.Content) {
+			return len(hits[i].sheet.Content) > len(hits[j].sheet.Content)
 		}
 		if len(hits[i].strict) != len(hits[j].strict) {
 			return len(hits[i].strict) > len(hits[j].strict)

@@ -341,6 +341,35 @@ let t = (1, 2, 3);
 	}
 }
 
+func TestSearchPrefersDeeperContentOnNameCollision(t *testing.T) {
+	// Two sheets share the same name across different categories. With
+	// identical name+token scores, the longer/more-comprehensive sheet
+	// must win. This guards against the patterns/distributed-systems vs
+	// cs-theory/distributed-systems collision.
+	short := strings.Repeat("Distributed systems patterns overview.\n", 5)
+	long := strings.Repeat("Distributed systems theory deep dive with proofs.\n", 100)
+	fs := fstest.MapFS{
+		"patterns/distributed-systems.md": &fstest.MapFile{
+			Data: []byte("# Distributed Systems Patterns\n\n## Overview\n\n" + short),
+		},
+		"cs-theory/distributed-systems.md": &fstest.MapFile{
+			Data: []byte("# Distributed Systems Theory\n\n## Foundations\n\n" + long),
+		},
+	}
+	reg, err := New(fs)
+	if err != nil {
+		t.Fatalf("New: %v", err)
+	}
+	matches := reg.Search("distributed-systems")
+	if len(matches) == 0 {
+		t.Fatal("Search(distributed-systems) = no results")
+	}
+	if matches[0].Sheet.Category != "cs-theory" {
+		t.Errorf("first match category = %q, want %q (deeper content should win on token-tie)",
+			matches[0].Sheet.Category, "cs-theory")
+	}
+}
+
 func TestSearchTermsCap(t *testing.T) {
 	reg, _ := New(testFS())
 
