@@ -2301,7 +2301,6 @@ After that, build something real. A CLI. A tiny REST service. A game with `ebite
 
 - `languages/go` — the dense reference sheet.
 - `languages/c` — the language Go was built to replace.
-- `languages/cpp` — what Go is **deliberately not.**
 - `languages/rust` — a different answer to the same questions.
 - `languages/typescript` — for the JS-side; another statically-typed friend.
 - `languages/python` — for the script-side; great glue for a Go binary.

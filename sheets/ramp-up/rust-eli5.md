@@ -1607,7 +1607,6 @@ You just compiled and ran your first Rust program. Now do these in order:
 When this sheet is comfortable, head for `languages/rust` for the full reference: every keyword, every standard library highlight, every gotcha. Then layer on:
 
 - **`languages/c`** to see the world Rust replaced — pointers, malloc, undefined behavior. You will appreciate the borrow checker.
-- **`languages/cpp`** for the older alternative that tries to fix C with templates and RAII.
 - **`languages/go`** for the other modern systems language; very different design (GC, simpler types).
 - **`fundamentals/x86-64-assembly`** and **`fundamentals/arm64-architecture`** if you want to see what the compiler actually emits. `cargo asm` is great for this.
 - **`fundamentals/risc-v`** if you want to play with embedded Rust on simple hardware.
@@ -1620,7 +1619,6 @@ When this sheet is comfortable, head for `languages/rust` for the full reference
 
 - `languages/rust`
 - `languages/c`
-- `languages/cpp`
 - `languages/go`
 - `fundamentals/x86-64-assembly`
 - `fundamentals/arm64-architecture`
