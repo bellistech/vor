@@ -1,6 +1,6 @@
 # Vör — Cheatsheet CLI (binary `vor`, legacy alias `cs`)
 
-Single-binary Go CLI with 772 embedded markdown cheatsheets and 722 deep-dive theory pages across 63 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE) plus the `ramp-up/` curriculum (15 ELI5-voiced sheets and growing — kernel, networking protocols, security, observability).
+Single-binary Go CLI with 782 embedded markdown cheatsheets and 722 deep-dive theory pages across 63 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE) plus the `ramp-up/` curriculum (25 ELI5-voiced sheets — kernel, all major network protocols, security/auth, observability, IaC, CI/CD, languages).
 
 ## North Star
 
@@ -41,9 +41,11 @@ make fmt            # gofmt -s -w .
 - `internal/verify/` — math verification for detail pages (parses expressions, evaluates via calc)
 - `internal/tui/` — interactive TUI (bubbletea + bubbles, category browser, fuzzy filter, content viewer)
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`, REST API server
-- `sheets/<category>/<topic>.md` — 772 embedded cheatsheets across 63 categories
-- `sheets/ramp-up/<topic>-eli5.md` — narrative-shaped ELI5 ramp-up curriculum (one comprehensive sheet per topic)
+- `sheets/<category>/<topic>.md` — 782 embedded cheatsheets across 63 categories
+- `sheets/ramp-up/<topic>-eli5.md` — narrative-shaped ELI5 ramp-up curriculum (one comprehensive sheet per topic; 25 topics as of S2)
 - `detail/<category>/<topic>.md` — 722 deep-dive theory/math pages
+- `scripts/audit-see-also.sh` — gate that detects broken `## See Also` references; wired into `make lint` (`make audit-see-also-strict` for the un-allowlisted view)
+- `.ci/see-also-allowlist.txt` — pre-S2 broken-ref baseline; future drift is detected
 
 ## Adding Sheets
 
