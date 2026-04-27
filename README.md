@@ -269,4 +269,4 @@ Requires Go 1.24+.
 
 ## License
 
-MIT
+GPL-3.0-or-later. See [LICENSE](LICENSE) for the full text.
