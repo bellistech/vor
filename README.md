@@ -1,6 +1,6 @@
 # cs
 
-Single-binary Go CLI: **758 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI: **772 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -63,10 +63,12 @@ cs compare ext4 xfs       # filesystem comparison
 cs learn networking       # prerequisite-ordered topic list
 cs learn databases        # sql → postgresql → redis progression
 cs --prereqs bgp          # show prerequisites for a deep-dive page
-cs ramp-up                # one ELI5 sheet per topic (kernel today; more topics planned)
+cs ramp-up                # 15 ELI5 ramp-up sheets — one per topic
 ```
 
 The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`cs fundamentals <topic>` / `cs -d <topic>`) is one command away.
+
+Current ramp-up topics: **linux-kernel**, **bgp**, **tcp**, **udp**, **ip**, **icmp**, **tls**, **websocket**, **http3-quic**, **ebpf**, **assembly**, **binary-numbering**, **kubernetes**, **ansible**, **terraform**.
 
 ### Built-in tools
 

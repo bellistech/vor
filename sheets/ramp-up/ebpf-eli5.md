@@ -1633,6 +1633,7 @@ If your kernel is ≥ 5.4 with BTF you have the modern eBPF experience. ≥ 5.8 
 - `service-mesh/cilium`
 - `system/strace`
 - `ramp-up/linux-kernel-eli5`
+- `ramp-up/http3-quic-eli5`
 
 ## References
 
