@@ -2,7 +2,7 @@
 
 > *Old Norse goddess of wisdom and oaths — "she who knows."*
 
-Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **782 cheatsheets** + **722 deep-dive pages** across **63 categories** (including a **25-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **792 cheatsheets** + **722 deep-dive pages** across **63 categories** (including a **35-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -77,7 +77,7 @@ cs ramp-up                # 15 ELI5 ramp-up sheets — one per topic
 
 The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`cs fundamentals <topic>` / `cs -d <topic>`) is one command away.
 
-Current ramp-up topics (25): **linux-kernel**, **bgp**, **tcp**, **udp**, **ip**, **icmp**, **tls**, **dns**, **websocket**, **http3-quic**, **ebpf**, **assembly**, **binary-numbering**, **oauth-oidc**, **saml**, **docker**, **kubernetes**, **github-actions**, **ansible**, **terraform**, **postgres**, **git**, **bash**, **python**, **prometheus**.
+Current ramp-up topics (35): **linux-kernel**, **bgp**, **tcp**, **udp**, **ip**, **icmp**, **tls**, **dns**, **websocket**, **http3-quic**, **ebpf**, **assembly**, **binary-numbering**, **oauth-oidc**, **saml**, **docker**, **kubernetes**, **github-actions**, **ansible**, **terraform**, **postgres**, **git**, **bash**, **python**, **prometheus**, **ssh**, **vim**, **regex**, **systemd**, **wireshark**, **redis**, **vault**, **make**, **grafana**, **opentelemetry**.
 
 ### Built-in tools
 
