@@ -2601,7 +2601,7 @@ You now know enough Kubernetes to do real work. From here:
 - `containers/containerd` — runtime details
 - `service-mesh/istio` — Istio mesh
 - `service-mesh/cilium` — Cilium mesh
-- `ci-cd/argocd` — ArgoCD pipelines
+- `orchestration/argocd` — ArgoCD pipelines
 - `ramp-up/linux-kernel-eli5` — kernel basics
 - `ramp-up/tcp-eli5` — TCP basics
 - `ramp-up/tls-eli5` — TLS basics

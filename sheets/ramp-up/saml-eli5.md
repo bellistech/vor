@@ -1473,7 +1473,7 @@ If your IdP and SP both support HTTP-Artifact binding, configure both flows side
 
 - `security/saml`
 - `auth/saml`
-- `auth/oauth`
+- `security/oauth`
 - `auth/oidc`
 - `auth/ldap`
 - `auth/kerberos`

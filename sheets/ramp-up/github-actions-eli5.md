@@ -1573,7 +1573,7 @@ Trigger the workflow. The job pauses. You get an email. Click approve. The job c
 - `ci-cd/github-actions`
 - `ci-cd/gitlab-ci`
 - `ci-cd/jenkins`
-- `ci-cd/argocd`
+- `orchestration/argocd`
 - `vcs/git`
 - `vcs/git-worktree`
 - `containers/docker`

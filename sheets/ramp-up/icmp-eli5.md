@@ -1734,7 +1734,7 @@ you the receiver discarded it.
 - `networking/dns`
 - `networking/tcpdump`
 - `networking/mtr`
-- `network-tools/nmap`
+- `networking/nmap`
 - `security/firewall-design`
 - `ramp-up/bgp-eli5`
 - `ramp-up/linux-kernel-eli5`

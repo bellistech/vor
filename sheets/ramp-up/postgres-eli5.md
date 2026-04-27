@@ -1748,8 +1748,7 @@ Once this sheet feels easy, the dense engineer-grade material is one command awa
 - `databases/sqlite` — embedded relational database; great mental contrast.
 - `databases/redis` — key-value store; complement, not competitor.
 - `databases/sql` — the query language itself, in detail.
-- `databases/time-series` — when Postgres is enough vs when to reach for InfluxDB / TimescaleDB.
-- `data-engineering/airflow` — orchestration for ETL pipelines that read/write Postgres.
+- `big-data/airflow` — orchestration for ETL pipelines that read/write Postgres.
 - `ramp-up/linux-kernel-eli5` — the kernel behind fsync, page cache, and process management.
 - `ramp-up/tcp-eli5` — what your `psql -h` connection actually does at the socket level.
 

@@ -1558,7 +1558,6 @@ Then have a client connect and disconnect a few times. Run `ss -tan | grep 9999`
 - `networking/dhcp`
 - `networking/tcpdump`
 - `networking/quic`
-- `troubleshooting/tcp-errors`
 - `kernel-tuning/network-stack-tuning`
 - `ramp-up/udp-eli5`
 - `ramp-up/ip-eli5`

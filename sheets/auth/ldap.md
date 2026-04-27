@@ -2188,7 +2188,7 @@ Client                                   KDC                Server
 
 ## See Also
 
-- `auth/oauth`
+- `security/oauth`
 - `auth/oidc`
 - `auth/saml`
 - `auth/kerberos`

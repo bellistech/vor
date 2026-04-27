@@ -1492,7 +1492,7 @@ For `response_type=code`, try `response_mode=query` (default) vs `response_mode=
 
 ## See Also
 
-- `auth/oauth`
+- `security/oauth`
 - `auth/oidc`
 - `auth/saml`
 - `auth/ldap`

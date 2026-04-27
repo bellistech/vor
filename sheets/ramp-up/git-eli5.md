@@ -2093,7 +2093,6 @@ Two working directories, one repo. Edit both at once.
 - `ci-cd/github-actions`
 - `ci-cd/gitlab-ci`
 - `quality/pre-commit`
-- `quality/code-review`
 - `ramp-up/github-actions-eli5`
 - `ramp-up/bash-eli5`
 - `ramp-up/linux-kernel-eli5`

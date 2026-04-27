@@ -5,7 +5,7 @@ LDFLAGS := -s -w -X main.version=$(VERSION)
 INSTALL_DIR := /usr/local/bin
 GOMOBILE := $(HOME)/go/bin/gomobile
 
-.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint fmt clean
+.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint audit-see-also audit-see-also-strict fmt clean
 
 build:
 	go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY) ./cmd/$(BINARY)/
@@ -82,6 +82,13 @@ mobile-clean:
 
 lint:
 	go vet ./...
+	@$(MAKE) -s audit-see-also
+
+audit-see-also:
+	@scripts/audit-see-also.sh --allowlist=.ci/see-also-allowlist.txt
+
+audit-see-also-strict:
+	@scripts/audit-see-also.sh
 
 fmt:
 	gofmt -s -w .
