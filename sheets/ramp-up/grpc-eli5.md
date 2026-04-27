@@ -1603,9 +1603,8 @@ Once this sheet feels comfortable:
 
 ## See Also
 
-- `api/grpc`
+- `networking/grpc`
 - `api/graphql`
-- `api/rest`
 - `api/openapi`
 - `networking/grpc`
 - `networking/http2`
