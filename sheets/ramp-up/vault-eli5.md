@@ -1982,7 +1982,7 @@ Once this sheet feels comfortable, here are good next stops:
 
 1. **`security/vault`** — the operator-level cheat sheet for Vault. Heavier on flags, configuration, and ops gotchas.
 2. **`secrets/sops`** — a different way to manage secrets, file-based, designed to live in Git. Useful in places where running a full Vault is overkill.
-3. **`secrets/age`** — a modern file encryption tool that pairs well with sops.
+3. **`security/age`** — a modern file encryption tool that pairs well with sops.
 4. **`secrets/gopass`** — a per-user password manager that uses GPG and Git.
 5. **`security/pki`** — the underlying world of certificate authorities.
 6. **`security/cryptography`** — the math behind it all.
@@ -2021,7 +2021,7 @@ If you are running anything older than 1.10, plan an upgrade. If you are picking
 
 - `security/vault` — operator-focused cheatsheet for Vault.
 - `secrets/sops` — file-based secret encryption with cloud KMS keys.
-- `secrets/age` — modern file encryption tool.
+- `security/age` — modern file encryption tool.
 - `secrets/gopass` — Git-based password store.
 - `security/pki` — certificate authorities and X.509.
 - `security/cryptography` — symmetric, asymmetric, hashes, signatures.

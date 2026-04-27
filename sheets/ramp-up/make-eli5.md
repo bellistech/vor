@@ -1547,7 +1547,7 @@ Once this sheet feels easy, the dense engineer-grade material is one command awa
 ## See Also
 
 - `languages/make` — quick reference card.
-- `build-systems/make` — engineer-grade reference.
+- `languages/make` — engineer-grade reference.
 - `build-systems/bazel` — modern hermetic alternative.
 - `languages/c` — the language make was originally built for.
 - `languages/go` — Go's `go build` is the modern lazy-rebuild story for Go.
