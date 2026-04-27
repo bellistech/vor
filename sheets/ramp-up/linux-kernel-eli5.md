@@ -1,10 +1,10 @@
-# Linux Kernel — ELI5 (Part 1 of 4 — Ramp-Up Curriculum)
+# Linux Kernel — ELI5
 
 > The kernel is the boss of your computer that helps every program share the same toys without fighting.
 
 ## Prerequisites
 
-(none — this is the entry tier)
+(none — start here)
 
 This sheet is the very first stop. You do not need to know anything about computers to read it. You do not need to know what a "command line" is. You do not need to know what "Linux" is. By the end of this sheet you will know all of those things in plain English, and you will have typed real commands into a real terminal and watched real things happen.
 
@@ -1447,33 +1447,43 @@ That is part of why the kernel is hard to understand at first. With a regular pr
 
 Because once you understand the kernel a little bit, every weird thing your computer does suddenly has a story. "Why is my computer slow?" — maybe it's swapping. "Why did my program crash?" — maybe the kernel killed it for trying to access memory it shouldn't have. "Why won't this USB stick work?" — maybe there's no driver for it. "Why does my computer take so long to boot?" — maybe it's loading a lot of kernel modules.
 
-You don't need to be a kernel developer. You just need to know enough that the words make sense and you can take a guess at what's going on. That is what this sheet was for. The Middle School level adds more.
+You don't need to be a kernel developer. You just need to know enough that the words make sense and you can take a guess at what's going on. That is what this sheet is for.
 
 ## Where to Go Next
 
-Once this sheet feels easy, head to the next tier in the ramp-up. The Middle School level adds more detail without dropping the analogies completely. After that comes the High School and finally the dense reference for engineers.
+Once this sheet feels easy, the dense engineer-grade material is one command away. Stay in the terminal:
 
-- **`cs ramp-up linux-kernel-middle-school`** — the next tier. Adds processes life-cycle, USB plug-in story, networking from the kernel side, and a tiny peek at scheduling math. Still has analogies.
-- **`cs fundamentals linux-kernel-internals`** — the dense reference for when you outgrow analogies and want the real names of every data structure, every kernel subsystem, every thing. Engineer-grade.
-- **`cs system strace`** — see syscalls live for any program. The single most important learning tool for understanding the kernel from the user-space side.
+- **`cs fundamentals linux-kernel-internals`** — the dense reference. The real names of every data structure, every kernel subsystem, every thing.
+- **`cs detail fundamentals/linux-kernel-internals`** — the academic underpinning. Math, formal semantics, complexity analysis.
+- **`cs kernel-tuning sysctl`**, **`cs kernel-tuning cgroups`**, **`cs kernel-tuning namespaces`**, **`cs kernel-tuning ebpf`** — applied tuning sheets.
+- **`cs system strace`** — see syscalls live for any program. The single most important learning tool for the kernel from the user-space side.
 - **`cs system gdb`** — the debugger. Once you get into the weeds, you'll want this.
-- **`cs kernel-tuning sysctl`** — tweak the kernel's tuning knobs. Way more detail than this tier needs but worth knowing it exists.
-- **`cs fundamentals how-computers-work`** — backs all the way up to "what is a CPU, what is RAM" if you skipped that and want to fill the gap.
+- **`cs performance perf`**, **`cs performance bpftrace`** — observability and tracing.
+- **`cs fundamentals how-computers-work`** — backs all the way up to "what is a CPU, what is RAM" if you skipped that.
+- **`cs fundamentals ebpf-bytecode`** — the in-kernel safe VM.
+- **`cs containers docker`** — what containers actually are (namespaces + cgroups + capabilities).
 
 ## See Also
 
-- `ramp-up/linux-kernel-middle-school` — Part 2 of 4. Same friendly tone, more depth.
-- `fundamentals/linux-kernel-internals` — Part 4 of 4. Engineer-grade reference.
+- `fundamentals/linux-kernel-internals` — engineer-grade reference.
 - `fundamentals/how-computers-work` — basic computer hardware story.
+- `fundamentals/ebpf-bytecode` — the in-kernel safe VM.
 - `system/strace` — trace every syscall a program makes.
 - `system/gdb` — interactive debugger for processes.
+- `system/systemd` — the init system that PID 1 actually runs.
 - `kernel-tuning/sysctl` — kernel runtime parameter tuning.
+- `kernel-tuning/cgroups` — resource limits.
+- `kernel-tuning/namespaces` — process isolation primitives.
+- `kernel-tuning/ebpf` — applied eBPF.
+- `containers/docker` — namespaces + cgroups + capabilities, packaged.
+- `performance/perf` — sampling profiler for the kernel.
+- `performance/bpftrace` — DTrace-style tracing for Linux.
 
 ## References
 
 - **kernel.org** — the official Linux kernel website. Has source code, change logs, and the formal docs.
 - **"The Linux Kernel"** by Rusty Russell — old but still beloved beginner book about how Linux works inside.
-- **"Linux Kernel Development"** by Robert Love — slightly deeper, very approachable. Skip to it after the Middle School sheet.
+- **"Linux Kernel Development"** by Robert Love — slightly deeper, very approachable. Pick it up once this sheet feels easy.
 - **`man 7 capabilities`** — manual page about the fine-grained permission system Linux uses.
 - **`man 5 proc`** — full manual page for `/proc`. Type `man 5 proc` in your terminal to read it without leaving the terminal.
 - **`man 5 sysfs`** — full manual page for `/sys`. Same idea: `man 5 sysfs` in the terminal.
@@ -1483,9 +1493,9 @@ Once this sheet feels easy, head to the next tier in the ramp-up. The Middle Sch
 
 Tip: every reference above can be read inside your terminal. Most are accessible via `man` or `info`. The book references can be downloaded as PDFs and read in a terminal-based PDF viewer like `zathura` or just opened with `less` if you grab the plain-text version. You really do not need to leave the terminal.
 
-— End of Part 1: ELI5 —
+— End of ELI5 —
 
-When this sheet feels boring (and it will, faster than you think), graduate to `cs ramp-up linux-kernel-middle-school`. The next sheet drops a few of the cuter analogies but keeps the friendly tone, and starts naming things the way an engineer would name them. After Middle School comes High School, and after that, the dense reference. By the time you finish all four, you will be reading kernel source code without a flinch.
+When this sheet feels boring (and it will, faster than you think), graduate to `cs fundamentals linux-kernel-internals` — the engineer-grade reference. It uses real names for everything: data structures, subsystems, syscalls, all of it. After that, `cs detail fundamentals/linux-kernel-internals` gives you the academic underpinning. By the time you've read both, you will be reading kernel source code without a flinch.
 
 ### One last thing before you go
 
@@ -1499,4 +1509,4 @@ The whole point of the North Star for the `cs` tool is: never leave the terminal
 
 Have fun. The kernel is happy to be poked at. Nothing on this sheet will break anything. Try things. Type commands. Read what comes back. The more you do, the more it all clicks into place.
 
-— End of Part 1: ELI5 — (really this time!)
+— End of ELI5 — (really this time!)

@@ -1,6 +1,6 @@
 # cs
 
-Single-binary Go CLI: **761 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI: **758 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -63,10 +63,10 @@ cs compare ext4 xfs       # filesystem comparison
 cs learn networking       # prerequisite-ordered topic list
 cs learn databases        # sql → postgresql → redis progression
 cs --prereqs bgp          # show prerequisites for a deep-dive page
-cs ramp-up                # 4-tier ELI5 → College curriculum (kernel; more topics planned)
+cs ramp-up                # one ELI5 sheet per topic (kernel today; more topics planned)
 ```
 
-The `ramp-up` category is narrative-shaped: ELI5, middle-school, high-school, college tiers — each one extremely verbose with vocabulary tables, ASCII diagrams, paste-and-runnable shell, broken-then-fixed confusion pairs. Designed for total beginners through systems-programmer ramp-up.
+The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`cs fundamentals <topic>` / `cs -d <topic>`) is one command away.
 
 ### Built-in tools
 
@@ -146,7 +146,7 @@ Used by the React Native `CsApp/` project for iOS distribution.
 
 | Goal | Entry point |
 |------|-------------|
-| Total beginner — kernel curriculum | `cs ramp-up linux-kernel-eli5` |
+| Total beginner — kernel ELI5       | `cs ramp-up linux-kernel-eli5` |
 | Network engineer (CCNP/CCIE)       | `cs networking` |
 | Security / pentesting              | `cs security`, `cs offensive` |
 | Platform / SRE                     | `cs orchestration kubernetes` |
