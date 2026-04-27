@@ -204,8 +204,8 @@ Consensus: Most complexity theorists believe P ≠ NP.
 ## See Also
 
 - `detail/cs-theory/complexity-theory.md` — Cook-Levin proof, reduction examples, randomized classes
-- `sheets/cs-theory/computability-theory.md` — decidability, halting problem, Rice's theorem
-- `sheets/algorithms/np-approximation.md` — approximation algorithms for NP-hard problems
+- `sheets/cs-theory/automata-theory.md` — decidability, halting problem, Rice's theorem
+- `sheets/cs-theory/complexity-theory.md` — approximation algorithms for NP-hard problems
 - `sheets/cs-theory/information-theory.md` — entropy, Kolmogorov complexity
 
 ## References

@@ -284,9 +284,9 @@ echo "Done. Verify with: grep $IFACE /proc/interrupts"
 
 ## See Also
 
-- `sheets/kernel-tuning/cpu-pinning.md` — CPU affinity, cgroups, taskset
-- `sheets/kernel-tuning/network-stack.md` — Socket buffers, TCP tuning, congestion control
-- `sheets/kernel-tuning/numa.md` — NUMA topology, memory policy, numactl
+- `sheets/kernel-tuning/cpu-scheduler-tuning.md` — CPU affinity, cgroups, taskset
+- `sheets/kernel-tuning/network-stack-tuning.md` — Socket buffers, TCP tuning, congestion control
+- `sheets/kernel-tuning/memory-tuning.md` — NUMA topology, memory policy, numactl
 
 ## References
 

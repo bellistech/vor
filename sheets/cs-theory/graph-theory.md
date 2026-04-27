@@ -499,9 +499,9 @@ Delbert Ray Fulkerson (1924-1976)
 ## See Also
 
 - `detail/cs-theory/graph-theory.md` — formal definitions, Dijkstra correctness proof, max-flow min-cut theorem proof, spectral graph theory
-- `sheets/cs-theory/complexity-classes.md` — P, NP, NP-completeness (many graph problems are NP-hard)
+- `sheets/cs-theory/complexity-theory.md` — P, NP, NP-completeness (many graph problems are NP-hard)
 - `sheets/cs-theory/automata-theory.md` — finite automata as labeled directed graphs
-- `sheets/algorithms/sorting.md` — topological sort, comparison-based lower bounds
+- `sheets/cs-theory/algorithm-patterns.md` — topological sort, comparison-based lower bounds
 
 ## References
 

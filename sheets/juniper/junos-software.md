@@ -198,8 +198,8 @@ commit
 
 ## See Also
 
-- `sheets/juniper/junos-cli.md` — CLI navigation and configuration basics
-- `sheets/juniper/junos-routing.md` — Routing fundamentals
+- `sheets/juniper/junos-routing-fundamentals.md` — CLI navigation and configuration basics
+- `sheets/juniper/junos-routing-fundamentals.md` — Routing fundamentals
 - `sheets/juniper/junos-interfaces.md` — Interface configuration
 
 ## References

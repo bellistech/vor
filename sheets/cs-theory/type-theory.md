@@ -406,7 +406,7 @@ Jean-Yves Girard (b. 1947)
 - `detail/cs-theory/type-theory.md` -- STLC typing rules, Algorithm W walkthrough, System F, Curry-Howard table, dependent types, Martin-Lof type theory, linear logic
 - `sheets/cs-theory/lambda-calculus.md` -- untyped lambda calculus, reduction, Church encodings
 - `sheets/cs-theory/category-theory.md` -- functors, monads, categorical semantics of types
-- `sheets/cs-theory/computability-theory.md` -- decidability, Turing completeness, halting problem
+- `sheets/cs-theory/automata-theory.md` -- decidability, Turing completeness, halting problem
 
 ## References
 

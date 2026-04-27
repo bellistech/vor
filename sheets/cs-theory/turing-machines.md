@@ -259,9 +259,9 @@ Kurt Godel (1906-1978)
 ## See Also
 
 - `detail/cs-theory/turing-machines.md` — formal definitions, full halting problem proof, Godel connections
-- `sheets/cs-theory/complexity-classes.md` — P, NP, NP-completeness, space complexity
+- `sheets/cs-theory/complexity-theory.md` — P, NP, NP-completeness, space complexity
 - `sheets/cs-theory/automata-theory.md` — DFA, NFA, PDA, regular and context-free languages
-- `sheets/cs-theory/formal-languages.md` — Chomsky hierarchy, grammars
+- `sheets/cs-theory/automata-theory.md` — Chomsky hierarchy, grammars
 
 ## References
 

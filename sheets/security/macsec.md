@@ -370,7 +370,7 @@ Step 5: Monitor key rollover
 ## See Also
 
 - `sheets/security/dot1x.md` — 802.1X port-based access control
-- `sheets/security/ipsec.md` — Layer 3 encryption (IPsec)
+- `sheets/networking/ipsec.md` — Layer 3 encryption (IPsec)
 - `sheets/networking/vxlan.md` — VXLAN overlay networking
 - `sheets/networking/mtu.md` — MTU and fragmentation
 - `sheets/security/tls.md` — TLS for application-layer encryption

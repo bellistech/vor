@@ -264,7 +264,7 @@ Dana Scott (b. 1932)
 ## See Also
 
 - `detail/cs-theory/lambda-calculus.md` -- Church-Rosser theorem, de Bruijn indices, Curry-Howard correspondence
-- `sheets/cs-theory/computability-theory.md` -- Turing machines, decidability, Church-Turing thesis
+- `sheets/cs-theory/automata-theory.md` -- Turing machines, decidability, Church-Turing thesis
 - `sheets/cs-theory/type-theory.md` -- dependent types, System F, polymorphism
 - `sheets/cs-theory/category-theory.md` -- functors, monads, categorical semantics
 

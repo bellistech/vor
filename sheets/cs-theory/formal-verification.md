@@ -261,7 +261,7 @@ Clarke, Emerson, and Sifakis received the 2007 Turing Award for model checking.
 ## See Also
 
 - `detail/cs-theory/formal-verification.md` -- Hoare logic proof rules, LTL/CTL semantics, TLA+ specs, CEGAR
-- `sheets/cs-theory/computability-theory.md` -- decidability, halting problem, Rice's theorem
+- `sheets/cs-theory/automata-theory.md` -- decidability, halting problem, Rice's theorem
 - `sheets/cs-theory/complexity-theory.md` -- complexity classes, SAT is NP-complete
 - `sheets/cs-theory/type-theory.md` -- Curry-Howard, dependent types, proof assistants
 - `sheets/cs-theory/automata-theory.md` -- finite automata, Buchi automata (for LTL model checking)

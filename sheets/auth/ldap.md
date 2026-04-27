@@ -2192,10 +2192,8 @@ Client                                   KDC                Server
 - `auth/oidc`
 - `auth/saml`
 - `auth/kerberos`
-- `auth/freeipa`
-- `auth/active-directory`
 - `auth/sssd`
-- `auth/pam`
+- `security/pam`
 - `security/pki`
 - `security/tls`
 - `security/openssl`

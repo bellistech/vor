@@ -393,7 +393,7 @@ sqlmap -r burp_request.txt --level=5 --risk=3 --batch
 
 - `sheets/offensive/sql-injection.md` — deep dive on SQLi techniques
 - `sheets/offensive/network-scanning.md` — reconnaissance phase
-- `sheets/defensive/waf-rules.md` — understanding WAF bypass
+- `sheets/security/firewall-design.md` — understanding WAF bypass
 
 ## References
 

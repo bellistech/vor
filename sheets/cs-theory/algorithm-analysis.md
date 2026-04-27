@@ -423,9 +423,9 @@ Applications:
 
 - `detail/cs-theory/algorithm-analysis.md` -- master theorem proof, potential method examples, matroid theory, adversary arguments
 - `sheets/cs-theory/complexity-theory.md` -- P, NP, NP-completeness, reductions
-- `sheets/cs-theory/computability-theory.md` -- decidability, halting problem, Rice's theorem
+- `sheets/cs-theory/automata-theory.md` -- decidability, halting problem, Rice's theorem
 - `sheets/cs-theory/information-theory.md` -- entropy, Kolmogorov complexity
-- `sheets/algorithms/sorting.md` -- comparison sorts, lower bounds in practice
+- `sheets/cs-theory/algorithm-patterns.md` -- comparison sorts, lower bounds in practice
 
 ## References
 

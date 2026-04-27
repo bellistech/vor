@@ -279,10 +279,7 @@ Burp Sequencer:
 
 ## See Also
 
-- `sheets/offensive/xss-attacks.md`
-- `sheets/offensive/csrf-attacks.md`
-- `sheets/offensive/network-sniffing.md`
-- `sheets/defensive/web-app-hardening.md`
+- `sheets/security/hardening-linux.md`
 
 ---
 

@@ -247,9 +247,7 @@ Network segmentation                    Limits broadcast domain exposure
 
 ## See Also
 
-- `sheets/offensive/mitm-attacks.md`
-- `sheets/offensive/arp-protocol.md`
-- `sheets/defensive/network-monitoring.md`
+- `sheets/security/network-defense.md`
 - `detail/offensive/sniffing-attacks.md`
 
 ## References

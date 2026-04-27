@@ -257,10 +257,8 @@ AWS Shield      Standard (free, L3/L4) and Advanced ($3k/mo, L7, DRT)
 
 ## See Also
 
-- `sheets/offensive/botnets.md`
-- `sheets/offensive/network-attacks.md`
-- `sheets/defensive/ids-ips.md`
-- `sheets/defensive/firewall-config.md`
+- `sheets/security/ids-ips.md`
+- `sheets/security/firewall-design.md`
 - `detail/offensive/dos-ddos-attacks.md`
 
 ## References

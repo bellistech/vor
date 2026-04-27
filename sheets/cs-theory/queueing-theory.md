@@ -400,7 +400,7 @@ Keep rho <= 0.9 for batch systems.
 ## See Also
 
 - `detail/cs-theory/queueing-theory.md` -- M/M/1 derivation, Little's Law proof, Erlang C derivation, capacity planning worked examples
-- `sheets/cs-theory/probability-theory.md` -- exponential distribution, Poisson process, Markov chains
+- `sheets/cs-theory/information-theory.md` -- exponential distribution, Poisson process, Markov chains
 - `sheets/cs-theory/information-theory.md` -- entropy, source coding, channel capacity
 - `sheets/cs-theory/algorithm-analysis.md` -- amortized analysis, asymptotic notation
 

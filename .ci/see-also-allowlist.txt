@@ -1,67 +1,8 @@
-# See Also audit allowlist — pre-existing broken references.
+# See Also audit allowlist — entries grandfathered as known-broken.
 # Format: <source-path>|<broken-ref>
-# Generated 2026-04-27 as the S2 baseline. Future drift is detected.
-# To clear: fix the underlying refs (or drop them from See Also).
-
-sheets/auth/ldap.md|auth/active-directory
-sheets/auth/ldap.md|auth/freeipa
-sheets/auth/ldap.md|auth/pam
-sheets/cs-theory/algorithm-analysis.md|algorithms/sorting
-sheets/cs-theory/algorithm-analysis.md|cs-theory/computability-theory
-sheets/cs-theory/category-theory.md|cs-theory/computability-theory
-sheets/cs-theory/complexity-theory.md|algorithms/np-approximation
-sheets/cs-theory/complexity-theory.md|cs-theory/computability-theory
-sheets/cs-theory/formal-verification.md|cs-theory/computability-theory
-sheets/cs-theory/graph-theory.md|algorithms/sorting
-sheets/cs-theory/graph-theory.md|cs-theory/complexity-classes
-sheets/cs-theory/lambda-calculus.md|cs-theory/computability-theory
-sheets/cs-theory/queueing-theory.md|cs-theory/probability-theory
-sheets/cs-theory/turing-machines.md|cs-theory/complexity-classes
-sheets/cs-theory/turing-machines.md|cs-theory/formal-languages
-sheets/cs-theory/type-theory.md|cs-theory/computability-theory
-sheets/juniper/junos-monitoring.md|juniper/junos-cli
-sheets/juniper/junos-monitoring.md|juniper/junos-firewall
-sheets/juniper/junos-monitoring.md|juniper/junos-routing
-sheets/juniper/junos-software.md|juniper/junos-cli
-sheets/juniper/junos-software.md|juniper/junos-routing
-sheets/kernel-tuning/irq-affinity.md|kernel-tuning/cpu-pinning
-sheets/kernel-tuning/irq-affinity.md|kernel-tuning/network-stack
-sheets/kernel-tuning/irq-affinity.md|kernel-tuning/numa
-sheets/networking/snmp.md|monitoring/ip-sla
-sheets/networking/snmp.md|monitoring/sflow
-sheets/networking/snmp.md|networking/syslog
-sheets/offensive/dos-ddos-attacks.md|defensive/firewall-config
-sheets/offensive/dos-ddos-attacks.md|defensive/ids-ips
-sheets/offensive/dos-ddos-attacks.md|offensive/botnets
-sheets/offensive/dos-ddos-attacks.md|offensive/network-attacks
-sheets/offensive/enumeration-techniques.md|offensive/scanning-and-reconnaissance
-sheets/offensive/enumeration-techniques.md|offensive/vulnerability-analysis
-sheets/offensive/evasion-techniques.md|defensive/ids-ips-firewalls
-sheets/offensive/evasion-techniques.md|offensive/malware-threats
-sheets/offensive/evasion-techniques.md|offensive/scanning-enumeration
-sheets/offensive/iot-ot-hacking.md|defensive/network-defense
-sheets/offensive/iot-ot-hacking.md|offensive/cloud-security
-sheets/offensive/iot-ot-hacking.md|offensive/network-attacks
-sheets/offensive/network-scanning.md|defensive/ids-ips
-sheets/offensive/network-scanning.md|offensive/enumeration
-sheets/offensive/network-scanning.md|offensive/vulnerability-analysis
-sheets/offensive/session-hijacking.md|defensive/web-app-hardening
-sheets/offensive/session-hijacking.md|offensive/csrf-attacks
-sheets/offensive/session-hijacking.md|offensive/network-sniffing
-sheets/offensive/session-hijacking.md|offensive/xss-attacks
-sheets/offensive/sniffing-attacks.md|defensive/network-monitoring
-sheets/offensive/sniffing-attacks.md|offensive/arp-protocol
-sheets/offensive/sniffing-attacks.md|offensive/mitm-attacks
-sheets/offensive/sql-injection.md|defensive/waf-config
-sheets/offensive/sql-injection.md|offensive/xss
-sheets/offensive/system-hacking.md|defensive/incident-response
-sheets/offensive/system-hacking.md|offensive/enumeration
-sheets/offensive/system-hacking.md|offensive/post-exploitation
-sheets/offensive/web-app-hacking.md|defensive/waf-rules
-sheets/offensive/wireless-hacking.md|defensive/ids-ips
-sheets/offensive/wireless-hacking.md|offensive/network-attacks
-sheets/offensive/wireless-hacking.md|offensive/password-cracking
-sheets/security/macsec.md|security/ipsec
-sheets/storage/san-storage.md|linux/block-devices
-sheets/storage/san-storage.md|networking/vlans
-sheets/storage/san-storage.md|storage/nas-storage
+#
+# As of S3 (2026-04-27) the allowlist is EMPTY — the project has zero broken
+# `## See Also` references. The S2 baseline of 62 broken refs has been fully
+# resolved (40 substituted to existing equivalents, 24 dropped as orphans).
+# This file is preserved so future drift can be temporarily allowlisted while
+# a real fix is staged.

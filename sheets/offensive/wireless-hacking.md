@@ -263,9 +263,7 @@ Types: constant, deceptive, random, reactive jamming.
 
 ## See Also
 
-- `sheets/offensive/network-attacks.md` -- network-layer attacks
-- `sheets/offensive/password-cracking.md` -- hashcat and dictionary attacks
-- `sheets/defensive/ids-ips.md` -- intrusion detection including WIDS
+- `sheets/security/ids-ips.md` -- intrusion detection including WIDS
 
 ## References
 

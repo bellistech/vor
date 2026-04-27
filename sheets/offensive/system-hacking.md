@@ -445,9 +445,7 @@ net localgroup Administrators hacker /add
 ## See Also
 
 - `sheets/offensive/password-attacks.md` (if available)
-- `sheets/offensive/post-exploitation.md` (if available)
-- `sheets/offensive/enumeration.md`
-- `sheets/defensive/incident-response.md` (if available)
+- `sheets/security/incident-response.md` (if available)
 
 ## References
 

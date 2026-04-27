@@ -355,9 +355,7 @@ nmap --resume scan.xml
 
 ## See Also
 
-- `sheets/offensive/enumeration.md` — post-scan enumeration techniques
-- `sheets/offensive/vulnerability-analysis.md` — using scan results for vuln assessment
-- `sheets/defensive/ids-ips.md` — intrusion detection and scan prevention
+- `sheets/security/ids-ips.md` — intrusion detection and scan prevention
 
 ## References
 

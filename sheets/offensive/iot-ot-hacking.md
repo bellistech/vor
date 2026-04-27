@@ -347,9 +347,7 @@ Cloud               API rate limiting, OAuth/JWT, input validation, WAF
 ## See Also
 
 - `sheets/offensive/wireless-hacking.md` -- BLE/ZigBee overlap
-- `sheets/offensive/network-attacks.md` -- MITM and replay fundamentals
-- `sheets/offensive/cloud-security.md` -- IoT cloud API testing
-- `sheets/defensive/network-defense.md` -- segmentation and monitoring
+- `sheets/security/network-defense.md` -- segmentation and monitoring
 
 ---
 

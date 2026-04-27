@@ -584,11 +584,8 @@ Document everything           Spreadsheet or DCIM of every zone and WWPN
 
 ## See Also
 
-- `sheets/storage/nas-storage.md` -- NAS protocols (NFS, SMB/CIFS)
 - `sheets/storage/zfs.md` -- ZFS administration
 - `sheets/storage/lvm.md` -- LVM logical volume management
-- `sheets/networking/vlans.md` -- VLAN configuration for iSCSI networks
-- `sheets/linux/block-devices.md` -- Block device management
 
 ---
 

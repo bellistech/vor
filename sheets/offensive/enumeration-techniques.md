@@ -272,8 +272,6 @@ traceroute -A <target-ip>
 
 ## See Also
 
-- `sheets/offensive/scanning-and-reconnaissance.md`
-- `sheets/offensive/vulnerability-analysis.md`
 - `detail/offensive/enumeration-techniques.md`
 
 ## References

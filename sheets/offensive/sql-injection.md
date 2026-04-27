@@ -366,9 +366,8 @@ EXEC('SELECT * FROM users WHERE id=' + @InputId)  -- UNSAFE
 
 ## See Also
 
-- `sheets/offensive/xss.md` -- Cross-Site Scripting
 - `sheets/offensive/web-app-hacking.md` -- Web Application Attack Methodology
-- `sheets/defensive/waf-config.md` -- WAF Configuration
+- `sheets/security/firewall-design.md` -- WAF Configuration
 
 ---
 

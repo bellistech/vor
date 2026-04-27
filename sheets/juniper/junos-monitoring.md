@@ -314,9 +314,9 @@ show system storage | match "Mounted|avail"
 
 ## See Also
 
-- `sheets/juniper/junos-cli.md` — CLI navigation, modes, pipe commands
-- `sheets/juniper/junos-routing.md` — OSPF, BGP, static route configuration
-- `sheets/juniper/junos-firewall.md` — Firewall filters and policers
+- `sheets/juniper/junos-routing-fundamentals.md` — CLI navigation, modes, pipe commands
+- `sheets/juniper/junos-routing-fundamentals.md` — OSPF, BGP, static route configuration
+- `sheets/juniper/junos-firewall-filters.md` — Firewall filters and policers
 
 ## References
 

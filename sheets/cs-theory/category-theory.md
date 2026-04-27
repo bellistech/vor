@@ -357,7 +357,7 @@ Philip Wadler (b. 1956)
 - `detail/cs-theory/category-theory.md` -- formal axioms, monad laws proofs, Yoneda lemma, adjunction-monad correspondence
 - `sheets/cs-theory/lambda-calculus.md` -- the computational system that CCCs model
 - `sheets/cs-theory/type-theory.md` -- types as objects, Curry-Howard-Lambek
-- `sheets/cs-theory/computability-theory.md` -- alternative foundations of computation
+- `sheets/cs-theory/automata-theory.md` -- alternative foundations of computation
 
 ## References
 

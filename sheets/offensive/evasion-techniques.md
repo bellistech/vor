@@ -282,9 +282,7 @@ EDR / XDR                       Endpoint telemetry + behavioral detection across
 
 ## See Also
 
-- `sheets/offensive/scanning-enumeration.md` — nmap evasion flags in scanning context
-- `sheets/offensive/malware-threats.md` — malware analysis and payload types
-- `sheets/defensive/ids-ips-firewalls.md` — detection side of evasion techniques
+- `sheets/security/ids-ips.md` — detection side of evasion techniques
 - `sheets/offensive/social-engineering.md` — delivery mechanisms for evasive payloads
 
 ## References
