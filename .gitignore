@@ -1,4 +1,5 @@
 bin/
+/vor
 /cs
 *.exe
 .DS_Store

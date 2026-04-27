@@ -1,7 +1,7 @@
 package cscore
 
 import (
-	"github.com/bellistech/cs/internal/subnet"
+	"github.com/bellistech/vor/internal/subnet"
 )
 
 type subnetResponse struct {

@@ -5,7 +5,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/bellistech/cs/internal/calc"
+	"github.com/bellistech/vor/internal/calc"
 )
 
 type calcResponse struct {

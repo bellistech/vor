@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/bellistech/cs/internal/bookmarks"
+	"github.com/bellistech/vor/internal/bookmarks"
 )
 
 type statsResponse struct {

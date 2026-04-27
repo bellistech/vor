@@ -3,7 +3,7 @@ package cscore
 import (
 	"strings"
 
-	"github.com/bellistech/cs/internal/registry"
+	"github.com/bellistech/vor/internal/registry"
 )
 
 const maxSearchResults = 100

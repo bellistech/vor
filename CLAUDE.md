@@ -1,4 +1,4 @@
-# cs — Cheatsheet CLI
+# Vör — Cheatsheet CLI (binary `vor`, legacy alias `cs`)
 
 Single-binary Go CLI with 772 embedded markdown cheatsheets and 722 deep-dive theory pages across 63 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE) plus the `ramp-up/` curriculum (15 ELI5-voiced sheets and growing — kernel, networking protocols, security, observability).
 

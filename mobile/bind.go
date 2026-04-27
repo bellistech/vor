@@ -7,15 +7,15 @@
 package mobile
 
 import (
-	cs "github.com/bellistech/cs"
-	"github.com/bellistech/cs/pkg/cscore"
+	vor "github.com/bellistech/vor"
+	"github.com/bellistech/vor/pkg/cscore"
 )
 
 // MobileInit initializes the Go core with embedded sheet data.
 // Must be called once from application:didFinishLaunchingWithOptions:
 // before any other function in this package.
 func MobileInit() error {
-	return cscore.Init(cs.EmbeddedSheets, cs.EmbeddedDetails)
+	return cscore.Init(vor.EmbeddedSheets, vor.EmbeddedDetails)
 }
 
 // MobileSetDataDir sets the app sandbox directory for bookmarks.

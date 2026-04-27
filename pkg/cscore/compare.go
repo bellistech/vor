@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/bellistech/cs/internal/registry"
+	"github.com/bellistech/vor/internal/registry"
 )
 
 type compareSide struct {

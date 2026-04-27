@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/bellistech/cs/internal/calc"
+	"github.com/bellistech/vor/internal/calc"
 )
 
 // Result represents the verification of a single expression.

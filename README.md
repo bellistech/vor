@@ -1,6 +1,8 @@
-# cs
+# Vör
 
-Single-binary Go CLI: **772 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+> *Old Norse goddess of wisdom and oaths — "she who knows."*
+
+Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **772 cheatsheets** + **722 deep-dive pages** across **63 categories**. Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -9,12 +11,19 @@ Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation
 ```bash
 git clone git@github.com:bellistech/cs.git
 cd cs
-make install        # builds and installs to /usr/local/bin
+make install        # builds vor → /usr/local/bin/vor
+                    # symlinks cs → vor (backward-compat)
+                    # auto-installs bash/zsh/fish tab-completion for both
+```
 
-# tab completion (pick one)
-echo 'eval "$(cs --completions bash)"' >> ~/.bashrc
-echo 'eval "$(cs --completions zsh)"'  >> ~/.zshrc
-echo 'cs --completions fish | source'  >> ~/.config/fish/config.fish
+`make install` writes shell tab-completion scripts to the standard system locations (Homebrew on macOS, /etc on Linux, ~/.config/fish for fish). After install, restart your shell or source your rc — `vor <TAB>` and `cs <TAB>` both complete topics, categories, flags.
+
+If your environment isn't writable, fall back to manual:
+
+```bash
+echo 'eval "$(vor --completions bash)"' >> ~/.bashrc
+echo 'eval "$(vor --completions zsh)"'  >> ~/.zshrc
+echo 'vor --completions fish | source'  >> ~/.config/fish/config.fish
 ```
 
 ## Usage

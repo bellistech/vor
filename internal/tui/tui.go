@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/bellistech/cs/internal/registry"
+	"github.com/bellistech/vor/internal/registry"
 )
 
 type viewState int

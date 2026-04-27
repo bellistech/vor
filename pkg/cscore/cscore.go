@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/bellistech/cs/internal/bookmarks"
-	"github.com/bellistech/cs/internal/registry"
+	"github.com/bellistech/vor/internal/bookmarks"
+	"github.com/bellistech/vor/internal/registry"
 )
 
 var (

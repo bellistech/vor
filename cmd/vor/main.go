@@ -9,20 +9,21 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
 	"time"
 
-	cs "github.com/bellistech/cs"
-	"github.com/bellistech/cs/internal/bookmarks"
-	"github.com/bellistech/cs/internal/calc"
-	"github.com/bellistech/cs/internal/custom"
-	"github.com/bellistech/cs/internal/registry"
-	"github.com/bellistech/cs/internal/render"
-	"github.com/bellistech/cs/internal/subnet"
-	"github.com/bellistech/cs/internal/tui"
-	"github.com/bellistech/cs/internal/verify"
+	vor "github.com/bellistech/vor"
+	"github.com/bellistech/vor/internal/bookmarks"
+	"github.com/bellistech/vor/internal/calc"
+	"github.com/bellistech/vor/internal/custom"
+	"github.com/bellistech/vor/internal/registry"
+	"github.com/bellistech/vor/internal/render"
+	"github.com/bellistech/vor/internal/subnet"
+	"github.com/bellistech/vor/internal/tui"
+	"github.com/bellistech/vor/internal/verify"
 )
 
 var version = "dev"
@@ -121,7 +122,7 @@ Options:
 
 	// Build registry from embedded + custom sheets + detail sheets
 	sheetSources := []fs.FS{}
-	embedded, err := fs.Sub(cs.EmbeddedSheets, "sheets")
+	embedded, err := fs.Sub(vor.EmbeddedSheets, "sheets")
 	if err != nil {
 		die("embedded sheets: %v", err)
 	}
@@ -132,7 +133,7 @@ Options:
 	}
 
 	detailSources := []fs.FS{}
-	detailFS, err := fs.Sub(cs.EmbeddedDetails, "detail")
+	detailFS, err := fs.Sub(vor.EmbeddedDetails, "detail")
 	if err != nil {
 		die("embedded details: %v", err)
 	}
@@ -151,7 +152,7 @@ Options:
 	}
 
 	if *edit != "" {
-		if err := custom.Edit(*edit, cs.EmbeddedSheets); err != nil {
+		if err := custom.Edit(*edit, vor.EmbeddedSheets); err != nil {
 			die("%v", err)
 		}
 		return
@@ -1415,16 +1416,24 @@ func doCount(reg *registry.Registry) {
 }
 
 func doCompletions(shell string) {
+	// Use the actual command name (e.g. "vor" or "cs" via symlink) so completions
+	// are correct for whichever alias the user invoked.
+	name := filepath.Base(os.Args[0])
+	if name == "" || name == "." || name == "/" {
+		name = "vor"
+	}
+	var tmpl string
 	switch shell {
 	case "bash":
-		fmt.Print(bashCompletion)
+		tmpl = bashCompletion
 	case "zsh":
-		fmt.Print(zshCompletion)
+		tmpl = zshCompletion
 	case "fish":
-		fmt.Print(fishCompletion)
+		tmpl = fishCompletion
 	default:
 		die("unknown shell: %s (supported: bash, zsh, fish)", shell)
 	}
+	fmt.Print(strings.ReplaceAll(tmpl, "{{NAME}}", name))
 }
 
 func doCompletionsList(reg *registry.Registry) {
@@ -1580,7 +1589,7 @@ func min(a, b int) int {
 }
 
 const bashCompletion = `# cs bash completion
-_cs() {
+_{{NAME}}() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local prev="${COMP_WORDS[COMP_CWORD-1]}"
 
@@ -1594,7 +1603,7 @@ _cs() {
             ;;
         compare)
             local topics
-            topics=$(cs --completions-list 2>/dev/null)
+            topics=$({{NAME}} --completions-list 2>/dev/null)
             COMPREPLY=($(compgen -W "$topics" -- "$cur"))
             return 0
             ;;
@@ -1606,14 +1615,14 @@ _cs() {
     fi
 
     local topics
-    topics=$(cs --completions-list 2>/dev/null)
+    topics=$({{NAME}} --completions-list 2>/dev/null)
     COMPREPLY=($(compgen -W "$topics" -- "$cur"))
 }
-complete -F _cs cs
+complete -F _{{NAME}} {{NAME}}
 `
 
-const zshCompletion = `#compdef cs
-_cs() {
+const zshCompletion = `#compdef {{NAME}}
+_{{NAME}}() {
     local -a topics flags subcommands
 
     flags=(
@@ -1637,41 +1646,41 @@ _cs() {
     )
 
     if (( CURRENT == 2 )); then
-        topics=("${(@f)$(cs --completions-list 2>/dev/null)}")
+        topics=("${(@f)$({{NAME}} --completions-list 2>/dev/null)}")
         _describe 'topics' topics -- || _arguments $flags
     elif (( CURRENT == 3 )); then
         return 0
     fi
 }
 
-_cs "$@"
+_{{NAME}} "$@"
 `
 
 const fishCompletion = `# cs fish completion
-complete -c cs -f
+complete -c {{NAME}} -f
 
 # Flags
-complete -c cs -s s -l search -d "Search across all cheatsheets" -r
-complete -c cs -s l -d "List all topics with descriptions"
-complete -c cs -s v -d "Print version"
-complete -c cs -s h -d "Show help"
-complete -c cs -s d -d "Show deep theory/math for topic" -r
-complete -c cs -s i -d "Interactive TUI mode"
-complete -c cs -l add -d "Add custom cheatsheet from file" -r -F
-complete -c cs -l edit -d "Edit/create custom cheatsheet" -r
-complete -c cs -l random -d "Show a random cheatsheet"
-complete -c cs -l count -d "Show statistics"
-complete -c cs -l completions -d "Generate shell completions" -r -a "bash zsh fish"
-complete -c cs -l related -d "Show related topics" -r
-complete -c cs -l format -d "Output format" -r -a "markdown json"
-complete -c cs -l star -d "Toggle bookmark" -r
-complete -c cs -l starred -d "List bookmarked topics"
-complete -c cs -l prereqs -d "Show prerequisites"
-complete -c cs -l update -d "Check for updates"
+complete -c {{NAME}} -s s -l search -d "Search across all cheatsheets" -r
+complete -c {{NAME}} -s l -d "List all topics with descriptions"
+complete -c {{NAME}} -s v -d "Print version"
+complete -c {{NAME}} -s h -d "Show help"
+complete -c {{NAME}} -s d -d "Show deep theory/math for topic" -r
+complete -c {{NAME}} -s i -d "Interactive TUI mode"
+complete -c {{NAME}} -l add -d "Add custom cheatsheet from file" -r -F
+complete -c {{NAME}} -l edit -d "Edit/create custom cheatsheet" -r
+complete -c {{NAME}} -l random -d "Show a random cheatsheet"
+complete -c {{NAME}} -l count -d "Show statistics"
+complete -c {{NAME}} -l completions -d "Generate shell completions" -r -a "bash zsh fish"
+complete -c {{NAME}} -l related -d "Show related topics" -r
+complete -c {{NAME}} -l format -d "Output format" -r -a "markdown json"
+complete -c {{NAME}} -l star -d "Toggle bookmark" -r
+complete -c {{NAME}} -l starred -d "List bookmarked topics"
+complete -c {{NAME}} -l prereqs -d "Show prerequisites"
+complete -c {{NAME}} -l update -d "Check for updates"
 
 # Topics and categories (dynamic)
-complete -c cs -n "not __fish_seen_subcommand_from (cs --completions-list 2>/dev/null)" \
-    -a "(cs --completions-list 2>/dev/null)"
+complete -c {{NAME}} -n "not __fish_seen_subcommand_from ({{NAME}} --completions-list 2>/dev/null)" \
+    -a "({{NAME}} --completions-list 2>/dev/null)"
 `
 
 func die(format string, args ...any) {

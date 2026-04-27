@@ -1,4 +1,4 @@
-module github.com/bellistech/cs
+module github.com/bellistech/vor
 
 go 1.25.0
 

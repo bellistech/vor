@@ -3,7 +3,7 @@ package cscore
 import (
 	"math/rand/v2"
 
-	"github.com/bellistech/cs/internal/registry"
+	"github.com/bellistech/vor/internal/registry"
 )
 
 type topicSummary struct {

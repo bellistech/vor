@@ -1,7 +1,7 @@
 package cscore
 
 import (
-	"github.com/bellistech/cs/internal/verify"
+	"github.com/bellistech/vor/internal/verify"
 )
 
 type verifyResponse struct {
