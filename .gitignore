@@ -7,3 +7,6 @@ bin/
 *~
 .vscode/
 .idea/
+
+# iOS gomobile binding output — regenerate via `make mobile-ios`
+mobile/Cscore.xcframework/
