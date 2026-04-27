@@ -1408,3 +1408,101 @@ The 30-second window means a code is valid for at most 30s, with ±1 step tolera
 - **OAuth 2.0 Security Best Current Practice (RFC 9700, 2024)** — https://datatracker.ietf.org/doc/rfc9700/
 - **Cure53 / various WebAuthn deployment audits** — public reports on production WebAuthn integrations.
 - **draft-ietf-oauth-security-topics-26** — incremental updates to OAuth 2.0 BCP.
+
+## Production Threat Models (Extended)
+
+### Threat 1: Credential Stuffing at Scale
+
+**Attack model:** attacker has a leaked database of (email, password) pairs from a breach of Service A. They replay those pairs against Service B's login endpoint, expecting ~1-2% reuse rate.
+
+**Math:** with a 1% reuse rate against a database of 10M leaked credentials, an attacker probing at 100 attempts/sec finds ~1000 valid logins per hour at Service B. Over a week: ~168,000 takeovers.
+
+**Defenses, in priority order:**
+1. **HIBP check on login** via k-anonymity API.
+2. **Per-IP rate limit**: ≤5 failures/15min, 1h cooldown.
+3. **Per-account rate limit**: ≤5 failures/15min per email regardless of IP.
+4. **CAPTCHA escalation**: after 3 failures from any (account, IP), CAPTCHA. After 10, require email verification.
+5. **MFA for all accounts**: SMS-MFA cuts credential-stuffing success ~99%; WebAuthn 100%.
+6. **Detection signals**: 401 spike, geographic clustering, user-agent monoculture.
+
+### Threat 2: Phishing → Session Hijack
+
+Phishing site captures password AND live MFA code; backend logs in as victim within seconds.
+
+**Defenses:**
+1. **WebAuthn**: domain-bound credentials cannot be replayed against the wrong RP. The phishing site at `g0ogle.com` cannot use a credential issued for `google.com`.
+2. **DPoP / mTLS-bound tokens (RFC 9449)**: tokens useless without DPoP nonce dance.
+3. **Continuous Access Evaluation (CAEP)**: re-prompt for MFA on impossible travel / new device.
+4. **Refresh token rotation**: detect reuse; force re-auth (RFC 6749 §6).
+5. **Email/SMS notification on new login**.
+
+### Threat 3: Insider with Database Access
+
+DBA can read password-hash column. Weak hashes (MD5, SHA-1, unsalted, bcrypt-cost-4) crackable offline. Even Argon2id crackable if cost too low.
+
+**Defenses:**
+1. **Argon2id calibrated cost**: ≥250ms per hash on prod. GPU at 10M H/s on Argon2 cannot keep up.
+2. **Pepper**: server-side secret added to hash, stored OUTSIDE database (HSM, Vault).
+3. **Periodic re-hashing**: when login succeeds, transparently rehash with current cost.
+4. **Hash rotation**: HMAC the hash with a versioned KMS key; rotate periodically.
+
+## Argon2id Parameter Calibration (Worked Example)
+
+Goal: ≥250ms per hash on production hardware.
+
+```python
+from argon2 import PasswordHasher
+import time
+
+# Start: time_cost=2, memory_cost=64MB, parallelism=1
+hasher = PasswordHasher(time_cost=2, memory_cost=65536, parallelism=1, hash_len=32, salt_len=16)
+start = time.perf_counter()
+hasher.hash("test password 12345")
+elapsed = time.perf_counter() - start
+print(f"hash time: {elapsed*1000:.1f}ms")
+```
+
+Increase `memory_cost` rather than `time_cost` (better resistance to GPU). Goal: 64-128MB per hash, 250-500ms.
+
+| Hardware | Recommended params |
+|----------|-------------------|
+| Modern x86 server (16+ cores) | t=2, m=131072 (128MB), p=4 |
+| Modest cloud instance | t=3, m=65536 (64MB), p=2 |
+| Edge / Lambda | t=2, m=32768 (32MB), p=1 (250ms warm, 500ms cold) |
+
+OWASP minimum 2024: `m=46MB, t=1, p=1` Argon2id, OR `t=2, m=19MB, p=1` Argon2id, OR bcrypt cost 12.
+
+## WebAuthn Ceremony Step-by-Step
+
+### Registration
+
+1. **Server**: generate `challenge` (random 32 bytes), `userId` (stable handle), `rpId` (your domain). Store challenge in session.
+2. **Server → Browser**: `navigator.credentials.create({publicKey: {challenge, rp, user, pubKeyCredParams: [{alg: -7, type: "public-key"}]}})`.
+3. **Browser → Authenticator**: prompts user (touch yubikey / face ID).
+4. **Authenticator**: generates new key pair scoped to (rpId, userId). Returns `(publicKey, attestation, signature)`.
+5. **Browser → Server**: posts the credential.
+6. **Server**: verifies attestation chain (optional in non-FIDO-AAGUID mode), stores `(userId, credentialId, publicKey)`.
+
+### Authentication
+
+1. Server generates challenge, looks up known credentialIds.
+2. Browser → Authenticator → user touches device.
+3. Authenticator signs `(authenticatorData ‖ clientDataHash)` with the credential's private key.
+4. Server verifies signature against stored publicKey, verifies challenge match, verifies `origin` match. Issues session.
+
+The signature COVERS the rpId hash — a phishing site at a different domain literally cannot produce a valid signature, even if the user touches the YubiKey.
+
+## TOTP RFC 6238 Math
+
+```
+counter = floor((current_unix_timestamp - T0) / X)   # T0=0, X=30s default
+HOTP = HMAC-SHA-1(secret, counter)                    # 20-byte HMAC
+offset = HOTP[19] & 0x0F                               # last nibble
+truncated = (HOTP[offset] & 0x7F) << 24
+          | HOTP[offset+1] << 16
+          | HOTP[offset+2] << 8
+          | HOTP[offset+3]
+code = truncated mod 10^6                              # 6 digits
+```
+
+Server-side allow ±1 window (90s drift tolerance). Shared secret is 160 bits (HMAC-SHA-1 native), encoded as base32 for QR transport: `otpauth://totp/Issuer:account?secret=BASE32SECRET&issuer=Issuer&algorithm=SHA1&digits=6&period=30`.

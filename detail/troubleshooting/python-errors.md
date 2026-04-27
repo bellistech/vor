@@ -1090,4 +1090,112 @@ except requests.exceptions.SSLError as e:
 - `traceback` module documentation
 - `sys.exc_info`, `sys.exception`, `sys.unraisablehook` documentation
 - Python C API "Exception Handling": https://docs.python.org/3/c-api/exceptions.html
-- See Also: `sheets/troubleshooting/python-errors.md`, `detail/python/cpython-internals.md`, `detail/troubleshooting/asyncio-debugging.md`
+- See Also: `sheets/troubleshooting/python-errors.md`, `detail/languages/python`, `ramp-up/python-eli5`
+
+## Bytecode-Level Walkthroughs (Extended)
+
+### How a Try/Except Compiles in 3.10 vs 3.11
+
+**Python 3.10** uses `SETUP_FINALLY`-based exception tables embedded in the bytecode. Every `try:` emits a setup, every leave path requires `POP_BLOCK`.
+
+**Python 3.11** moved exception handling out-of-line into a separate **exception table** (PEP 657-adjacent work). The hot path no longer pays for setup/teardown opcodes:
+
+```
+  2           0 RESUME                   0
+  3           2 LOAD_GLOBAL              1 (NULL + risky)
+             14 PRECALL                  0
+             18 CALL                     0
+             28 STORE_FAST               0 (x)
+             30 LOAD_FAST                0 (x)
+             32 RETURN_VALUE
+ExceptionTable:
+  2 to 28 -> 38 [0]
+```
+
+The `ExceptionTable` is a compact bytecode-relative range list: "if an exception fires while PC is between offsets 2 and 28, jump to handler at 38." The hot path runs zero setup/teardown — pure win for code that doesn't actually raise. Practical implication: code that uses try/except as a hot-path control mechanism in 3.10 paid a real cost. In 3.11+ the cost is amortized to "almost nothing if no exception fires." `with` blocks got the same treatment.
+
+### How `await` Lowers to Bytecode
+
+A `coro = async_fn()` in 3.10 produced a coroutine object. `await coro` lowered to `GET_AWAITABLE / LOAD_CONST None / YIELD_FROM`. In 3.11 the `YIELD_FROM` opcode was split into `SEND` + `JUMP_BACKWARD_NO_INTERRUPT` for finer scheduling control. The async event loop can now interrupt at well-defined points without leaking generator-internal state.
+
+### How `for x in iterable:` Compiles
+
+3.11+ disassembly:
+
+```
+  LOAD_CONST     ((1, 2, 3))
+  GET_ITER
+  FOR_ITER       <to-end>
+  STORE_FAST     x
+  ... body ...
+  JUMP_BACKWARD  <to-FOR_ITER>
+END_FOR
+```
+
+`FOR_ITER` calls `Py_TYPE(iter)->tp_iternext`. For built-in tuples/lists, that's a single C function call returning the next element or `NULL`. For a generator, it's a `SEND` into the generator's frame.
+
+## sys.settrace and sys.monitoring (PEP 669)
+
+`sys.settrace(func)` installs a callback that fires on every `call`, `line`, `return`, `exception`, and `opcode` (if `f.f_trace_opcodes = True`). Used by **debuggers (pdb)**, **profilers (cProfile)**, and **coverage.py**.
+
+The cost: every Python opcode dispatched through the eval loop also dispatches through the trace function. A traced program runs **10×–50× slower** in 3.10. PEP 669 (3.12+) introduced `sys.monitoring` — a tool-specific event API with per-tool ID and per-event ID enable/disable. Coverage.py 7.5+ uses it: instrumentation overhead drops to **2-3×** vs `settrace`.
+
+## C-API Exception Handling Internals
+
+The CPython C API exposes the exception state via three thread-local pointers (`tstate->curexc_type`, `tstate->curexc_value`, `tstate->curexc_traceback`). 3.12 simplified this to a single `tstate->exc_info` chained linked list.
+
+| Function | Purpose |
+|---------|---------|
+| `PyErr_SetString(type, msg)` | Set current exception |
+| `PyErr_Format(type, fmt, ...)` | Set with printf-style formatting |
+| `PyErr_Occurred()` | Returns the current exception type pointer or NULL |
+| `PyErr_Clear()` | Clear without raising |
+| `PyErr_Print()` | Print to sys.stderr and clear |
+| `PyErr_Fetch / PyErr_Restore` | Save/restore exception state |
+| `PyErr_NormalizeException` | Promote a raised type to an instance |
+| `PyErr_NewException(name, base, dict)` | Create a custom exception class |
+| `PyErr_WarnEx` | Emit a warning |
+
+A common C-extension bug: forgetting to check `PyErr_Occurred()` after a Python call returns NULL. The exception is set but the C code keeps going, leading to `SystemError: <built-in function X> returned NULL without setting an error.`
+
+## Memory Footprint of an Exception
+
+A single Python exception with a traceback is heavier than developers usually realize:
+
+| Object | Size (3.12, 64-bit) |
+|--------|--------------------:|
+| Exception instance | ~88 bytes + args |
+| Traceback object | ~64 bytes per frame |
+| Frame object | ~120 bytes per frame |
+| Locals dict (per frame) | typically 200-2000 bytes |
+| Code object | shared, not per-exception |
+
+For a 20-frame traceback with ~10 locals each: ~5-15 KB per raised-then-caught exception. **Tight loops that raise + catch ~1M times per second pay 5-15 GB of allocator churn per second** — a real performance cliff documented since 3.7. Refactor to an early-return / sentinel-value pattern on hot paths.
+
+## Async Cancellation Mechanics
+
+`asyncio.CancelledError` is special-cased: in 3.8+ it derives from `BaseException`, not `Exception`, so `except Exception:` does NOT catch it. The `await` point is the only place a coroutine can be cancelled. A pure-CPU coroutine without `await` is uncancellable. The fix: decompose into smaller awaits, or check `asyncio.current_task().cancelled()` in your loop body.
+
+## Production Diagnostic Recipes
+
+### Recipe 1: "What's the slowest operation in my flask app?"
+
+```bash
+pip install py-spy
+py-spy record -o profile.svg -d 60 -- python app.py
+```
+
+py-spy attaches via ptrace, samples the C-level frame stack 100×/sec, builds a flame graph. No instrumentation; works on running prod processes (with `--pid <PID>`).
+
+### Recipe 2: "Why is memory growing?"
+
+```bash
+pip install memray
+memray run --live myapp.py
+```
+
+memray traces every alloc and free at the C level. The TUI shows live deltas.
+
+### Recipe 3: "Which exception keeps re-firing in production?"
+
+Configure `logging` with `Formatter` exposing `%(exc_info)s`, ship to a structured-log aggregator, aggregate by `exception_class + traceback_hash`. Sentry / Honeybadger / Rollbar do this automatically with deduplication based on traceback fingerprint.
