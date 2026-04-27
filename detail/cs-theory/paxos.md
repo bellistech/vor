@@ -1070,3 +1070,103 @@ Need BFT?
 - Hawblitzel, C. et al. (2015). "IronFleet: Proving Practical Distributed Systems Correct." SOSP.
 - Wilcox, J.R. et al. (2015). "Verdi: A Framework for Implementing and Formally Verifying Distributed Systems." PLDI.
 - Kingsbury, K. "Jepsen: distributed-systems testing." https://jepsen.io
+
+## Worked Examples (Extended)
+
+### Example 1: Naive Paxos — Single Round, No Failures
+
+5-node cluster {A, B, C, D, E}. Proposer A wants to propose value `X`.
+
+- **Phase 1a (Prepare)**: A picks proposal number `n=1`, sends `Prepare(1)` to all 5 acceptors.
+- **Phase 1b (Promise)**: All 5 respond `Promise(1, ⊥)` (none have accepted anything). A receives 5 ≥ majority (3 of 5).
+- **Phase 2a (Accept)**: A sends `Accept(1, X)` to all 5.
+- **Phase 2b (Accepted)**: All 5 respond `Accepted(1, X)`. Value `X` is chosen.
+- **Phase 3 (Learn)**: A informs learners. Total: 5 × 4 = 20 messages, 4 RTTs (or 5 with learner notification).
+
+### Example 2: Competing Proposers (the dueling-proposers problem)
+
+Proposer A picks `n=1`, Proposer B picks `n=2`. Both run Phase 1 in parallel.
+
+1. A sends `Prepare(1)`. Acceptors respond `Promise(1, ⊥)`.
+2. B sends `Prepare(2)`. Acceptors see 2 > 1, respond `Promise(2, ⊥)`. They've now promised n=2.
+3. A sends `Accept(1, X)`. Acceptors reject (1 < 2).
+4. A retries with `n=3`. `Prepare(3)` arrives.
+5. Acceptors respond `Promise(3, ⊥)`.
+6. B sends `Accept(2, Y)`. Acceptors reject (2 < 3). B retries with n=4.
+
+Without external coordination, two proposers can starve each other indefinitely. **Solution**: leader election (Multi-Paxos) — only one proposer is "active" at a time.
+
+### Example 3: Recovery After a Value Was Already Chosen
+
+Proposer A succeeded with `n=1, value=X`. Proposer B wakes up later, doesn't know `X` was chosen.
+
+1. B sends `Prepare(2)`. Acceptors that already accepted `(1, X)` respond `Promise(2, (1, X))` — they include the most recent accepted value.
+2. B receives Promises. Per the Paxos rules, B MUST propose `X` (the highest-numbered accepted value among Promises) — NOT its own preferred value.
+3. B sends `Accept(2, X)`. Acceptors accept.
+4. `X` is "re-chosen" with proposal n=2.
+
+This is the **safety property** in action: once chosen, no different value can be chosen, even by a later proposer that didn't know about the original choice.
+
+### Example 4: Network Partition
+
+Cluster {A, B, C, D, E}. Partition splits into {A, B} and {C, D, E}.
+
+- **Minority {A, B}**: Cannot reach majority (need 3 of 5). Any proposal stalls. Unavailable but consistent.
+- **Majority {C, D, E}**: Reaches quorum. Proposals succeed. Available and consistent.
+- **Healing**: A and B sync via the standard protocol — when they next see a higher proposal number from C/D/E, they update.
+
+**Liveness** sacrificed on minority side; **safety** never violated.
+
+### Example 5: Multi-Paxos Steady-State
+
+After leader election, leader L runs Multi-Paxos for log slots 1, 2, 3, ...
+
+- **Slot 1**: Phase 1 done during election (the leader's `Prepare(1)` covers ALL future slots — implicit). Phase 2: `Accept(1, op_1)`. Quorum responds. **1 RTT.**
+- **Slot 2**: `Accept(1, op_2)`. **1 RTT.**
+- **Slot 3**: `Accept(1, op_3)`. **1 RTT.**
+
+Steady-state cost: 1 RTT per operation, no Phase 1 needed (skipped because the leader's `n=1` is still the highest seen). On leader failover, new leader runs Phase 1 with `n=2`; from then all operations use `n=2`.
+
+## Performance Numbers (Real-World)
+
+| System | Algorithm | Throughput | p99 Latency | Notes |
+|--------|-----------|-----------:|------------:|-------|
+| Google Chubby | Multi-Paxos | ~50K ops/sec | ~10 ms | LAN, 5-node ensemble |
+| Apache ZooKeeper | Zab | ~20K writes/sec | ~5 ms | similar deployment |
+| etcd | Raft | ~10K writes/sec | ~10 ms | 3-5 node cluster |
+| Consul | Raft | ~5K writes/sec | ~10 ms | conservative defaults |
+| Spanner | Multi-Paxos + TrueTime | ~10K ops/sec/group | ~10-100 ms | cross-region |
+| HotStuff | BFT-Paxos chain | ~3K ops/sec | ~50 ms | tolerates 1/3 Byzantine |
+
+Throughput scales linearly with batching (commits 100 ops in one Accept). Latency = max latency among the fastest majority — quorum is gated by the slowest member.
+
+## Joint Consensus (Membership Changes)
+
+Naive Paxos cannot safely change cluster membership. The classical solution: **joint consensus** — temporarily run TWO configurations, where any decision must be approved by both.
+
+1. Start with `Cold = {A, B, C}`.
+2. Propose `Cnew = {A, B, D}` via standard Paxos.
+3. During transition, every operation must be quorum-approved in BOTH `Cold` AND `Cnew` simultaneously.
+4. Once `Cnew` is confirmed, drop `Cold`. Run normal Paxos on `Cnew` only.
+
+Cost: during the joint phase, latency = max(P99 in Cold, P99 in Cnew). Acceptable because membership changes are rare.
+
+Raft uses **single-server reconfiguration** instead — change one server at a time, each step is a small enough delta that joint consensus isn't needed. Simpler, slower migrations.
+
+## When to Use What — Decision Tree
+
+```
+Need consensus?
+│
+├─ Crash failures only (no Byzantine)?
+│  ├─ Need understandability for ops team? → Raft
+│  ├─ Need max throughput / battle-tested? → Multi-Paxos (etcd, ZK, Chubby)
+│  └─ Need leaderless? → CASPaxos / EPaxos
+│
+└─ Byzantine failures possible (untrusted nodes)?
+   ├─ Permissioned (known node identities)? → PBFT or HotStuff
+   ├─ Permissionless (open membership)? → Nakamoto consensus (Bitcoin)
+   └─ Need fast finality? → Tendermint, Algorand, HotStuff variants
+```
+
+For 95% of distributed-systems problems in practice, **use an existing library** (etcd, ZooKeeper, Consul). Implementation correctness is HARD — even Google's first Paxos implementation in Chubby had bugs found in production.

@@ -1629,3 +1629,169 @@ The HT813 has both FXS (toward analog phone) and FXO (toward PSTN line) ports �
 - IEEE 802.1Q — VLAN tagging
 - IEEE 802.3af / 802.3at — PoE
 - ANSI/TIA-1057 — LLDP-MED
+
+## P-Value Quick Reference (Extended)
+
+Grandstream provisioning XML uses numeric P-Values to set every config item. The catalog below covers the most common P-codes; the full spec is in the GXP/GRP/HT/UCM Configuration Parameters Guide PDF for each model.
+
+| P# | Field | Notes |
+|----|-------|-------|
+| P2 | Admin password | SHA-256-hashable |
+| P196 | End user password | for limited web UI |
+| P30 | Time zone | e.g. `EST5EDT,M3.2.0,M11.1.0` |
+| P64 | DHCP enable | 0=static, 1=DHCP |
+| P8 | Static IP | required if P64=0 |
+| P9 | Subnet mask | required if P64=0 |
+| P10 | Gateway | required if P64=0 |
+| P11 | DNS server 1 | |
+| P12 | DNS server 2 | |
+| P259 | Layer 2 QoS 802.1p priority | 0-7 |
+| P51 | Layer 3 QoS DSCP | typically 46 (EF) for voice |
+| P144 | Voice VLAN tag | 802.1Q VID 0-4094 |
+| P145 | LLDP-MED enable | 1=on |
+| P47 | SIP Proxy (Account 1) | FQDN or IP |
+| P48 | SIP Outbound Proxy (Account 1) | optional |
+| P52 | SIP Realm (Account 1) | usually = SIP server FQDN |
+| P35 | SIP User ID (Account 1) | DID or extension |
+| P36 | SIP Auth ID (Account 1) | often = User ID |
+| P34 | SIP Password (Account 1) | |
+| P3 | Display name (Account 1) | |
+| P78 | Voice mailbox (Account 1) | |
+| P74 | DTMF type | 0=in-audio, 1=RFC 2833, 2=SIP INFO |
+| P32 | Preferred codec 1 | 0=PCMU(G.711μ), 8=PCMA(G.711a), 9=G.722, 18=G.729, 110=Opus |
+| P57 | Preferred codec 2 | |
+| P58 | Preferred codec 3 | |
+| P59 | Preferred codec 4 | |
+| P95 | NAT traversal | 0=none, 1=STUN, 2=keepalive, 3=UPnP |
+| P76 | STUN server | FQDN:port |
+| P85 | Use Random Port | 0=fixed, 1=random ephemeral |
+| P77 | Local SIP port | default 5060 |
+| P79 | Local RTP port | default 5004; phone uses ranges off this |
+| P252 | Direct IP call enable | 0=off (recommended) |
+| P253 | Allow Off-Hook auto-dial | extension or PSTN trigger |
+| P75 | Call waiting | 0=off, 1=on |
+| P81 | Call forward unconditional target | |
+| P82 | Call forward busy target | |
+| P83 | Call forward no-answer target | |
+| P19 | Web access port HTTP | default 80 |
+| P25 | Web access port HTTPS | default 443 |
+| P1359 | Web access mode | 0=HTTP, 1=HTTPS, 2=both |
+| P237 | Upgrade via | 0=TFTP, 1=HTTP, 2=HTTPS, 3=FTP, 4=FTPS |
+| P192 | Firmware Server Path | URL or IP |
+| P237 | Config Server Path | URL or IP |
+| P1359 | Web port HTTP/HTTPS toggle | |
+| P22188 | Always-Auth via 401 | 0=disabled, 1=enabled |
+| P196 | LDAP enable | 0=off, 1=on |
+| P198 | LDAP Server | |
+| P206 | LDAP Search Base | |
+| P207 | LDAP Bind DN | |
+| P208 | LDAP Bind Password | |
+| P226 | XML Phonebook Server | URL |
+| P331 | Programmable Key 1 — mode | 0=line, 1=shared line, 2=speed dial, 3=BLF, 4=presence, 5=Dial-DTMF |
+| P332 | Programmable Key 1 — Account | 0-N |
+| P333 | Programmable Key 1 — Description | |
+| P334 | Programmable Key 1 — Value | |
+| P341+ | Programmable Keys 2-N | repeat pattern P341-P364, P371+ etc. |
+| P1407 | OpenVPN client enable | |
+| P2118 | OpenVPN config file URL | |
+| P22155 | EAPoL 802.1X enable | |
+| P22158 | EAPoL identity | |
+| P22159 | EAPoL password | |
+| P14093 | Bluetooth enable | (GXP21xx series) |
+| P22232 | WiFi SSID | (WiFi-capable models) |
+| P22233 | WiFi password | |
+| P22234 | WiFi security mode | 0=OPEN, 1=WEP, 2=WPA-PSK, 3=WPA2-PSK |
+
+For per-model definitive lists, fetch the official PDF and `grep -i 'P[0-9]\+ '` it; or use Grandstream's online "P-Value Reference" web tool.
+
+## Regional ITU-T Impedance Settings
+
+Grandstream phones have a country-specific "Tone Country" + "Impedance" pair that must match the local network for analog FXS/PSTN handsets. Mismatched impedance causes echo, sidetone, and DTMF detection failures.
+
+| Country | Tone Country | Impedance Setting | Common DT Frequency | Ringing | Notes |
+|---------|--------------|-------------------|---------------------|---------|-------|
+| United States | USA | 600Ω | 350+440 Hz | 2s on / 4s off | also Canada |
+| Canada | USA | 600Ω | 350+440 Hz | 2s on / 4s off | (= USA settings) |
+| United Kingdom | UK | TBR21 (370Ω+620Ω+310nF) | 350+440 Hz | 0.4-0.2-0.4-2.0 | distinct double-ring |
+| Germany | Germany | TBR21 | 425 Hz | 1s on / 4s off | |
+| France | France | TBR21 | 440 Hz | 1.5s on / 3.5s off | |
+| Italy | Italy | TBR21 | 425 Hz | 1s on / 4s off | |
+| Spain | Spain | TBR21 | 425 Hz | 1.5s on / 3s off | |
+| Netherlands | Netherlands | TBR21 | 425 Hz | 1s on / 4s off | |
+| Australia | Australia | 220Ω+820Ω+115nF | 425 Hz | 0.4-0.2-0.4-2.0 | |
+| New Zealand | New Zealand | 370Ω+620Ω+310nF | 400+450 Hz | 0.4-0.2-0.4-2.0 | |
+| Japan | Japan | 600Ω | 400 Hz | 1s on / 2s off | |
+| China | China | 600Ω | 450 Hz | 1s on / 4s off | |
+| Brazil | Brazil | 900Ω | 425 Hz | 1s on / 4s off | |
+| India | India | 600Ω | 400 Hz | 0.4-0.2-0.4-2.0 | |
+| South Africa | South Africa | TBR21 | 400 Hz | 0.4-0.2-0.4-2.0 | |
+
+Phones bought in one region may need re-configuring when shipped to another. The web UI exposes these under `Account → Audio Settings` (per-account) or `Maintenance → Tone Generator → Country` (global).
+
+## Common Field-Service Diagnostic Commands
+
+Beyond the web UI, Grandstream phones expose a Telnet/SSH debug shell on some models (disabled by default; enable via `Maintenance → Telnet/SSH Access`). Once in:
+
+```
+> show config              # print active config in P-value form
+> show network             # interface state, IP, gateway, DNS
+> show registration        # SIP registration status per account
+> show calls               # active call CDR
+> ping <ip>                # built-in ping
+> traceroute <ip>          # built-in traceroute
+> tcpdump -i any -w /tmp/cap.pcap port 5060   # if available
+> debug sip on             # verbose SIP logging to syslog
+> reboot                   # soft reboot
+> factory reset            # WIPES — confirm twice
+```
+
+If Telnet/SSH is locked, drop to syslog server-side: configure the phone's `Maintenance → Syslog Server` to your `rsyslog`/`syslog-ng` collector, then `tail -f /var/log/grandstream.log` server-side for live SIP/registration trace.
+
+## Mass Provisioning Patterns
+
+A 100-phone deployment doesn't get touched per-device. Pattern:
+
+1. **Generate per-MAC config files** — script-driven, one `cfg<MAC>.xml` per phone, output to your provisioning HTTPS server's docroot.
+2. **Common defaults via `cfg.xml`** (no MAC) — fallback the phone reads when no per-MAC file exists. Holds shared values (timezone, codec list, NAT mode, syslog).
+3. **DHCP Option 66** (TFTP server name) or **Option 160/Custom** for the provisioning URL — the phone fetches at boot.
+4. **Authenticate provisioning** — `P1359`-side HTTPS + per-MAC HMAC token (Grandstream's "Config File Encryption" feature uses AES-CBC with a per-device key derived from MAC).
+5. **Stage in batches** — push to a 5-phone canary group first, monitor syslog for boot errors, then roll out to the rest.
+6. **Auto-rotate firmware** — schedule firmware URL changes during a maintenance window (`Maintenance → Upgrade and Provisioning → Schedule`); phones poll daily.
+
+Sample bash for batch-generating per-MAC XMLs:
+
+```bash
+#!/usr/bin/env bash
+# Generate cfg<MAC>.xml from a CSV of (mac,extension,display_name,sip_password)
+while IFS=, read -r mac ext name pass; do
+  cat > "cfg${mac}.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8" ?>
+<gs_provision version="1">
+  <config version="1">
+    <P35>${ext}</P35>
+    <P36>${ext}</P36>
+    <P34>${pass}</P34>
+    <P3>${name}</P3>
+    <P47>sip.example.com</P47>
+    <P52>example.com</P52>
+  </config>
+</gs_provision>
+EOF
+done < phones.csv
+```
+
+Pair with a Grandstream config-encryption tool (e.g. `gs_config_tool`) if encryption is enforced; bare-XML provisioning works only when the phone's `Validate Server Certificates` is OFF, which is fine on a private LAN but never acceptable over the public internet.
+
+## Firmware Rollback Procedure
+
+If a firmware upgrade bricks features (rare but real):
+
+1. Confirm the phone is reachable: `ping <phone-ip>`.
+2. SSH/Telnet in (if enabled) — `show version` to confirm current firmware.
+3. Download the previous-known-good firmware binary from `firmware.grandstream.com/<model>/`.
+4. Place at the provisioning HTTPS server, update `P192` (Firmware Server Path) in the device's per-MAC config to point at the older release URL.
+5. Force a check: web UI → `Maintenance → Upgrade and Provisioning → Upgrade Now`, OR `*99` from the handset for some models.
+6. Phone reboots, fetches old firmware, downgrades.
+7. Once verified working across a 1-2 day window, re-roll to the latest firmware via the normal channel.
+
+Grandstream firmware files are signed; the phone refuses unsigned/forged binaries — you cannot simply hex-edit a working firmware to bypass features. Stay on official channels.

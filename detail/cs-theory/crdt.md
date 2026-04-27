@@ -1129,3 +1129,123 @@ For all of the above, you need a single source of truth and synchronous coordina
 - Automerge documentation: https://automerge.org
 - CRDT.tech: https://crdt.tech
 - Ink & Switch publications: https://www.inkandswitch.com
+
+## Worked Examples (Extended)
+
+### Example 1: G-Counter Trace
+
+3 replicas {A, B, C}. Each holds a vector of per-replica counters.
+
+**Initial**: A = [0, 0, 0], B = [0, 0, 0], C = [0, 0, 0]. Value = sum = 0.
+
+**Step 1**: A increments locally. A = [1, 0, 0]. Value at A = 1.
+
+**Step 2**: B increments twice locally. B = [0, 2, 0]. Value at B = 2.
+
+**Step 3**: A and B exchange state.
+- A receives [0, 2, 0]. Merges: max([1,0,0], [0,2,0]) = [1, 2, 0]. Value = 3.
+- B receives [1, 0, 0]. Merges: max([0,2,0], [1,0,0]) = [1, 2, 0]. Value = 3.
+
+**Step 4**: C increments once. C = [0, 0, 1]. Value at C = 1.
+
+**Step 5**: All exchange.
+- All three converge to [1, 2, 1]. Value = 4.
+
+**Property**: Merge is commutative (order doesn't matter), associative (grouping doesn't matter), idempotent (re-applying the same state is a no-op). These three properties are the **semilattice** that makes G-Counter a CRDT.
+
+### Example 2: OR-Set with the ABA Problem
+
+Observed-Remove Set tracks tagged adds. Each `add(x)` creates a new tag; `remove(x)` removes ALL tags for x that the remover has seen.
+
+**Step 1**: A adds "apple" → A = {("apple", tag-A1)}.
+**Step 2**: A propagates to B → B = {("apple", tag-A1)}.
+**Step 3**: B removes "apple" → B = {} (removed tag-A1).
+**Step 4**: A re-adds "apple" → A = {("apple", tag-A2)}.
+**Step 5**: A propagates to B → B sees tag-A2 was NOT in its remove set, accepts → B = {("apple", tag-A2)}.
+
+The new add survives because tag-A2 is fresh — even though "apple" was removed, only tag-A1 was removed. The "ABA problem" is solved by always tagging fresh adds.
+
+### Example 3: RGA (Replicated Growable Array) Walkthrough
+
+Used by collaborative text editors. Each character is uniquely identified by `(replica_id, sequence_number)`.
+
+**Initial**: empty document. Tree: virtual root.
+
+**A inserts "H"** → tree: root → (A, 1, "H").
+**A inserts "i" after "H"** → root → (A, 1, "H") → (A, 2, "i").
+**B (concurrently with A's "i") inserts "!" after "H"** → tree from B's perspective: root → (A, 1, "H") → (B, 1, "!").
+
+When A and B sync:
+
+- A sees `(B, 1, "!")` was inserted after `(A, 1, "H")`.
+- A's tree now has `(A, 1, "H")` with TWO children: `(A, 2, "i")` and `(B, 1, "!")`.
+- Conflict resolution: order siblings by `(timestamp, replica_id)` descending. Suppose A=1, B=2. Then `(B, 1)` > `(A, 2)` lexicographically, so `(B, 1, "!")` comes first.
+- Final tree: `H!i`.
+
+Both replicas converge on `H!i`. Order is determined by the IDs, not by physical clock — strong eventual consistency without coordination.
+
+### Example 4: Yjs Internal Format
+
+Yjs uses **double-linked lists** of items, each with:
+
+```
+struct Item {
+  ID: (clientId, clock)        // 16 bytes
+  origin: ID | null            // left neighbor at insert time
+  rightOrigin: ID | null       // right neighbor at insert time
+  parent: TypeRef | null
+  parentSub: string | null     // for map keys
+  content: Content             // the actual character/value
+  deleted: bool                // tombstone
+}
+```
+
+Garbage collection: tombstoned items are merged into "delete sets" — compact run-length encodings of deleted IDs. After sync, peers exchange delete sets along with insertions, allowing GC of tombstones whose deletes everyone has seen.
+
+Wire format: a sequence of `(structId, structSize, structPayload)` triplets, then the delete-set vector. Optimized: most updates are <100 bytes for a single keystroke.
+
+### Example 5: Automerge Columnar Encoding
+
+Automerge stores ops in a **columnar format**: instead of storing ops as records, it stores each FIELD across ops in a separate column.
+
+```
+ops = [
+  { id: 1, action: "set", key: "x", value: 5 },
+  { id: 2, action: "set", key: "y", value: 7 },
+  { id: 3, action: "del", key: "x", value: null },
+]
+
+// Column-store representation:
+ids:    [1, 2, 3]
+actions: ["set", "set", "del"]
+keys:    ["x", "y", "x"]     // note: "x" repeats — RLE compresses
+values:  [5, 7, null]
+```
+
+Each column is run-length-encoded and zip-compressed. For a typical document, this achieves 10-20× compression over per-op JSON. Read perf: column scans are CPU-friendly (fits in L1 cache, no pointer chasing).
+
+### Example 6: Causal-Stability Garbage Collection
+
+Tombstones (deleted items) accumulate forever in naive CRDTs. Causal-stability GC: an item is "causally stable" once every replica has seen all operations that could affect it. Once stable, tombstones can be deleted safely.
+
+Algorithm:
+1. Each replica tracks a vector clock of "latest operation seen from each peer."
+2. Periodically, replicas exchange clocks.
+3. Compute `min_clock = min(clocks)` element-wise.
+4. Any operation with `(replica_id, seq)` where `seq < min_clock[replica_id]` is causally stable.
+5. Tombstones for stable operations can be GC'd.
+
+Cost: requires all replicas to participate in the clock exchange. If a replica is offline indefinitely, GC cannot proceed (or you accept that replica's data may be lost).
+
+## Performance Comparison
+
+| Library | Lang | Insert/sec (avg op) | Wire size (1KB doc, 100 ops) | Notes |
+|---------|------|--------------------:|-----------------------------:|-------|
+| Yjs | JS/TS | ~100K | ~3 KB | reference impl, fastest in JS |
+| Automerge 2.x | Rust + WASM | ~30K | ~1.5 KB (columnar compressed) | Rust core, JS bindings |
+| diamond-types | Rust | ~500K | ~2 KB | research-grade, fastest known RGA |
+| EGwalker | Rust (research) | ~1M | ~2 KB | event graph walker, alpha |
+| Loro | Rust | ~50K | ~2 KB | compact wire, multi-language |
+| collabs | TS | ~50K | ~3 KB | extensible framework |
+
+For most apps, Yjs (JS) or Automerge (when you need rich document types like Markdown) are production-grade choices. For high-frequency updates (>10K op/s sustained), drop to Rust-backed diamond-types or EGwalker.

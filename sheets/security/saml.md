@@ -1703,3 +1703,113 @@ Each tenant gets `tenant.app.example`; SP introspects host header.
 - Microsoft, *AD FS Troubleshooting* MSIS event reference
 - xmlsec project, `www.aleksey.com/xmlsec`
 - SAML-Toolkits libraries, `github.com/SAML-Toolkits`
+
+## Library Error Catalog (Extended)
+
+Verbatim errors from the most-deployed SAML SP libraries. Copy-paste into a search engine if unfamiliar.
+
+### python3-saml (OneLogin / SAML-Toolkits)
+
+| Verbatim error | Cause | Fix |
+|----------------|-------|-----|
+| `OneLogin_Saml2_Error: SAML Response not found` | `process_response()` called without `SAMLResponse` in POST body | Verify HTTP-POST binding; check IdP form auto-submit |
+| `Settings: invalid array... Element x must contain a y` | `settings.json` schema mismatch | `OneLogin_Saml2_Settings(settings, sp_validation_only=False)` and read errors list |
+| `invalid_response: SAML Response could not be processed` | Catch-all (sig, cert, time) | Enable `debug=true`; check `errorReason` |
+| `invalid_response: The Response is not signed and the SP requires it` | IdP omitted Response-level signature | Set `wantAssertionsSigned: true` OR fix IdP to sign Response |
+| `invalid_response: timestamps are out of range` | Clock skew or expired assertion | Sync NTP; check `NotBefore` / `NotOnOrAfter` |
+| `invalid_response: The InResponseTo of the Response... does not match` | Stale or replayed | Don't cache RequestID across browser sessions |
+
+### ruby-saml (OneLogin)
+
+| Verbatim error | Cause | Fix |
+|----------------|-------|-----|
+| `OneLogin::RubySaml::ValidationError: Current time is on or after NotOnOrAfter condition` | Assertion expired in transit | Sync NTP; raise `allowed_clock_drift` |
+| `Current time is earlier than NotBefore condition` | SP clock behind IdP | Sync NTP both sides |
+| `The signature method is not supported` | SHA-1 vs SHA-256 mismatch | Set `security[:signature_method]` to match IdP |
+| `Digest mismatch` | XML modified post-signing (often by a proxy) | Disable XML pretty-printing on intermediaries |
+| `An error occurred while loading the XML` | Malformed XML / encoding issue | Verify base64 decode; check Content-Type |
+
+### Spring Security SAML (Java 6.x)
+
+| Verbatim error | Cause | Fix |
+|----------------|-------|-----|
+| `SignatureException: Cryptographic security validation of signature could not be performed` | Wrong/expired cert in metadata | Refresh IdP metadata; check `KeyDescriptor` fingerprint |
+| `MetadataResolverException: Metadata document was invalid` | Schema-invalid XML | `xmllint --schema saml-metadata-2.0.xsd metadata.xml` |
+| `AuthenticationServiceException: Response is not signed when ResponseSignatureValidation is required` | SP demands Response sig, IdP only signs Assertion | Configure IdP to sign Response, OR `wantAssertionsSigned=true` |
+| `Saml2AuthenticationException: invalid_destination` | `Destination` ≠ SP's ACS URL | Update IdP-side ACS URL OR fix SP entityID |
+
+### .NET / ITfoxtec.Identity.Saml2
+
+| Verbatim error | Cause | Fix |
+|----------------|-------|-----|
+| `Saml2RequestException: Signature validation failed` | Cert mismatch or modified XML | Re-import IdP signing cert; verify exclusive c14n applied |
+| `Saml2ResponseException: Response is not in successful status` | StatusCode = `Responder` / `RequestDenied` | Read `<StatusMessage>` — IdP rejected the AuthnRequest |
+| `Saml2RequestException: SP-initiated logout request requires NameID` | SLO without remembered NameID | Persist NameID at login; replay for SLO |
+
+### Shibboleth SP (mod_shib / shibd, 3.x)
+
+| Verbatim error | Cause | Fix |
+|----------------|-------|-----|
+| `opensaml::SecurityPolicyException: Message was signed, but signature could not be verified` | Out-of-date IdP cert | `metadata-providers.xml` reload interval; manual refetch |
+| `opensaml::FatalProfileException: Unable to locate metadata for identity provider (entityID)` | EntityID typo or metadata not yet fetched | Compare exact `entityID` strings |
+| `XMLObjectChildrenList::add: child cannot be added` | Malformed assertion (often XSW probe) | Patch SP; investigate as security event |
+| `Session expired` | Assertion lifetime elapsed | Tune `<SessionInitiator>` lifetime + `cacheTimeout` |
+
+### Common Recovery Sequence
+
+When SAML breaks, this in order resolves ~90% of cases:
+
+1. `xmllint --format response.xml` — confirm valid XML
+2. `xmlsec1 --verify --pubkey-cert-pem idp.pem response.xml` — verify signature
+3. `openssl x509 -in idp.pem -dates -noout` — cert not expired
+4. `date -u && grep -E 'NotBefore|NotOnOrAfter' response.xml` — timestamps in range
+5. `xmllint --xpath "//*[local-name()='Audience']/text()" response.xml` — `<Audience>` matches SP entityID
+6. `xmllint --xpath "//*[@Destination]/@Destination" response.xml` — `<Destination>` matches ACS URL
+7. Re-fetch IdP metadata; diff against cached version
+8. Bump SP debug; capture next failed attempt with full XML
+
+If 1-7 pass but auth still fails, the issue is in SP application code (session handling, attribute mapping, group-claim parsing) — not SAML itself.
+
+## Library Compatibility Matrix
+
+| SP library | Lang | Latest | Encrypted Assertion | SLO | Metadata | Maintenance |
+|------------|------|--------|--------------------:|----:|---------:|-------------|
+| python3-saml | Python | 1.16+ | ✓ | ✓ | ✓ | active |
+| ruby-saml | Ruby | 1.16+ | ✓ | ✓ | ✓ | active |
+| Spring Security SAML | Java | 6.x | ✓ | ✓ | ✓ | active |
+| ITfoxtec.Identity.Saml2 | .NET | 4.x | ✓ | ✓ | ✓ | active |
+| Shibboleth SP | C++ Apache module | 3.x | ✓ | ✓ | ✓ | active (Internet2) |
+| SimpleSAMLphp | PHP | 2.x | ✓ | ✓ | ✓ | active |
+| node-saml | Node | 5.x | partial | ✓ | ✓ | active |
+| passport-saml | Node Passport plugin | 4.x | partial | partial | ✓ | active |
+| go-saml (russellhaering) | Go | 0.4.x | ✓ | ✓ | ✓ | active |
+| crewjam/saml | Go | 0.4.x | ✓ | ✓ | ✓ | active |
+
+Errors above taken from latest stable releases. Older versions may differ — upgrade before debugging obscure errors.
+
+## Production Hardening Checklist
+
+Before shipping a SAML SP integration to production, every box must be ticked:
+
+- [ ] Sign every AuthnRequest sent to the IdP (not just receive signed Responses).
+- [ ] Verify the Response signature AND every Assertion signature — never one without the other.
+- [ ] Reject `NameIDFormat: unspecified` unless documented and audited.
+- [ ] Pin the IdP signing certificate fingerprint AND fail-closed on unexpected change (with an alert and a runbook for IdP key rotation).
+- [ ] Enforce a maximum assertion lifetime ≤ 5 minutes between `IssueInstant` and `NotOnOrAfter`.
+- [ ] Reject any assertion whose `InResponseTo` doesn't match a recently-sent `RequestID` from the same browser session.
+- [ ] Validate `<Audience>` strictly against your registered SP `entityID`.
+- [ ] Validate `<Destination>` strictly against your ACS URL.
+- [ ] Track and refuse replays — store `(ID, IssueInstant)` for at least the assertion's lifetime.
+- [ ] Run xmlsec/library version with the latest XSW protections; subscribe to your library's CVE feed.
+- [ ] Strip XML comments before signature validation (some libraries diverge here — c.f. CVE-2017-11428).
+- [ ] Enforce TLS 1.2+ for the entire login round-trip; reject the assertion if the SP-side request did not arrive over HTTPS.
+- [ ] Bind the session cookie to the assertion (e.g., HMAC of NameID) so a stolen cookie alone can't replay the session.
+- [ ] Set `Set-Cookie: ... HttpOnly; Secure; SameSite=Lax` on session cookies.
+- [ ] Implement Single Logout (SLO) properly — both SP-init and IdP-init paths.
+- [ ] Centrally log every assertion (sanitize PII), every signature failure, every clock-skew rejection.
+- [ ] Add an alert for >N signature failures per minute — that's an attacker probing for XSW.
+- [ ] Test failover: what happens when the IdP is down? What does the user see? Does the SP fail open or fail closed?
+- [ ] Document the annual cert-rotation runbook and rehearse it in staging.
+- [ ] Add a synthetic monitor that completes a real SAML login every 5 minutes and pages on failure.
+
+A SAML deployment without all 19 boxes ticked is not production-ready, regardless of how impressive the demo looks.

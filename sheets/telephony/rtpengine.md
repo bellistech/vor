@@ -1393,3 +1393,124 @@ Two rtpengine instances on different ports + different kernel tables; Kamailio r
 - RFC 5761 — RTP/RTCP multiplexing.
 - RFC 7635 — STUN extensions for OAuth (optional).
 - BEP 3 (BitTorrent Enhancement Proposal 3) — bencode specification.
+
+## Operational Recipes (Extended)
+
+### Recipe 1: Dual-Stack IPv4↔IPv6 Bridge
+
+Endpoints often arrive on different IP families — a SIP trunk on IPv4, a softphone on IPv6. rtpengine bridges seamlessly.
+
+```
+# /etc/rtpengine/rtpengine.conf
+[rtpengine]
+interface = pub4/203.0.113.10!192.0.2.10
+interface = pub6/[2001:db8::10]
+listen-ng = 127.0.0.1:2223
+```
+
+In Kamailio, force one leg to v4 and the other to v6:
+
+```
+# Inbound from v6 softphone, send to v4 trunk
+$avp(rtpe_flags) = "force-relay address-family-IP4 transport-protocol-RTP/AVP";
+rtpengine_offer("$avp(rtpe_flags)");
+```
+
+The bencoded `ng` `offer` command receives `address-family=IP4`, and rtpengine allocates v4 ports for the answer SDP. The reply leg is `IP6`. Each endpoint sees its native family.
+
+### Recipe 2: Recording Calls (Decoded WAV)
+
+```
+[rtpengine]
+recording-dir = /var/lib/rtpengine/recordings
+recording-method = pcap          # raw PCAP; can be "proc" for in-kernel
+recording-format = mp3           # post-process; or "wav"
+```
+
+Trigger per-call from Kamailio:
+
+```
+modparam("rtpengine", "extra_id_pv", "$avp(call_recording_id)")
+...
+$avp(rtpe_flags) = "record-call=on metadata=customer_id_42";
+rtpengine_offer("$avp(rtpe_flags)");
+```
+
+Recordings land at `/var/lib/rtpengine/recordings/<timestamp>-<call-id>.wav`. Encrypted (SRTP) calls are decoded by rtpengine before writing — your storage holds plaintext audio. **GDPR / wiretap-law alert**: recording requires consent; consult your jurisdiction's call-recording statute before enabling in production.
+
+### Recipe 3: Transcoding G.729 ↔ Opus
+
+For interop between legacy IP-PBX (G.729) and a modern WebRTC client (Opus):
+
+```
+[rtpengine]
+codec-strip = G729
+codec-offer = opus,PCMA,PCMU
+codec-transcode = opus           # transcode to Opus on the WebRTC leg
+codec-transcode = G729           # transcode to G.729 on the IP-PBX leg
+```
+
+In SIP routing:
+
+```
+$avp(rtpe_flags) = "transcode-Opus codec-strip-all codec-mask-G729";
+rtpengine_offer("$avp(rtpe_flags)");
+```
+
+Note: G.729 transcoding requires the `bcg729` library at compile time (`./configure --with-bcg729`); G.722, Opus, AMR-WB are built in.
+
+### Recipe 4: WebRTC Termination
+
+WebRTC endpoints require ICE + DTLS-SRTP. rtpengine speaks both natively when invoked with the right `ng` offer flags from Kamailio:
+
+```
+$avp(rtpe_flags) = "trust-address replace-origin replace-session-connection ICE=force RTP/SAVPF DTLS=passive SDES-off generate-mid trickle-ice";
+rtpengine_offer("$avp(rtpe_flags)");
+```
+
+Key flags decoded:
+
+- `ICE=force` — rtpengine collects candidates, performs connectivity checks
+- `DTLS=passive` — rtpengine acts as DTLS server (browser is the client)
+- `SDES-off` — disable SDES key exchange (DTLS-SRTP only)
+- `RTP/SAVPF` — use the secure-feedback profile required by WebRTC
+- `generate-mid` — emit `a=mid:` lines required by browsers
+- `trickle-ice` — accept candidates as they're discovered (vs full-bundle)
+
+### Recipe 5: Capacity Planning Math
+
+Per-call rtpengine resource cost:
+- ~2 KB resident memory per call (struct call + struct media)
+- 2 sockets per leg × 2 legs = 4 ephemeral UDP ports per call
+- ~50 µs CPU per packet pair forwarded (kernel module fast path)
+- ~5 µs CPU per packet at the userland fast path (when kernel module not loaded)
+- DTLS-SRTP: +2 ms per first packet (handshake), then steady-state SRTP overhead is ~200 ns per packet
+
+For 10,000 concurrent calls @ 50 pps each (G.711 — 20ms ptime, 50 packets/sec/direction):
+- 10,000 × 50 × 2 = **1,000,000 pps** through rtpengine
+- Kernel module: 1M × 50 µs = 50 sec/sec — **infeasible on single core**, must spread across 4-8 cores via RPS/RFS or DPDK
+- DTLS-SRTP: kernel module forwards encrypted packets directly without decrypt — 200 ns × 1M = 200 ms/sec (20% of one core, OK)
+
+Production deploys typically run rtpengine in pairs (active/standby via redundancy plugin) on 8-core boxes, sized for ~1000 concurrent sessions per pair.
+
+### Recipe 6: Health Monitoring
+
+Prometheus exporter (rtpengine-exporter): scrapes via `ng` protocol, exposes:
+
+- `rtpengine_calls_total{instance}` — counter, total calls handled
+- `rtpengine_calls_active{instance}` — gauge, current concurrent calls
+- `rtpengine_packets_relayed_total{instance,direction}` — counter
+- `rtpengine_bytes_relayed_total{instance,direction}` — counter
+- `rtpengine_kernelized_calls{instance}` — gauge (kernel-module fast-path flag)
+
+Alert on: `rate(rtpengine_packets_relayed_total[5m]) == 0 and rtpengine_calls_active > 0` (calls present but no media — usually a one-way audio failure).
+
+### Recipe 7: Common Failure Modes and Recovery
+
+| Symptom | Likely cause | Recovery |
+|---------|--------------|----------|
+| One-way audio | NAT mismatch — only one side sees rtpengine | Force `replace-origin replace-session-connection` in `offer` |
+| RTCP missing | Some endpoints expect RTCP-MUX, others don't | Add `rtcp-mux-offer` flag |
+| Call drops at ~30s | rtpengine timeout firing; no media keepalive | Lower `--final-timeout`, or have endpoints send RTCP every 5s |
+| Crash + core dump | Almost always a malformed SDP triggering a parse bug | File issue with the `gdb` backtrace; `--log-stderr` for live trace |
+| Kernel module missing | RHEL/Ubuntu mismatch on ABI | `dkms autoinstall` or build manually with matching kernel headers |
