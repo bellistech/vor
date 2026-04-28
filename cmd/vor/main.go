@@ -37,6 +37,7 @@ func main() {
 	detail := flag.String("d", "", "show deep theory/math for topic")
 	list := flag.Bool("l", false, "list all topics with descriptions")
 	add := flag.String("add", "", "add custom cheatsheet from file")
+	force := flag.Bool("force", false, "with --add, overwrite an existing custom sheet")
 	edit := flag.String("edit", "", "open topic in $EDITOR for customization")
 	ver := flag.Bool("v", false, "print version")
 	random := flag.Bool("random", false, "show a random cheatsheet")
@@ -155,9 +156,13 @@ Options:
 		//   vor --add ./my-sheet.md networking
 		// Without a category, the file lands in ~/.config/cs/sheets/uncategorized/
 		// and the user is nudged toward existing custom categories on success.
+		// --force allows overwriting an existing custom sheet at the destination.
 		category := ""
 		if extras := flag.Args(); len(extras) > 0 {
 			category = extras[0]
+		}
+		if *force {
+			custom.ConfirmOverwrite = true
 		}
 		if err := custom.AddTo(*add, category); err != nil {
 			die("%v", err)
