@@ -65,3 +65,24 @@ make fmt            # gofmt -s -w .
 - Build flags: `-trimpath -s -w`
 - Version injection: `-X main.version=$(VERSION)`
 - REST API uses stdlib net/http (no external router)
+
+## Agent Dispatch Discipline (Stuck Protocol)
+
+When a content-writing agent stalls (600s watchdog, no progress, partial response):
+
+**DO NOT retry with a leaner prompt.** That pattern fails ~50% of the time on long-form content (1500+ line targets).
+
+**DO break the work into chunks** — dispatch N parallel agents, each writing ONE section to a separate file (e.g. `/tmp/<topic>-eli5.part1.md`, `.part2.md`, `.part3.md`), then concatenate them into the target file with `cat ... > sheets/ramp-up/<topic>-eli5.md`.
+
+Pattern:
+```
+Agent 1: write part 1 (Prerequisites + What Even Is + early sections)        → /tmp/X.part1.md
+Agent 2: write part 2 (mid-content sections, the technical heart)            → /tmp/X.part2.md
+Agent 3: write part 3 (Common Errors + Hands-On + Confusions)                → /tmp/X.part3.md
+Agent 4: write part 4 (Vocabulary table + Try This + See Also + References)  → /tmp/X.part4.md
+Then: cat /tmp/X.part{1,2,3,4}.md > sheets/ramp-up/X-eli5.md
+```
+
+Each chunk is ~400 lines — well under the agent stall threshold. Total assembled file ≥1500 lines.
+
+The chunked approach is also faster (4 agents in parallel vs 1 retrying serially) and degrades gracefully (if one chunk stalls, the other 3 still ship; you only re-run the missing chunk).
