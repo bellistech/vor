@@ -2,7 +2,7 @@
 
 > *Old Norse goddess of wisdom and oaths — "she who knows."*
 
-Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **812 cheatsheets** + **722 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **813 cheatsheets** + **722 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -127,6 +127,7 @@ cs serve 8080                 # custom port
 | GET    | `/api/stats` | statistics |
 | GET    | `/api/bookmarks` | list bookmarks |
 | POST   | `/api/bookmarks/:name` | toggle bookmark |
+| GET    | `/api/stackoverflow?q=<q>` | Stack Overflow lookup *(bonus, opt-in; needs key)* |
 
 ### Export, bookmarks, self-update
 
@@ -140,6 +141,18 @@ cs --starred                  # list bookmarks
 
 cs --update                   # check GitHub releases and update
 ```
+
+### Stack Overflow lookup (optional bonus, opt-in)
+
+vör is offline-first. The default `vor` invocation makes zero network calls. The `-so` / `--stack-overflow` flag is an **opt-in shortcut** for the residual ~5% of cases the offline corpus doesn't cover (fresh error messages, version-specific gotchas).
+
+```bash
+vor -so help                  # onboarding text — how to obtain a free Stack Exchange key
+vor stack-overflow-cli        # the dedicated setup sheet (offline)
+vor -so "lvm cannot extend"   # live search (only after a key is configured)
+```
+
+Without `STACK_OVERFLOW_API_KEY` set (env or `~/.config/cs/secrets.env`, mode 0600), the flag prints onboarding text and exits 1. With a key, results are rendered through the same glamour pipeline as every other `vor` command and cached on disk for 24h. The key never appears in error output, log lines, or the cache file — verified by `make audit-secrets`. See `vor stack-overflow-cli` for the full walkthrough including key generation.
 
 ### iOS bindings (gomobile)
 

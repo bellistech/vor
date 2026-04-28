@@ -5,7 +5,7 @@ LDFLAGS := -s -w -X main.version=$(VERSION)
 INSTALL_DIR := /usr/local/bin
 GOMOBILE := $(HOME)/go/bin/gomobile
 
-.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint audit-see-also audit-see-also-strict fmt clean
+.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint audit-see-also audit-see-also-strict audit-secrets fmt clean
 
 build:
 	go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY) ./cmd/$(BINARY)/
@@ -83,12 +83,16 @@ mobile-clean:
 lint:
 	go vet ./...
 	@$(MAKE) -s audit-see-also
+	@$(MAKE) -s audit-secrets
 
 audit-see-also:
 	@scripts/audit-see-also.sh --allowlist=.ci/see-also-allowlist.txt
 
 audit-see-also-strict:
 	@scripts/audit-see-also.sh
+
+audit-secrets:
+	@scripts/audit-secrets.sh --quiet || (echo "✗ make audit-secrets failed — see output above" && exit 1)
 
 fmt:
 	gofmt -s -w .

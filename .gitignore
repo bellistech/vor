@@ -11,3 +11,14 @@ bin/
 
 # iOS gomobile binding output — regenerate via `make mobile-ios`
 mobile/Cscore.xcframework/
+
+# Defense-in-depth: secrets files normally live OUTSIDE the repo
+# (~/.config/cs/secrets.env). These patterns catch the case where
+# a user accidentally copies one into the working tree. The `make
+# audit-secrets` gate is the second line of defense.
+secrets.env
+secrets.toml
+*.secrets
+.envrc
+.env
+.env.local

@@ -1206,22 +1206,62 @@ func doServe(reg *registry.Registry, bind, port string) {
 		jsonResp(w, map[string]any{"topic": name, "bookmarked": added})
 	}))
 
+	// GET /api/stackoverflow?q=<query> — bonus opt-in. Server-side reads
+	// STACK_OVERFLOW_API_KEY from env or ~/.config/cs/secrets.env. If no
+	// key is configured, returns 503 Service Unavailable so callers can
+	// surface a friendly setup nudge without conflating with auth failure.
+	mux.HandleFunc("/api/stackoverflow", cors(func(w http.ResponseWriter, r *http.Request) {
+		query := strings.TrimSpace(r.URL.Query().Get("q"))
+		if query == "" {
+			http.Error(w, `{"error":"missing q parameter"}`, 400)
+			return
+		}
+		if cached, hit := stackoverflow.Read(query, 24*time.Hour); hit {
+			jsonResp(w, cached)
+			return
+		}
+		key, _, err := secrets.Load("STACK_OVERFLOW_API_KEY")
+		if err != nil {
+			http.Error(w, `{"error":"STACK_OVERFLOW_API_KEY not configured (bonus opt-in feature)"}`, 503)
+			return
+		}
+		ctx, cancel := context.WithTimeout(r.Context(), 12*time.Second)
+		defer cancel()
+		res, err := stackoverflow.Search(ctx, query, key)
+		if err != nil {
+			status := 502
+			switch {
+			case errors.Is(err, stackoverflow.ErrAuth):
+				status = 401
+			case errors.Is(err, stackoverflow.ErrRateLimited):
+				status = 429
+			case errors.Is(err, stackoverflow.ErrEmptyQuery):
+				status = 400
+			}
+			http.Error(w, fmt.Sprintf(`{"error":%q}`, err.Error()), status)
+			return
+		}
+		_ = stackoverflow.Write(query, res) // best-effort
+		jsonResp(w, res)
+	}))
+
 	addr := bind + ":" + port
 	fmt.Printf("\033[1;32mcs serve\033[0m listening on %s\n", addr)
 	fmt.Println("Endpoints:")
-	fmt.Println("  GET  /api/topics          — list all topics")
-	fmt.Println("  GET  /api/topics/:name    — get sheet")
-	fmt.Println("  GET  /api/topics/:name/detail  — get detail page")
-	fmt.Println("  GET  /api/topics/:name/related — get related topics")
-	fmt.Println("  GET  /api/categories      — list categories")
-	fmt.Println("  GET  /api/search?q=       — search sheets")
-	fmt.Println("  GET  /api/compare?a=&b=   — compare topics")
-	fmt.Println("  POST /api/calc            — evaluate expression")
-	fmt.Println("  POST /api/subnet          — subnet calculator")
-	fmt.Println("  GET  /api/verify/:name    — verify detail math")
-	fmt.Println("  GET  /api/stats           — statistics")
-	fmt.Println("  GET  /api/bookmarks       — list bookmarks")
-	fmt.Println("  POST /api/bookmarks/:name — toggle bookmark")
+	fmt.Println("  GET  /api/topics              — list all topics")
+	fmt.Println("  GET  /api/topics/:name        — get sheet")
+	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
+	fmt.Println("  GET  /api/topics/:name/related— get related topics")
+	fmt.Println("  GET  /api/categories          — list categories")
+	fmt.Println("  GET  /api/search?q=           — search sheets")
+	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
+	fmt.Println("  POST /api/calc                — evaluate expression")
+	fmt.Println("  POST /api/subnet              — subnet calculator")
+	fmt.Println("  GET  /api/verify/:name        — verify detail math")
+	fmt.Println("  GET  /api/stats               — statistics")
+	fmt.Println("  GET  /api/bookmarks           — list bookmarks")
+	fmt.Println("  POST /api/bookmarks/:name     — toggle bookmark")
+	fmt.Println("  GET  /api/stackoverflow?q=    — Stack Overflow lookup (bonus, opt-in)")
 	fmt.Println()
 	if err := http.ListenAndServe(addr, mux); err != nil {
 		die("serve: %v", err)
