@@ -40,6 +40,7 @@ cs --add mysheet.md       # custom cheatsheet
 cs --edit lvm             # override sheet in $EDITOR
 cs --random               # random cheatsheet
 cs --count                # per-category statistics + bar chart
+cs -so help               # Stack Overflow lookup — bonus opt-in (see below)
 ```
 
 Fuzzy match: `cs kube` → kubernetes. `cs lv` → lvm.
@@ -72,7 +73,7 @@ cs compare ext4 xfs       # filesystem comparison
 cs learn networking       # prerequisite-ordered topic list
 cs learn databases        # sql → postgresql → redis progression
 cs --prereqs bgp          # show prerequisites for a deep-dive page
-cs ramp-up                # 15 ELI5 ramp-up sheets — one per topic
+cs ramp-up                # 55 ELI5 ramp-up sheets — one per topic
 ```
 
 The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`cs fundamentals <topic>` / `cs -d <topic>`) is one command away.
@@ -223,12 +224,14 @@ command --flag value
 ## Build
 
 ```bash
-make build      # ./cs binary
-make test       # tests with race detector
-make install    # install to /usr/local/bin
-make lint       # go vet + staticcheck
-make fmt        # gofmt -s -w
-make mobile-ios # rebuild iOS xcframework
+make build              # ./vor binary (cs symlinked)
+make test               # tests with race detector
+make install            # install to /usr/local/bin
+make lint               # go vet + audit-see-also + audit-secrets
+make audit-see-also     # detect dangling `## See Also` references
+make audit-secrets      # scan source for accidentally-committed credentials
+make fmt                # gofmt -s -w
+make mobile-ios         # rebuild iOS xcframework
 ```
 
 Requires Go 1.24+.
