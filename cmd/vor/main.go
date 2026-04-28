@@ -205,7 +205,7 @@ Options:
 	}
 
 	if *stackOverflow != "" {
-		stackoverflow.UserAgent = "vor-cli/" + version + " (https://github.com/bellistech/cs)"
+		stackoverflow.UserAgent = "vor-cli/" + version + " (https://github.com/bellistech/vor)"
 		doStackOverflow(*stackOverflow)
 		return
 	}
@@ -855,7 +855,7 @@ func doUpdate() {
 	fmt.Printf("cs %s (%s/%s)\n", version, runtime.GOOS, runtime.GOARCH)
 	fmt.Println("Checking for updates...")
 
-	resp, err := http.Get("https://api.github.com/repos/bellistech/cs/releases/latest")
+	resp, err := http.Get("https://api.github.com/repos/bellistech/vor/releases/latest")
 	if err != nil {
 		die("check update: %v", err)
 	}

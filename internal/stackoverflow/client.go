@@ -78,7 +78,7 @@ type Result struct {
 
 // UserAgent identifies vör in outbound requests. Set externally (cmd/vor)
 // to inject the build version; otherwise a generic default is used.
-var UserAgent = "vor-cli (https://github.com/bellistech/cs)"
+var UserAgent = "vor-cli (https://github.com/bellistech/vor)"
 
 // Common error sentinels (callers can errors.Is them).
 var (

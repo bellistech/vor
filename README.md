@@ -9,8 +9,8 @@ Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation
 ## Install
 
 ```bash
-git clone git@github.com:bellistech/cs.git
-cd cs
+git clone git@github.com:bellistech/vor.git
+cd vor
 make install        # builds vor → /usr/local/bin/vor
                     # symlinks cs → vor (backward-compat)
                     # auto-installs bash/zsh/fish tab-completion for both

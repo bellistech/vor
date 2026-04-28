@@ -37,7 +37,7 @@ The Stack Exchange API uses an *application key* — not a personal token, not O
    - **Application Name**: `vor-cli` (any name; visible only to you)
    - **Description**: `Personal CLI cheatsheet tool` (one line is enough)
    - **OAuth Domain**: `localhost` (literally the word — required field, but we never use OAuth)
-   - **Application Website**: `https://github.com/bellistech/cs` (or any URL you control)
+   - **Application Website**: `https://github.com/bellistech/vor` (or any URL you control)
    - **Application Icon**: leave blank
    - **Enable Client Side OAuth Flow**: leave **unchecked**
    - **Disable Application**: leave unchecked

@@ -259,7 +259,7 @@ func TestSearch_UserAgentSet(t *testing.T) {
 	})
 
 	prevUA := UserAgent
-	UserAgent = "vor-cli/test (https://github.com/bellistech/cs)"
+	UserAgent = "vor-cli/test (https://github.com/bellistech/vor)"
 	t.Cleanup(func() { UserAgent = prevUA })
 
 	if _, err := Search(context.Background(), "x", sampleKey); err != nil {

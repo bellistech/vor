@@ -623,8 +623,8 @@ A **remote** is a named URL that points at another copy of your repository. The 
 
 ```
 $ git remote -v
-origin  git@github.com:bellistech/cs.git (fetch)
-origin  git@github.com:bellistech/cs.git (push)
+origin  git@github.com:bellistech/vor.git (fetch)
+origin  git@github.com:bellistech/vor.git (push)
 upstream        git@github.com:original/cs.git (fetch)
 upstream        git@github.com:original/cs.git (push)
 ```
