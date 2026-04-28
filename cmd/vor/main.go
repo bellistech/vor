@@ -961,6 +961,36 @@ func doServe(reg *registry.Registry, bind, port string) {
 		w.Write(data)
 	}
 
+	// GET /api/version — build identification, useful for clients to verify
+	// they're talking to the version they expect. No auth required.
+	mux.HandleFunc("/api/version", cors(func(w http.ResponseWriter, r *http.Request) {
+		jsonResp(w, map[string]any{
+			"binary":     "vor",
+			"version":    version,
+			"goos":       runtime.GOOS,
+			"goarch":     runtime.GOARCH,
+			"go_version": runtime.Version(),
+		})
+	}))
+
+	// GET /api/health — liveness probe; cheap counters only, no work.
+	// Returns 200 with sheet counts if the registry loaded; useful for
+	// container orchestrators (k8s livenessProbe, docker HEALTHCHECK, etc).
+	mux.HandleFunc("/api/health", cors(func(w http.ResponseWriter, r *http.Request) {
+		jsonResp(w, map[string]any{
+			"status":     "ok",
+			"sheets":     len(reg.List()),
+			"categories": len(reg.Categories()),
+			"details":    reg.DetailCount(),
+		})
+	}))
+
+	// GET /api/openapi — minimal OpenAPI 3.0 hint listing the endpoints.
+	// Not a complete spec; just enough to let api-explorer tools discover.
+	mux.HandleFunc("/api/openapi", cors(func(w http.ResponseWriter, r *http.Request) {
+		jsonResp(w, openAPIDoc(version))
+	}))
+
 	// GET /api/topics
 	mux.HandleFunc("/api/topics", cors(func(w http.ResponseWriter, r *http.Request) {
 		type topicSummary struct {
@@ -1249,6 +1279,9 @@ func doServe(reg *registry.Registry, bind, port string) {
 	addr := bind + ":" + port
 	fmt.Printf("\033[1;32mcs serve\033[0m listening on %s\n", addr)
 	fmt.Println("Endpoints:")
+	fmt.Println("  GET  /api/version             — build identification")
+	fmt.Println("  GET  /api/health              — liveness probe")
+	fmt.Println("  GET  /api/openapi             — OpenAPI 3.0 endpoint hint")
 	fmt.Println("  GET  /api/topics              — list all topics")
 	fmt.Println("  GET  /api/topics/:name        — get sheet")
 	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
@@ -1840,4 +1873,72 @@ Clear cache: rm -rf ~/.cache/cs/stackoverflow/
 This whole feature is invisible without a configured key. Default vor stays
 fully offline.
 `)
+}
+
+// openAPIDoc returns a minimal OpenAPI 3.0 description of the REST surface.
+// It's a hint, not a complete spec — enough for api-browser tools (Postman,
+// Bruno, Insomnia, the OpenAPI viewer) to discover the endpoints. We avoid
+// vendoring an OpenAPI schema library to preserve the zero-dep invariant.
+func openAPIDoc(version string) map[string]any {
+	path := func(method, summary string, params []map[string]any, response200 string) map[string]any {
+		op := map[string]any{
+			"summary": summary,
+			"responses": map[string]any{
+				"200": map[string]any{"description": response200},
+			},
+		}
+		if len(params) > 0 {
+			op["parameters"] = params
+		}
+		return map[string]any{strings.ToLower(method): op}
+	}
+	queryParam := func(name, desc string) map[string]any {
+		return map[string]any{
+			"name":        name,
+			"in":          "query",
+			"required":    true,
+			"description": desc,
+			"schema":      map[string]any{"type": "string"},
+		}
+	}
+	pathParam := func(name, desc string) map[string]any {
+		return map[string]any{
+			"name":        name,
+			"in":          "path",
+			"required":    true,
+			"description": desc,
+			"schema":      map[string]any{"type": "string"},
+		}
+	}
+	return map[string]any{
+		"openapi": "3.0.3",
+		"info": map[string]any{
+			"title":       "vör (vor) cheatsheet REST API",
+			"version":     version,
+			"description": "Offline-first cheatsheet CLI exposing its embedded corpus over HTTP. The /api/stackoverflow endpoint is an opt-in bonus that requires STACK_OVERFLOW_API_KEY.",
+			"license":     map[string]any{"name": "GPL-3.0-or-later", "url": "https://www.gnu.org/licenses/gpl-3.0.html"},
+		},
+		"servers": []map[string]any{
+			{"url": "http://127.0.0.1:9876", "description": "default local bind"},
+		},
+		"paths": map[string]any{
+			"/api/version":               path("GET", "Build identification", nil, "JSON {binary, version, goos, goarch, go_version}"),
+			"/api/health":                path("GET", "Liveness probe", nil, "JSON {status, sheets, categories, details}"),
+			"/api/openapi":               path("GET", "This document", nil, "OpenAPI 3.0 hint"),
+			"/api/topics":                path("GET", "List all topics", nil, "Array of topic summaries"),
+			"/api/topics/{name}":         path("GET", "Get a single sheet", []map[string]any{pathParam("name", "topic slug")}, "Sheet content as JSON"),
+			"/api/topics/{name}/detail":  path("GET", "Get the deep-dive detail page if one exists", []map[string]any{pathParam("name", "topic slug")}, "Detail page content"),
+			"/api/topics/{name}/related": path("GET", "Get cross-referenced related topics", []map[string]any{pathParam("name", "topic slug")}, "Array of related topic summaries"),
+			"/api/categories":            path("GET", "List categories", nil, "Array of category names"),
+			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query")}, "Array of search hits"),
+			"/api/compare":               path("GET", "Compare two topics", []map[string]any{queryParam("a", "first topic"), queryParam("b", "second topic")}, "Comparison structure"),
+			"/api/calc":                  path("POST", "Evaluate calculator expression", nil, "Calculator result"),
+			"/api/subnet":                path("POST", "Run subnet calculator", nil, "Subnet calculation result"),
+			"/api/verify/{name}":         path("GET", "Verify math in a detail page", []map[string]any{pathParam("name", "topic slug")}, "Verification status"),
+			"/api/stats":                 path("GET", "Per-category statistics", nil, "Stats object"),
+			"/api/bookmarks":             path("GET", "List bookmarks", nil, "Array of bookmarked topic names"),
+			"/api/bookmarks/{name}":      path("POST", "Toggle bookmark on/off", []map[string]any{pathParam("name", "topic slug")}, "Updated bookmark state"),
+			"/api/stackoverflow":         path("GET", "Bonus opt-in: live Stack Overflow lookup. Requires STACK_OVERFLOW_API_KEY (env or ~/.config/cs/secrets.env). 503 if unconfigured.", []map[string]any{queryParam("q", "search query")}, "Stack Exchange Result"),
+		},
+	}
 }
