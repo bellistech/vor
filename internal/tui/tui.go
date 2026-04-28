@@ -32,6 +32,11 @@ type Model struct {
 	filter    textinput.Model
 	filtering bool
 
+	// filter history (persisted to ~/.cache/cs/tui-history)
+	// up/down arrows recall when the filter input is focused.
+	history    []string
+	historyIdx int // -1 = at the live (un-recalled) input
+
 	// help overlay (toggled with ? — independent of state)
 	showHelp bool
 
@@ -171,6 +176,8 @@ func New(reg *registry.Registry) Model {
 		state:      viewCategories,
 		categories: reg.Categories(),
 		filter:     ti,
+		history:    LoadHistory(),
+		historyIdx: -1,
 		status:     "j/k: move | enter: select | /: filter | q: quit | ?: help",
 	}
 }
@@ -206,18 +213,58 @@ func (m Model) updateFilter(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 	switch msg.String() {
 	case "enter":
 		m.filtering = false
+		// Push the committed value into history (deduped vs most-recent
+		// + capped at historyMax). Save to disk best-effort; failures
+		// are silently ignored — TUI usability is more important than
+		// guaranteed persistence.
+		m.history = pushHistory(m.history, m.filter.Value())
+		m.historyIdx = -1
+		_ = SaveHistory(m.history)
 		m.applyFilter()
 		return m, nil
 	case "esc":
 		m.filtering = false
 		m.filter.SetValue("")
+		m.historyIdx = -1
 		if m.state == viewTopics {
 			m.topics = m.allTopics
 		}
 		return m, nil
+	case "up":
+		// Recall older history entries. Walks from the end toward the
+		// beginning. At the start of history we just stop.
+		if len(m.history) == 0 {
+			return m, nil
+		}
+		if m.historyIdx == -1 {
+			m.historyIdx = len(m.history) - 1
+		} else if m.historyIdx > 0 {
+			m.historyIdx--
+		}
+		m.filter.SetValue(m.history[m.historyIdx])
+		m.filter.SetCursor(len(m.history[m.historyIdx]))
+		m.applyFilter()
+		return m, nil
+	case "down":
+		// Walk back toward the live input. Past the newest entry, the
+		// input clears (back to a fresh prompt).
+		if len(m.history) == 0 || m.historyIdx == -1 {
+			return m, nil
+		}
+		if m.historyIdx < len(m.history)-1 {
+			m.historyIdx++
+			m.filter.SetValue(m.history[m.historyIdx])
+			m.filter.SetCursor(len(m.history[m.historyIdx]))
+		} else {
+			m.historyIdx = -1
+			m.filter.SetValue("")
+		}
+		m.applyFilter()
+		return m, nil
 	default:
 		var cmd tea.Cmd
 		m.filter, cmd = m.filter.Update(msg)
+		m.historyIdx = -1 // typing exits history-recall mode
 		m.applyFilter()
 		return m, cmd
 	}
