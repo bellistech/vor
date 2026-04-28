@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -21,6 +23,8 @@ import (
 	"github.com/bellistech/vor/internal/custom"
 	"github.com/bellistech/vor/internal/registry"
 	"github.com/bellistech/vor/internal/render"
+	"github.com/bellistech/vor/internal/secrets"
+	"github.com/bellistech/vor/internal/stackoverflow"
 	"github.com/bellistech/vor/internal/subnet"
 	"github.com/bellistech/vor/internal/tui"
 	"github.com/bellistech/vor/internal/verify"
@@ -46,6 +50,7 @@ func main() {
 	starred := flag.Bool("starred", false, "list bookmarked topics")
 	prereqs := flag.Bool("prereqs", false, "show prerequisites (use with -d)")
 	update := flag.Bool("update", false, "check for updates and self-update")
+	stackOverflow := flag.String("stack-overflow", "", "live Stack Overflow search (bonus opt-in; requires STACK_OVERFLOW_API_KEY — try '-so help')")
 
 	// Short aliases
 	flag.BoolVar(random, "r", false, "shorthand for -random")
@@ -58,6 +63,7 @@ func main() {
 	flag.StringVar(format, "f", "", "shorthand for -format")
 	flag.StringVar(star, "b", "", "shorthand for -star (bookmark)")
 	flag.BoolVar(starred, "B", false, "shorthand for -starred")
+	flag.StringVar(stackOverflow, "so", "", "shorthand for -stack-overflow")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, `cs - cheatsheet CLI (v%s)
@@ -195,6 +201,11 @@ Options:
 
 	if *detail != "" {
 		doDetail(reg, *detail, *prereqs, *format)
+		return
+	}
+
+	if *stackOverflow != "" {
+		doStackOverflow(*stackOverflow)
 		return
 	}
 
@@ -1686,4 +1697,106 @@ complete -c {{NAME}} -n "not __fish_seen_subcommand_from ({{NAME}} --completions
 func die(format string, args ...any) {
 	fmt.Fprintf(os.Stderr, "cs: "+format+"\n", args...)
 	os.Exit(1)
+}
+
+// doStackOverflow runs the optional, opt-in Stack Overflow live search. The
+// offline encyclopedia (the heart of vör) does not invoke this path. It is
+// gated on STACK_OVERFLOW_API_KEY being configured (env or
+// ~/.config/cs/secrets.env). Without a key, prints friendly onboarding text
+// and exits with status 1.
+func doStackOverflow(query string) {
+	q := strings.TrimSpace(query)
+	if q == "" || q == "help" || q == "-h" || q == "--help" {
+		stackOverflowHelp()
+		return
+	}
+
+	// Try the cache first (treats stale entries as miss; corrupt files as miss).
+	if cached, hit := stackoverflow.Read(q, 24*time.Hour); hit {
+		if err := render.Output(stackoverflow.ToMarkdown(cached, q)); err != nil {
+			die("render: %v", err)
+		}
+		return
+	}
+
+	// Load the key. Env wins; file falls back. Neither set → friendly nudge.
+	key, _, err := secrets.Load("STACK_OVERFLOW_API_KEY")
+	if err != nil {
+		if errors.Is(err, secrets.ErrNotSet) {
+			fmt.Fprintln(os.Stderr,
+				"cs: -so requires STACK_OVERFLOW_API_KEY (env var or "+
+					secrets.File()+"). Run 'cs -so help' for setup.")
+			os.Exit(1)
+		}
+		die("secrets: %v", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 12*time.Second)
+	defer cancel()
+
+	res, err := stackoverflow.Search(ctx, q, key)
+	if err != nil {
+		die("stack-overflow: %v", err)
+	}
+
+	// Best-effort cache write. Failure is non-fatal — we already have the
+	// result for this run; cache is a future-call optimization only.
+	if werr := stackoverflow.Write(q, res); werr != nil {
+		fmt.Fprintf(os.Stderr, "warning: stack-overflow cache write failed: %v\n", werr)
+	}
+
+	if err := render.Output(stackoverflow.ToMarkdown(res, q)); err != nil {
+		die("render: %v", err)
+	}
+}
+
+// stackOverflowHelp prints the onboarding block for the bonus opt-in feature.
+// Reachable via `vor -so help` or `vor --stack-overflow help`.
+func stackOverflowHelp() {
+	fmt.Print(`Stack Overflow live lookup (BONUS — optional, off by default)
+=================================================================
+
+vör's primary feature is the offline encyclopedia. The default 'vor' usage
+makes zero network calls. The '-so' flag is an opt-in shortcut for the
+ad-hoc 5% of cases the offline corpus doesn't cover (fresh error messages,
+version-specific gotchas).
+
+To enable:
+
+  1. Sign in at https://stackapps.com/users/login (any Stack Exchange
+     account works — Stack Overflow login is fine).
+  2. Register an app: https://stackapps.com/apps/oauth/register
+       Application Name:    vor-cli (any name)
+       OAuth Domain:        localhost  (literal — we don't use OAuth)
+       Application Website: any URL you control
+       Enable Client-side OAuth Flow: NO (leave unchecked)
+  3. Copy the 'Key' value from the resulting page.
+  4. Save it locally (outside any git repo):
+
+       mkdir -p ~/.config/cs
+       touch ~/.config/cs/secrets.env
+       chmod 600 ~/.config/cs/secrets.env
+       $EDITOR ~/.config/cs/secrets.env
+       # Add: STACK_OVERFLOW_API_KEY=<the-key-you-copied>
+
+     OR, for a one-shot test, export it for the current shell only:
+
+       read -rs STACK_OVERFLOW_API_KEY      # silent — not in shell history
+       export STACK_OVERFLOW_API_KEY
+
+  5. Use it:
+
+       vor -so "lvm cannot extend volume"
+
+Quota: 10,000 requests/day with a key (300 anonymous). Each query costs 1.
+Cache: 24h on disk at ~/.cache/cs/stackoverflow/ — repeat queries are free.
+Privacy: the key never appears in error output, the cache file, or logs
+         (verified by tests in internal/stackoverflow). It only travels in
+         the outbound HTTPS query string to api.stackexchange.com.
+Rotate:  delete or edit the app at https://stackapps.com/apps any time.
+Clear cache: rm -rf ~/.cache/cs/stackoverflow/
+
+This whole feature is invisible without a configured key. Default vor stays
+fully offline.
+`)
 }
