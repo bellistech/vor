@@ -205,6 +205,7 @@ Options:
 	}
 
 	if *stackOverflow != "" {
+		stackoverflow.UserAgent = "vor-cli/" + version + " (https://github.com/bellistech/cs)"
 		doStackOverflow(*stackOverflow)
 		return
 	}

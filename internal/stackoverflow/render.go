@@ -51,6 +51,11 @@ func ToMarkdown(r *Result, query string) string {
 		"*Powered by Stack Exchange — content licensed CC BY-SA 4.0. "+
 			"Quota remaining: %d / %d.*\n",
 		r.QuotaRemaining, r.QuotaMax)
+	if r.Backoff > 0 {
+		fmt.Fprintf(&b,
+			"\n*The API requested a %ds backoff — vör's 24h cache "+
+				"absorbs this for repeat queries.*\n", r.Backoff)
+	}
 	return b.String()
 }
 

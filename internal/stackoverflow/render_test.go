@@ -76,6 +76,29 @@ func TestStripHTML_Basic(t *testing.T) {
 	}
 }
 
+func TestToMarkdown_BackoffShown(t *testing.T) {
+	r := &Result{
+		Questions:      []Question{{Title: "x", Link: "y"}},
+		QuotaMax:       10000,
+		QuotaRemaining: 9000,
+		Backoff:        7,
+	}
+	out := ToMarkdown(r, "q")
+	if !strings.Contains(out, "7s backoff") {
+		t.Errorf("expected backoff hint in render: %s", out)
+	}
+}
+
+func TestToMarkdown_NoBackoffNoNote(t *testing.T) {
+	r := &Result{
+		Questions: []Question{{Title: "x", Link: "y"}},
+	}
+	out := ToMarkdown(r, "q")
+	if strings.Contains(out, "backoff") {
+		t.Errorf("Backoff=0 should not render the backoff note: %s", out)
+	}
+}
+
 func TestToMarkdown_BodyTruncation(t *testing.T) {
 	long := strings.Repeat("a", 2000)
 	r := &Result{

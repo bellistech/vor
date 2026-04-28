@@ -53,15 +53,19 @@ type Question struct {
 }
 
 // apiResponse mirrors only the fields we care about from the Stack Exchange
-// JSON response. Other fields are silently ignored.
+// v2.3 wrapper object. Other fields are silently ignored.
 type apiResponse struct {
 	Items          []Question `json:"items"`
 	HasMore        bool       `json:"has_more"`
 	QuotaMax       int        `json:"quota_max"`
 	QuotaRemaining int        `json:"quota_remaining"`
-	ErrorID        int        `json:"error_id,omitempty"`
-	ErrorName      string     `json:"error_name,omitempty"`
-	ErrorMessage   string     `json:"error_message,omitempty"`
+	// Backoff is non-zero when the API is asking us to wait that many
+	// seconds before our next request. We surface it via Result.Backoff
+	// so callers can avoid hammering after a soft throttle.
+	Backoff      int    `json:"backoff,omitempty"`
+	ErrorID      int    `json:"error_id,omitempty"`
+	ErrorName    string `json:"error_name,omitempty"`
+	ErrorMessage string `json:"error_message,omitempty"`
 }
 
 // Result is the typed search result — what callers render or cache.
@@ -69,7 +73,12 @@ type Result struct {
 	Questions      []Question `json:"questions"`
 	QuotaMax       int        `json:"quota_max"`
 	QuotaRemaining int        `json:"quota_remaining"`
+	Backoff        int        `json:"backoff,omitempty"`
 }
+
+// UserAgent identifies vör in outbound requests. Set externally (cmd/vor)
+// to inject the build version; otherwise a generic default is used.
+var UserAgent = "vor-cli (https://github.com/bellistech/cs)"
 
 // Common error sentinels (callers can errors.Is them).
 var (
@@ -101,8 +110,9 @@ func Search(ctx context.Context, query, key string) (*Result, error) {
 	q := url.Values{}
 	q.Set("order", "desc")
 	q.Set("sort", "relevance")
-	q.Set("site", "stackoverflow")
-	q.Set("filter", "withbody") // include question body
+	q.Set("site", "stackoverflow") // api_site_parameter short form
+	q.Set("filter", "withbody")    // built-in named filter — adds the body field
+	q.Set("pagesize", "10")        // terminal-friendly cap (API default is 30)
 	q.Set("q", query)
 	q.Set("key", key)
 
@@ -111,7 +121,12 @@ func Search(ctx context.Context, query, key string) (*Result, error) {
 		return nil, redactErr(err, key)
 	}
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Accept-Encoding", "gzip") // Go's stdlib decodes transparently
+	req.Header.Set("User-Agent", UserAgent)
+	// IMPORTANT: do NOT set Accept-Encoding here. The Stack Exchange API
+	// always returns gzipped responses, and Go's net/http auto-decodes
+	// gzip ONLY when the user did not explicitly request it. Setting
+	// Accept-Encoding manually disables auto-decompression, which would
+	// leave us holding a gzipped byte slice that won't parse as JSON.
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
@@ -154,5 +169,6 @@ func Search(ctx context.Context, query, key string) (*Result, error) {
 		Questions:      ar.Items,
 		QuotaMax:       ar.QuotaMax,
 		QuotaRemaining: ar.QuotaRemaining,
+		Backoff:        ar.Backoff,
 	}, nil
 }

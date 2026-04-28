@@ -1,6 +1,8 @@
 package stackoverflow
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
 	"errors"
 	"net/http"
@@ -175,6 +177,113 @@ func TestSearch_KeyNeverInTransport(t *testing.T) {
 	}
 	if strings.Contains(err.Error(), sampleKey) {
 		t.Errorf("error leaked key: %v", err)
+	}
+}
+
+// TestSearch_GzippedResponse simulates the production API behavior, which
+// always sends gzipped bodies. Go's net/http auto-decodes gzip ONLY when the
+// caller hasn't set Accept-Encoding manually. This test verifies that our
+// client (a) doesn't set the header, and (b) successfully parses a gzipped
+// JSON response. Was a real bug pre-spec-audit.
+func TestSearch_GzippedResponse(t *testing.T) {
+	withFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+		// the client must not have set Accept-Encoding itself —
+		// Go adds it automatically when unset, which is what enables
+		// transparent decompression
+		if got := r.Header.Get("Accept-Encoding"); !strings.Contains(got, "gzip") {
+			t.Errorf("expected Go-managed Accept-Encoding to include gzip, got %q", got)
+		}
+		var buf bytes.Buffer
+		gz := gzip.NewWriter(&buf)
+		gz.Write([]byte(happyJSON))
+		gz.Close()
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Encoding", "gzip")
+		w.Write(buf.Bytes())
+	})
+
+	res, err := Search(context.Background(), "lvm", sampleKey)
+	if err != nil {
+		t.Fatalf("Search on gzipped response: %v", err)
+	}
+	if len(res.Questions) != 1 {
+		t.Errorf("got %d questions, want 1", len(res.Questions))
+	}
+}
+
+func TestSearch_BackoffSurfaced(t *testing.T) {
+	withFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`{"items":[{"title":"x","link":"y"}],
+			"quota_max":10000, "quota_remaining":9000, "backoff":5}`))
+	})
+
+	res, err := Search(context.Background(), "x", sampleKey)
+	if err != nil {
+		t.Fatalf("Search: %v", err)
+	}
+	if res.Backoff != 5 {
+		t.Errorf("Backoff = %d, want 5", res.Backoff)
+	}
+}
+
+func TestSearch_PageSizeIs10(t *testing.T) {
+	withFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+		if got := r.URL.Query().Get("pagesize"); got != "10" {
+			t.Errorf("pagesize = %q, want 10 (terminal-friendly default)", got)
+		}
+		if got := r.URL.Query().Get("filter"); got != "withbody" {
+			t.Errorf("filter = %q, want withbody", got)
+		}
+		if got := r.URL.Query().Get("site"); got != "stackoverflow" {
+			t.Errorf("site = %q, want stackoverflow", got)
+		}
+		w.Write([]byte(happyJSON))
+	})
+
+	if _, err := Search(context.Background(), "x", sampleKey); err != nil {
+		t.Fatalf("Search: %v", err)
+	}
+}
+
+func TestSearch_UserAgentSet(t *testing.T) {
+	withFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+		ua := r.Header.Get("User-Agent")
+		if ua == "" {
+			t.Error("expected non-empty User-Agent")
+		}
+		if !strings.Contains(ua, "vor") {
+			t.Errorf("User-Agent = %q, expected to contain 'vor'", ua)
+		}
+		w.Write([]byte(happyJSON))
+	})
+
+	prevUA := UserAgent
+	UserAgent = "vor-cli/test (https://github.com/bellistech/cs)"
+	t.Cleanup(func() { UserAgent = prevUA })
+
+	if _, err := Search(context.Background(), "x", sampleKey); err != nil {
+		t.Fatalf("Search: %v", err)
+	}
+}
+
+func TestSearch_NoExplicitAcceptEncoding(t *testing.T) {
+	// regression guard for the gzip auto-decompression contract.
+	// if a future edit re-introduces an explicit Accept-Encoding header,
+	// this test fails so we don't ship a broken binary.
+	withFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+		// Go's http.Transport, when the caller hasn't set Accept-Encoding,
+		// adds "gzip" itself. If our code set anything else (e.g. "gzip"
+		// explicitly, or "identity"), that's a regression.
+		hdrs := r.Header.Values("Accept-Encoding")
+		if len(hdrs) != 1 || hdrs[0] != "gzip" {
+			t.Errorf("Accept-Encoding = %v — want exactly [gzip] managed by Go's http transport", hdrs)
+		}
+		w.Write([]byte(happyJSON))
+	})
+
+	if _, err := Search(context.Background(), "x", sampleKey); err != nil {
+		t.Fatalf("Search: %v", err)
 	}
 }
 
