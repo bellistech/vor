@@ -32,7 +32,24 @@ import (
 
 var version = "dev"
 
+// progName returns the basename used to invoke the binary. The same binary
+// is shipped as both `vor` (canonical) and `cs` (legacy alias via symlink);
+// help text and error messages match whichever name the user typed.
+func progName() string {
+	if len(os.Args) == 0 {
+		return "vor"
+	}
+	name := filepath.Base(os.Args[0])
+	// strip Windows .exe if present, just in case
+	name = strings.TrimSuffix(name, ".exe")
+	if name == "" {
+		return "vor"
+	}
+	return name
+}
+
 func main() {
+	prog := progName()
 	search := flag.String("s", "", "search across all cheatsheets")
 	detail := flag.String("d", "", "show deep theory/math for topic")
 	list := flag.Bool("l", false, "list all topics with descriptions")
@@ -67,53 +84,54 @@ func main() {
 	flag.StringVar(stackOverflow, "so", "", "shorthand for -stack-overflow")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, `cs - cheatsheet CLI (v%s)
+		fmt.Fprintf(os.Stderr, `%[1]s - cheatsheet CLI (v%[2]s)
 
 Usage:
-  cs                     list all topics grouped by category
-  cs <topic>             show cheatsheet (e.g., cs lvm)
-  cs <category>          list topics in category (e.g., cs storage)
-  cs <topic> <section>   show matching section (e.g., cs lvm extend)
-  cs -d <topic>          deep theory/math for topic (e.g., cs -d bgp)
-  cs -d <topic> --prereqs show prerequisites for a detail page
-  cs -s <term> [term...] AND-search across all cheatsheets (e.g., cs -s python list)
-  cs -l                  list all topics with descriptions
-  cs -i                  interactive TUI mode
-  cs --add <file>        add a custom cheatsheet
-  cs --edit <topic>      edit/create custom cheatsheet in $EDITOR
+  %[1]s                     list all topics grouped by category
+  %[1]s <topic>             show cheatsheet (e.g., %[1]s lvm)
+  %[1]s <category>          list topics in category (e.g., %[1]s storage)
+  %[1]s <topic> <section>   show matching section (e.g., %[1]s lvm extend)
+  %[1]s -d <topic>          deep theory/math for topic (e.g., %[1]s -d bgp)
+  %[1]s -d <topic> --prereqs show prerequisites for a detail page
+  %[1]s -s <term> [term...] AND-search across all cheatsheets (e.g., %[1]s -s python list)
+  %[1]s -l                  list all topics with descriptions
+  %[1]s -i                  interactive TUI mode (?: help, /: filter, t: theme)
+  %[1]s --add <file>        add a custom cheatsheet
+  %[1]s --edit <topic>      edit/create custom cheatsheet in $EDITOR
 
 Tools:
-  cs calc <expression>   calculator (supports +,-,*,/,%%,**,hex,oct,bin,units)
-  cs subnet <cidr>       subnet calculator (e.g., cs subnet 10.0.0.0/24)
-  cs compare <X> <Y>     compare two topics side by side
-  cs verify [topic]      verify math in detail pages
-  cs learn <category>    ordered learning path by prerequisites
-  cs serve               start REST API server (default :9876)
+  %[1]s calc <expression>   calculator (supports +,-,*,/,%%,**,hex,oct,bin,units)
+  %[1]s subnet <cidr>       subnet calculator (e.g., %[1]s subnet 10.0.0.0/24)
+  %[1]s compare <X> <Y>     compare two topics side by side
+  %[1]s verify [topic]      verify math in detail pages
+  %[1]s learn <category>    ordered learning path by prerequisites
+  %[1]s serve               start REST API server (default :9876)
 
 Knowledge:
-  cs --related <topic>   show related topics (from See Also)
-  cs --format json       export as JSON (use with topic)
-  cs --format markdown   export raw markdown (use with topic)
+  %[1]s --related <topic>   show related topics (from See Also)
+  %[1]s --format json       export as JSON (use with topic)
+  %[1]s --format markdown   export raw markdown (use with topic)
 
 Bookmarks:
-  cs --star <topic>      toggle bookmark
-  cs --starred           list bookmarked topics
+  %[1]s --star <topic>      toggle bookmark
+  %[1]s --starred           list bookmarked topics
 
 Extra:
-  cs --random            show a random cheatsheet
-  cs --count             show sheet/category statistics
-  cs --update            check for updates and self-update
-  cs --completions bash  generate shell completions (bash, zsh, fish)
+  %[1]s --random            show a random cheatsheet
+  %[1]s --count             show sheet/category statistics
+  %[1]s --update            check for updates and self-update
+  %[1]s --completions bash  generate shell completions (bash, zsh, fish)
+  %[1]s -so help            Stack Overflow live lookup (bonus, opt-in)
 
 Options:
-`, version)
+`, prog, version)
 		flag.PrintDefaults()
 	}
 
 	flag.Parse()
 
 	if *ver {
-		fmt.Printf("cs %s\n", version)
+		fmt.Printf("%s %s\n", prog, version)
 		os.Exit(0)
 	}
 
@@ -865,7 +883,7 @@ func doLearn(reg *registry.Registry, catName string) {
 }
 
 func doUpdate() {
-	fmt.Printf("cs %s (%s/%s)\n", version, runtime.GOOS, runtime.GOARCH)
+	fmt.Printf("%s %s (%s/%s)\n", progName(), version, runtime.GOOS, runtime.GOARCH)
 	fmt.Println("Checking for updates...")
 
 	resp, err := http.Get("https://api.github.com/repos/bellistech/vor/releases/latest")
@@ -1782,7 +1800,7 @@ complete -c {{NAME}} -n "not __fish_seen_subcommand_from ({{NAME}} --completions
 `
 
 func die(format string, args ...any) {
-	fmt.Fprintf(os.Stderr, "cs: "+format+"\n", args...)
+	fmt.Fprintf(os.Stderr, progName()+": "+format+"\n", args...)
 	os.Exit(1)
 }
 

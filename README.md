@@ -2,7 +2,7 @@
 
 > *Old Norse goddess of wisdom and oaths — "she who knows."*
 
-Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **813 cheatsheets** + **737 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **814 cheatsheets** + **737 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -104,7 +104,11 @@ cs verify                     # verify all detail pages (CI-friendly, exit 1 on 
 cs -i                         # full-screen interactive browser
 ```
 
-Keys: `j`/`k` navigate, `enter` open, `/` filter, `d` detail page, `esc` back, `q` quit.
+Keys: `j`/`k` navigate, `enter` open, `/` filter, `d` detail page, `esc` back, `q` quit, `?` full help overlay.
+
+Inside `/` filter: `↑`/`↓` recall persisted history (`~/.cache/cs/tui-history`, max 50 entries).
+Theme palette is configurable via `~/.config/cs/theme.json` (8 hex colors, all optional).
+See `cs interactive-tui-config` for the full setup walkthrough.
 
 ### REST API
 

@@ -1,6 +1,6 @@
 # Vör — Cheatsheet CLI (binary `vor`, legacy alias `cs`)
 
-Single-binary Go CLI with 813 embedded markdown cheatsheets and 737 deep-dive theory pages across 63 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE) plus the `ramp-up/` curriculum (55 ELI5-voiced sheets — kernel, all major network protocols, security/auth, observability, IaC, CI/CD, languages, databases, web servers, cloud, daily-use tools, fundamental networking concepts, network automation).
+Single-binary Go CLI with 814 embedded markdown cheatsheets and 737 deep-dive theory pages across 63 categories. Built-in calculator (unit-aware), subnet calculator, fuzzy search, interactive TUI, REST API daemon, shell completions, bookmarks, cross-references, export, learning paths, math verification. Covers 11 certification domains (CCNP DC/Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP/SEC, Linux+, CISSP, C|RAGE) plus the `ramp-up/` curriculum (55 ELI5-voiced sheets — kernel, all major network protocols, security/auth, observability, IaC, CI/CD, languages, databases, web servers, cloud, daily-use tools, fundamental networking concepts, network automation).
 
 ## North Star
 
@@ -43,7 +43,7 @@ make fmt            # gofmt -s -w .
 - `internal/stackoverflow/` — optional Stack Exchange API client + 24h disk cache for the `-so` / `--stack-overflow` bonus flag; gated on `STACK_OVERFLOW_API_KEY`; default `vor` invocation never invokes this package
 - `internal/tui/` — interactive TUI (bubbletea + bubbles, category browser, fuzzy filter, content viewer)
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`, REST API server
-- `sheets/<category>/<topic>.md` — 813 embedded cheatsheets across 63 categories
+- `sheets/<category>/<topic>.md` — 814 embedded cheatsheets across 63 categories
 - `sheets/ramp-up/<topic>-eli5.md` — narrative-shaped ELI5 ramp-up curriculum (one comprehensive sheet per topic; 55 topics as of S5)
 - `detail/<category>/<topic>.md` — 737 deep-dive theory/math pages
 - `scripts/audit-see-also.sh` — gate that detects broken `## See Also` references; wired into `make lint` (`make audit-see-also-strict` for the un-allowlisted view)
