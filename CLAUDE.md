@@ -96,3 +96,5 @@ Then: cat /tmp/X.part{1,2,3,4}.md > sheets/ramp-up/X-eli5.md
 Each chunk is ~400 lines — well under the agent stall threshold. Total assembled file ≥1500 lines.
 
 The chunked approach is also faster (4 agents in parallel vs 1 retrying serially) and degrades gracefully (if one chunk stalls, the other 3 still ship; you only re-run the missing chunk).
+
+**CRITICAL: wait for ALL completion notifications before `cat`-concatenating.** A file appearing on disk does not mean its agent has finished — agents stream output, so `wc -l /tmp/X.part1.md` mid-write reports a partial count. Concatenating before notification lost ~125 lines on `network-automation-eli5` (committed 2f34e17 to recover). Rule: only concat once every chunk agent has emitted its `<task-notification status=completed>`. The end-of-file marker (e.g. `<!-- chunk1 end -->`) is your visual confirmation the chunk is whole; verify with `tail -1 /tmp/X.partN.md` for each before concat.
