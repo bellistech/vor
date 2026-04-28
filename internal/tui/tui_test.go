@@ -294,15 +294,60 @@ func TestView_DoesNotPanic(t *testing.T) {
 	_ = m.View()
 }
 
-func TestHelpKeyShowsHelp(t *testing.T) {
+func TestHelpKeyTogglesOverlay(t *testing.T) {
 	m := New(testRegistry(t))
-	prev := m.status
-	m = step(t, m, keyMsg("?"))
-	if m.status == prev {
-		t.Error("? key should update status to a help string")
+	if m.showHelp {
+		t.Fatal("expected showHelp=false initially")
 	}
-	if !strings.Contains(m.status, "j/k") {
-		t.Errorf("help status should include j/k, got: %q", m.status)
+	m = step(t, m, keyMsg("?"))
+	if !m.showHelp {
+		t.Error("? should turn help overlay on")
+	}
+	if !strings.Contains(m.status, "help") {
+		t.Errorf("status should mention help, got: %q", m.status)
+	}
+	// Press ? again — should toggle off.
+	m = step(t, m, keyMsg("?"))
+	if m.showHelp {
+		t.Error("? again should turn help overlay off")
+	}
+}
+
+func TestHelpEscClosesOverlay(t *testing.T) {
+	m := New(testRegistry(t))
+	m = step(t, m, keyMsg("?"))
+	if !m.showHelp {
+		t.Fatal("expected help on after ?")
+	}
+	prevState := m.state
+	m = step(t, m, keyMsg("esc"))
+	if m.showHelp {
+		t.Error("esc should close help overlay")
+	}
+	if m.state != prevState {
+		t.Errorf("esc with help open should NOT navigate back; state=%d, want %d", m.state, prevState)
+	}
+}
+
+func TestHelpRendersFullScreen(t *testing.T) {
+	m := New(testRegistry(t))
+	m.width = 100
+	m.height = 30
+	m = step(t, m, keyMsg("?"))
+
+	view := m.View()
+	for _, want := range []string{
+		"Help",
+		"keybindings",
+		"Navigation",
+		"Filter",
+		"j",
+		"enter",
+		"toggle this help",
+	} {
+		if !strings.Contains(view, want) {
+			t.Errorf("help view missing %q\n--- view ---\n%s", want, view)
+		}
 	}
 }
 

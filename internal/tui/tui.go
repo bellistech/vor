@@ -23,14 +23,17 @@ const (
 
 // Model is the bubbletea model for the TUI.
 type Model struct {
-	reg      *registry.Registry
-	state    viewState
-	cursor   int
-	offset   int
-	width    int
-	height   int
-	filter   textinput.Model
+	reg       *registry.Registry
+	state     viewState
+	cursor    int
+	offset    int
+	width     int
+	height    int
+	filter    textinput.Model
 	filtering bool
+
+	// help overlay (toggled with ? — independent of state)
+	showHelp bool
 
 	// category view
 	categories []string
@@ -255,6 +258,12 @@ func (m Model) updateNavigation(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.goBack(), nil
 
 	case "esc":
+		// esc closes help overlay if open; otherwise navigates back.
+		if m.showHelp {
+			m.showHelp = false
+			m.status = "j/k: move | enter: select | /: filter | q: quit | ?: help"
+			return m, nil
+		}
 		return m.goBack(), nil
 
 	case "/":
@@ -329,7 +338,12 @@ func (m Model) updateNavigation(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 
 	case "?":
-		m.status = "j/k: move | enter/l: select | h/esc: back | /: filter | d: detail | space: page | q: quit"
+		m.showHelp = !m.showHelp
+		if m.showHelp {
+			m.status = "help — press ? or esc to close"
+		} else {
+			m.status = "j/k: move | enter: select | /: filter | q: quit | ?: help"
+		}
 		return m, nil
 	}
 
@@ -506,6 +520,10 @@ func (m Model) View() string {
 		return "Loading..."
 	}
 
+	if m.showHelp {
+		return m.renderHelp()
+	}
+
 	var header, footer string
 	var bodyLines []string
 
@@ -617,5 +635,65 @@ func (m Model) View() string {
 
 	sb.WriteString(footer)
 
+	return sb.String()
+}
+
+// renderHelp returns the full-screen help overlay reachable via `?` from any
+// state. Restores by pressing `?` again or `esc`.
+func (m Model) renderHelp() string {
+	width := m.width
+	if width < 60 {
+		width = 60
+	}
+
+	header := renderTopBorder("Help — keybindings", width)
+	footer := renderBottomBorder("? or esc to close", "vor TUI", width)
+
+	help := []string{
+		titleStyle.Render("Navigation"),
+		"",
+		"  " + selectedStyle.Render("j") + dimStyle.Render(" / ") + selectedStyle.Render("↓") +
+			"      next item",
+		"  " + selectedStyle.Render("k") + dimStyle.Render(" / ") + selectedStyle.Render("↑") +
+			"      previous item",
+		"  " + selectedStyle.Render("g") + dimStyle.Render(" / ") + selectedStyle.Render("Home") +
+			"   jump to first",
+		"  " + selectedStyle.Render("G") + dimStyle.Render(" / ") + selectedStyle.Render("End") +
+			"    jump to last",
+		"  " + selectedStyle.Render("space") + dimStyle.Render(" / ") + selectedStyle.Render("PgDn") +
+			"   scroll page (in content view)",
+		"  " + selectedStyle.Render("PgUp") + "        scroll back a page (in content view)",
+		"",
+		titleStyle.Render("Selection"),
+		"",
+		"  " + selectedStyle.Render("enter") + dimStyle.Render(" / ") + selectedStyle.Render("l") +
+			"  open selected (category → topic → content)",
+		"  " + selectedStyle.Render("h") + dimStyle.Render(" / ") + selectedStyle.Render("esc") +
+			"    go back one level",
+		"  " + selectedStyle.Render("d") + "          show deep-dive detail page (if available)",
+		"",
+		titleStyle.Render("Filter"),
+		"",
+		"  " + selectedStyle.Render("/") + "          start filter (live as you type)",
+		"  " + selectedStyle.Render("enter") + "      commit filter",
+		"  " + selectedStyle.Render("esc") + "        clear filter",
+		"",
+		titleStyle.Render("Other"),
+		"",
+		"  " + selectedStyle.Render("?") + "          toggle this help",
+		"  " + selectedStyle.Render("q") + dimStyle.Render(" / ") + selectedStyle.Render("Ctrl-C") +
+			" quit (from root) or back (from deeper)",
+		"",
+		dimStyle.Render("vör is offline-first. The default 'vor' invocation makes zero"),
+		dimStyle.Render("network calls. The interactive TUI runs entirely against the"),
+		dimStyle.Render("813 sheets and 722 detail pages embedded in the binary."),
+		"",
+	}
+
+	var sb strings.Builder
+	sb.WriteString(header)
+	sb.WriteString("\n")
+	sb.WriteString(renderSideBorders(help, width))
+	sb.WriteString(footer)
 	return sb.String()
 }
