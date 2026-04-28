@@ -10,11 +10,13 @@ import (
 
 // Registry holds all loaded cheatsheets.
 type Registry struct {
-	sheets     map[string]*Sheet
-	details    map[string]*Sheet
-	byCategory map[string][]*Sheet
-	all        []*Sheet
-	categories []string
+	sheets       map[string]*Sheet
+	details      map[string]*Sheet
+	detailFiles  int // file-system count; differs from len(details) when
+	                 // two detail files share a name across categories
+	byCategory   map[string][]*Sheet
+	all          []*Sheet
+	categories   []string
 }
 
 // New creates a Registry from one or more fs.FS sources.
@@ -42,6 +44,7 @@ func NewWithDetails(sheetSources []fs.FS, detailSources []fs.FS) (*Registry, err
 			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
 			sheet := ParseSheet(name, category, string(data))
 			r.details[name] = sheet
+			r.detailFiles++ // counts all files even if name-deduped in the map
 			return nil
 		})
 		if err != nil {
@@ -61,8 +64,19 @@ func (r *Registry) HasDetail(name string) bool {
 	return r.details[strings.ToLower(name)] != nil
 }
 
-// DetailCount returns the number of loaded detail sheets.
+// DetailCount returns the number of distinct detail files loaded from disk.
+// This counts file-system entries, NOT distinct topic names — when two
+// categories contain a same-named detail file (e.g., legacy duplicates),
+// each file contributes to the count even though only one wins the lookup
+// map. Use HasDetail()/GetDetail() for by-name semantics.
 func (r *Registry) DetailCount() int {
+	return r.detailFiles
+}
+
+// DetailUniqueCount returns the count of distinct topic names with at least
+// one detail file. This is the lookup-map size — useful when you want
+// "topics covered" rather than "files on disk".
+func (r *Registry) DetailUniqueCount() int {
 	return len(r.details)
 }
 

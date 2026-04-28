@@ -1,6 +1,7 @@
 package registry
 
 import (
+	"io/fs"
 	"strings"
 	"testing"
 	"testing/fstest"
@@ -483,5 +484,72 @@ func TestOverlay(t *testing.T) {
 	}
 	if !strings.Contains(s.Description, "Custom version") {
 		t.Errorf("expected custom override, got: %q", s.Description)
+	}
+}
+
+func TestDetailCount_FileSystemAccurate(t *testing.T) {
+	// Two detail files share the same name across categories. The lookup
+	// map deduplicates by name (last-write-wins), but DetailCount() should
+	// reflect the file-system count (both files contributed) so that
+	// /api/health and `cs --count` match `find detail -name '*.md' | wc -l`.
+	sheetFS := fstest.MapFS{
+		"storage/lvm.md": &fstest.MapFile{Data: []byte("# LVM\n")},
+	}
+
+	// The detail walker trims a "detail/" prefix from paths. Provide the
+	// trimmed-form so the walker maps storage/topic.md → category=storage.
+	detailFS := fstest.MapFS{
+		"storage/topic.md":    &fstest.MapFile{Data: []byte("# topic (storage)\n")},
+		"networking/topic.md": &fstest.MapFile{Data: []byte("# topic (networking)\n")},
+		"databases/redis.md":  &fstest.MapFile{Data: []byte("# Redis\n")},
+	}
+
+	reg, err := NewWithDetails([]fs.FS{sheetFS}, []fs.FS{detailFS})
+	if err != nil {
+		t.Fatalf("NewWithDetails: %v", err)
+	}
+
+	// File-system count: 3 detail files exist on the synthetic FS.
+	if got := reg.DetailCount(); got != 3 {
+		t.Errorf("DetailCount() = %d, want 3 (file-system count, not deduped)", got)
+	}
+	// Unique-name count: only 2 distinct topic names because storage/topic
+	// and networking/topic collide.
+	if got := reg.DetailUniqueCount(); got != 2 {
+		t.Errorf("DetailUniqueCount() = %d, want 2 (deduped by name)", got)
+	}
+	// HasDetail still works by-name (one of the two same-named files won
+	// the map slot — both lookups should hit it).
+	if !reg.HasDetail("topic") {
+		t.Error("HasDetail(topic) should be true")
+	}
+	if !reg.HasDetail("redis") {
+		t.Error("HasDetail(redis) should be true")
+	}
+}
+
+func TestDetailCount_NoCollisions(t *testing.T) {
+	// Sanity: when there are no name collisions, DetailCount and
+	// DetailUniqueCount return the same value.
+	sheetFS := fstest.MapFS{
+		"storage/lvm.md": &fstest.MapFile{Data: []byte("# LVM\n")},
+	}
+	detailFS := fstest.MapFS{
+		"storage/lvm.md":         &fstest.MapFile{Data: []byte("# LVM\n")},
+		"networking/bgp.md":      &fstest.MapFile{Data: []byte("# BGP\n")},
+		"databases/postgresql.md": &fstest.MapFile{Data: []byte("# Postgres\n")},
+	}
+	reg, err := NewWithDetails([]fs.FS{sheetFS}, []fs.FS{detailFS})
+	if err != nil {
+		t.Fatalf("NewWithDetails: %v", err)
+	}
+	if reg.DetailCount() != 3 {
+		t.Errorf("DetailCount() = %d, want 3", reg.DetailCount())
+	}
+	if reg.DetailUniqueCount() != 3 {
+		t.Errorf("DetailUniqueCount() = %d, want 3", reg.DetailUniqueCount())
+	}
+	if reg.DetailCount() != reg.DetailUniqueCount() {
+		t.Error("with no collisions, DetailCount and DetailUniqueCount should match")
 	}
 }
