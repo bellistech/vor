@@ -33,14 +33,43 @@ done
 PATTERNS=(
   # Concrete env-var assignments with non-empty values for our known secret name
   '^[^#]*STACK_OVERFLOW_API_KEY[[:space:]]*=[[:space:]]*[^[:space:]"'\''<>]'
-  # PEM private keys
+  # PEM private keys (any flavor)
   'BEGIN[[:space:]]+(RSA[[:space:]]+|EC[[:space:]]+|DSA[[:space:]]+|OPENSSH[[:space:]]+|PRIVATE)[[:space:]]*KEY'
   # AWS access key id literal pattern (AKIA / ASIA followed by 16 uppercase/digits)
   '\b(AKIA|ASIA)[A-Z0-9]{16}\b'
-  # GitHub fine-grained / classic tokens
+  # GitHub fine-grained / classic tokens (ghp_ / ghs_ / gho_ / ghu_ / ghr_)
   '\bgh[pousr]_[A-Za-z0-9]{36,}\b'
-  # Slack tokens
+  # Slack tokens (xoxa, xoxb, xoxp, xoxr, xoxs)
   '\bxox[abprs]-[A-Za-z0-9-]{10,}\b'
+  # GitLab personal/project access tokens (glpat-XXXXXX, 20 chars)
+  '\bglpat-[A-Za-z0-9_-]{20,}\b'
+  # OpenAI API keys (sk-..., sk-proj-..., sk-svcacct-...)
+  '\bsk-(proj-|svcacct-)?[A-Za-z0-9_-]{20,}\b'
+  # Anthropic API keys (sk-ant-... format, 95+ chars typical)
+  '\bsk-ant-(api|admin)[0-9]+-[A-Za-z0-9_-]{40,}\b'
+  # Discord bot tokens (3 base64 segments separated by dots, 50+ chars total)
+  '\b[MN][A-Za-z0-9_-]{23,25}\.[A-Za-z0-9_-]{6}\.[A-Za-z0-9_-]{27,}\b'
+  # Discord webhooks
+  'discord(?:app)?\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
+  # Stripe live secret keys (sk_live_... and rk_live_..., 24+ chars)
+  '\b(sk|rk)_live_[A-Za-z0-9]{24,}\b'
+  # Stripe restricted keys
+  '\brk_(live|test)_[A-Za-z0-9]{24,}\b'
+  # Google Cloud service-account private-key markers (lowercased)
+  '"private_key"[[:space:]]*:[[:space:]]*"-----BEGIN'
+  # JWT tokens (3 base64url segments, .-separated, 100+ chars total —
+  # conservative to skip the literal "header.payload.signature" docs)
+  '\beyJ[A-Za-z0-9_-]{20,}\.eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\b'
+  # Generic bearer-token-shaped assignments (loose; only matches obvious leaks)
+  '(api[_-]?key|access[_-]?token|secret[_-]?key)[[:space:]]*[:=][[:space:]]*["'\''][A-Za-z0-9_+/=-]{32,}["'\'']'
+  # Twilio account SID + auth token pairs
+  '\bAC[0-9a-f]{32}\b'
+  # SendGrid API keys
+  'SG\.[A-Za-z0-9_-]{22}\.[A-Za-z0-9_-]{43,}'
+  # npm tokens (granular access tokens — lengths vary 36+)
+  '\bnpm_[A-Za-z0-9]{36,}'
+  # PyPI tokens
+  '\bpypi-[A-Za-z0-9_-]{50,}\b'
 )
 
 # Files/dirs to exclude.
