@@ -2,7 +2,7 @@
 
 > *Old Norse goddess of wisdom and oaths — "she who knows."*
 
-Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **813 cheatsheets** + **726 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
+Single-binary Go CLI cheat-sheet — invokable as **`vor`** or the legacy alias **`cs`**. **813 cheatsheets** + **737 deep-dive pages** across **63 categories** (including a **55-sheet `ramp-up/` ELI5 curriculum**). Built-in calculator, subnet calculator, fuzzy search, interactive TUI, REST API, shell completions. Every sheet self-contained — paste-ready commands with expected output, every concept defined in-sheet, every cross-reference resolved.
 
 Certification coverage: CCNP DC, CCNP Enterprise, CCIE EI/SP/Security/Automation, JNCIE-SP, JNCIE-SEC, CompTIA Linux+, CISSP, C|RAGE.
 
@@ -56,7 +56,7 @@ cs -d tls                 # handshake state machine, ECDHE math, cipher suites
 cs -d bgp --prereqs       # prerequisites for a detail page
 ```
 
-726 detail pages — formulas, worked examples, complexity analysis, engineering tradeoffs.
+737 detail pages — formulas, worked examples, complexity analysis, engineering tradeoffs.
 
 ### Knowledge graph
 
