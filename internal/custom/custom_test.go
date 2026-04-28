@@ -1,6 +1,7 @@
 package custom
 
 import (
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -115,6 +116,152 @@ func TestAdd_HappyPath(t *testing.T) {
 	}
 	if string(got) != body {
 		t.Errorf("dest content mismatch:\n got: %q\nwant: %q", got, body)
+	}
+}
+
+func TestAddTo_ExplicitCategory(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "bgp-tweaks.md")
+	body := "# BGP tweaks\n\nNotes.\n"
+	if err := os.WriteFile(src, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := AddTo(src, "networking"); err != nil {
+		t.Fatalf("AddTo: %v", err)
+	}
+	dest := filepath.Join(home, ".config", "cs", "sheets", "networking", "bgp-tweaks.md")
+	if _, err := os.Stat(dest); err != nil {
+		t.Errorf("expected file at %s, got %v", dest, err)
+	}
+}
+
+func TestAddTo_RejectsInvalidCategory(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "x.md")
+	if err := os.WriteFile(src, []byte("# x\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	// Categories with whitespace, slashes, dots, or non-ASCII are rejected
+	// outright. Mixed-case is silently down-cased (friendlier UX).
+	for _, bad := range []string{"net working", "Net/Foo", "../escape", "💀", "foo!"} {
+		if err := AddTo(src, bad); err == nil {
+			t.Errorf("AddTo(%q) should reject invalid category", bad)
+		}
+	}
+}
+
+func TestAddTo_DowncasesMixedCase(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "x.md")
+	if err := os.WriteFile(src, []byte("# x\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := AddTo(src, "Networking"); err != nil {
+		t.Fatalf("AddTo(Networking) should silently downcase, got: %v", err)
+	}
+	dest := filepath.Join(home, ".config", "cs", "sheets", "networking", "x.md")
+	if _, err := os.Stat(dest); err != nil {
+		t.Errorf("expected %s to exist (downcased), got %v", dest, err)
+	}
+}
+
+func TestAddTo_RefusesOverwrite(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "dup.md")
+	if err := os.WriteFile(src, []byte("# v1\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := Add(src); err != nil {
+		t.Fatal(err)
+	}
+
+	// Second add of same name should error
+	if err := os.WriteFile(src, []byte("# v2\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	err := Add(src)
+	if err == nil {
+		t.Fatal("expected error on overwrite, got nil")
+	}
+	if !strings.Contains(err.Error(), "refusing to overwrite") {
+		t.Errorf("error should mention refusal, got: %v", err)
+	}
+
+	// Confirm v1 is preserved
+	got, _ := os.ReadFile(filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "dup.md"))
+	if !strings.Contains(string(got), "v1") {
+		t.Errorf("original was overwritten; got: %s", got)
+	}
+}
+
+func TestAddTo_OverwriteWithFlag(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "ow.md")
+	if err := os.WriteFile(src, []byte("# v1\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := Add(src); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := os.WriteFile(src, []byte("# v2\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	prev := ConfirmOverwrite
+	ConfirmOverwrite = true
+	t.Cleanup(func() { ConfirmOverwrite = prev })
+
+	if err := Add(src); err != nil {
+		t.Fatalf("expected overwrite to succeed with flag; got %v", err)
+	}
+	got, _ := os.ReadFile(filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "ow.md"))
+	if !strings.Contains(string(got), "v2") {
+		t.Errorf("expected v2 after overwrite; got: %s", got)
+	}
+}
+
+func TestHasMarkdownH1(t *testing.T) {
+	cases := []struct {
+		body string
+		want bool
+	}{
+		{"# Heading\n\nbody", true},
+		{"\n\n# Heading\n", true},
+		{"## subheading only\n", false},
+		{"plain text only\n", false},
+		{"```\n# inside code fence\n```\nplain", false},
+		{"```bash\n# bash comment\n```\n# Real H1\n", true},
+		{"", false},
+	}
+	for _, c := range cases {
+		got := hasMarkdownH1([]byte(c.body))
+		if got != c.want {
+			t.Errorf("hasMarkdownH1(%q) = %v, want %v", c.body, got, c.want)
+		}
+	}
+}
+
+func TestAddTo_WarnsOnMissingH1(t *testing.T) {
+	home := withTempHome(t)
+	src := filepath.Join(home, "noh1.md")
+	if err := os.WriteFile(src, []byte("just text, no H1\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+
+	r, w, _ := os.Pipe()
+	origStderr := os.Stderr
+	os.Stderr = w
+	defer func() { os.Stderr = origStderr }()
+
+	err := Add(src)
+	w.Close()
+	if err != nil {
+		t.Fatalf("Add: %v", err)
+	}
+	out, _ := io.ReadAll(r)
+	if !strings.Contains(string(out), "does not start with an H1") {
+		t.Errorf("expected H1 warning on stderr, got: %q", out)
 	}
 }
 

@@ -151,7 +151,15 @@ Options:
 	}
 
 	if *add != "" {
-		if err := custom.Add(*add); err != nil {
+		// Optional category as the next positional arg:
+		//   vor --add ./my-sheet.md networking
+		// Without a category, the file lands in ~/.config/cs/sheets/uncategorized/
+		// and the user is nudged toward existing custom categories on success.
+		category := ""
+		if extras := flag.Args(); len(extras) > 0 {
+			category = extras[0]
+		}
+		if err := custom.AddTo(*add, category); err != nil {
 			die("%v", err)
 		}
 		return
