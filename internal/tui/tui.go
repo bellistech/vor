@@ -3,6 +3,7 @@ package tui
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -182,8 +183,17 @@ func New(reg *registry.Registry) Model {
 	}
 }
 
-// Run launches the TUI.
+// Run launches the TUI. Loads the user theme from ~/.config/cs/theme.json
+// before initialization so styles reflect the configured palette. Failures
+// to parse the theme file fall back to AmberThrone silently (errors are
+// non-fatal).
 func Run(reg *registry.Registry) error {
+	if t, err := LoadTheme(); err == nil {
+		ApplyTheme(t)
+	} else {
+		fmt.Fprintf(os.Stderr, "warning: %v (using default theme)\n", err)
+		ApplyTheme(AmberThrone)
+	}
 	p := tea.NewProgram(New(reg), tea.WithAltScreen())
 	_, err := p.Run()
 	return err
