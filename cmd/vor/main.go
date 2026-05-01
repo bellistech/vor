@@ -24,6 +24,7 @@ import (
 	"github.com/bellistech/vor/internal/registry"
 	"github.com/bellistech/vor/internal/render"
 	"github.com/bellistech/vor/internal/secrets"
+	"github.com/bellistech/vor/internal/sources"
 	"github.com/bellistech/vor/internal/stackoverflow"
 	"github.com/bellistech/vor/internal/subnet"
 	"github.com/bellistech/vor/internal/tui"
@@ -155,6 +156,15 @@ Options:
 
 	if customFS := custom.Load(); customFS != nil {
 		sheetSources = append(sheetSources, customFS)
+	}
+
+	// Additional sources discovered via ~/.config/cs/sources/ symlinks.
+	// Anything users have symlinked there gets ingested by the same
+	// .md-only registry walker — no config file, no glob library.
+	if extras, err := sources.Load(); err == nil {
+		sheetSources = append(sheetSources, extras...)
+	} else {
+		fmt.Fprintf(os.Stderr, "vor: sources.Load: %v\n", err)
 	}
 
 	detailSources := []fs.FS{}

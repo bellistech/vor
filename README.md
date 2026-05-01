@@ -194,6 +194,28 @@ cs --add ~/my-cheatsheet.md   # prompts for category
 cs --edit docker              # copies embedded → custom for editing
 ```
 
+## Additional sources
+
+Index any project's markdown alongside the embedded cheatsheets by symlinking it into `~/.config/cs/sources/`. No config file, no glob rules — anything you symlink gets walked, and the existing `.md`-only filter handles the rest.
+
+```bash
+mkdir -p ~/.config/cs/sources
+
+# Add a project — index all its markdown
+ln -s ~/work/some-project ~/.config/cs/sources/some-project
+
+# Add another
+ln -s ~/code/notes ~/.config/cs/sources/notes
+
+# Remove a source
+rm ~/.config/cs/sources/some-project
+
+# See what's hooked up
+ls -la ~/.config/cs/sources/
+```
+
+`cs` rebuilds its registry on every start, so changes (new symlinks, removed ones, edits to source markdown) are picked up at the next invocation. Dangling symlinks are silently skipped — you can safely `rm` a source's underlying directory and the next run still works.
+
 ## Sheet format
 
 ```markdown
