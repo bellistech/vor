@@ -40,14 +40,25 @@ func Dir() string {
 	return filepath.Join(home, ".config", "cs", "sources")
 }
 
-// Load enumerates ~/.config/cs/sources/ and returns one fs.FS per entry
-// that resolves to a directory. Entries that are files, dangling symlinks,
-// or otherwise inaccessible are silently skipped — additional sources
-// are opt-in and a malformed entry must not break startup.
+// Source records a single discovered user-symlinked source. The Label
+// is the symlink-name as it appeared under ~/.config/cs/sources/ (e.g.
+// "unheaded" for ~/.config/cs/sources/unheaded → /home/.../unheaded).
+// The Path is the resolved target directory.
+type Source struct {
+	FS    fs.FS
+	Path  string
+	Label string
+}
+
+// Load enumerates ~/.config/cs/sources/ and returns one Source per
+// entry that resolves to a directory. Entries that are files, dangling
+// symlinks, or otherwise inaccessible are silently skipped —
+// additional sources are opt-in and a malformed entry must not break
+// startup.
 //
 // Returns an empty slice (no error) when the discovery directory does
 // not exist; that's the normal case for users who haven't opted in.
-func Load() ([]fs.FS, error) {
+func Load() ([]Source, error) {
 	dir := Dir()
 	if dir == "" {
 		return nil, nil
@@ -60,7 +71,7 @@ func Load() ([]fs.FS, error) {
 		return nil, fmt.Errorf("read %s: %w", dir, err)
 	}
 
-	var out []fs.FS
+	var out []Source
 	for _, e := range entries {
 		full := filepath.Join(dir, e.Name())
 		// EvalSymlinks resolves symlinks AND verifies the target exists;
@@ -73,7 +84,11 @@ func Load() ([]fs.FS, error) {
 		if err != nil || !info.IsDir() {
 			continue
 		}
-		out = append(out, os.DirFS(resolved))
+		out = append(out, Source{
+			FS:    os.DirFS(resolved),
+			Path:  resolved,
+			Label: e.Name(),
+		})
 	}
 	return out, nil
 }
