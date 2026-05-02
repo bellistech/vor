@@ -97,7 +97,7 @@ func TestLoad_RegularDirectory(t *testing.T) {
 	if len(got) != 1 {
 		t.Fatalf("Load() = %d; want 1", len(got))
 	}
-	body, err := readMD(got[0], "hello.md")
+	body, err := readMD(got[0].FS, "hello.md")
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}
@@ -130,7 +130,7 @@ func TestLoad_SymlinkToDirectory(t *testing.T) {
 	if len(got) != 1 {
 		t.Fatalf("Load() = %d; want 1 (symlinked dir)", len(got))
 	}
-	body, err := readMD(got[0], "doc.md")
+	body, err := readMD(got[0].FS, "doc.md")
 	if err != nil {
 		t.Fatalf("read: %v", err)
 	}

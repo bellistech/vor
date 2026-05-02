@@ -4,6 +4,59 @@ import (
 	"strings"
 )
 
+// SourceKind labels how a sheet entered the registry. Consumers — agent
+// runtimes, tool-call gates — use this to compute trust on retrieval
+// results. Embedded canonical sheets are the most trusted; user-symlinked
+// external sources are the least.
+type SourceKind int
+
+const (
+	// SourceEmbedded — compiled into the cs binary via go:embed. Default
+	// for back-compat with callers that don't supply provenance.
+	SourceEmbedded SourceKind = iota
+
+	// SourceUserCustom — sheet authored by the user under
+	// ~/.config/cs/sheets/<category>/<topic>.md.
+	SourceUserCustom
+
+	// SourceUserSource — sheet from a directory the user symlinked into
+	// ~/.config/cs/sources/<name>/. The most-flexible, least-trusted
+	// retrieval path. See Phase A `internal/sources` and
+	// unheaded:eval/coding-gate/probe-2026-05-02/A1-source-poison.md
+	// for the threat model.
+	SourceUserSource
+)
+
+// String renders SourceKind in the public JSON form used by /api/* responses.
+func (k SourceKind) String() string {
+	switch k {
+	case SourceEmbedded:
+		return "embedded"
+	case SourceUserCustom:
+		return "user-custom"
+	case SourceUserSource:
+		return "user-source"
+	default:
+		return "unknown"
+	}
+}
+
+// Trust returns the consumer-facing trust label for the kind. Used by
+// agent runtimes that need to decide whether retrieval content is
+// authoritative or attacker-controllable.
+func (k SourceKind) Trust() string {
+	switch k {
+	case SourceEmbedded:
+		return "canonical"
+	case SourceUserCustom:
+		return "local"
+	case SourceUserSource:
+		return "external"
+	default:
+		return "unknown"
+	}
+}
+
 // Sheet represents a parsed cheatsheet.
 type Sheet struct {
 	Name          string
@@ -15,6 +68,13 @@ type Sheet struct {
 	SeeAlso       []string // parsed from ## See Also section
 	Prerequisites []string // parsed from ## Prerequisites section (detail pages)
 	Complexity    string   // parsed from ## Complexity section (detail pages)
+
+	// Source provenance — populated by the registry constructor based on
+	// the SourceSpec the sheet was loaded from. Embedded sheets default
+	// to SourceEmbedded with empty Path/Label.
+	SourceKind  SourceKind // how this sheet entered the registry
+	SourcePath  string     // resolved filesystem path for non-embedded sheets
+	SourceLabel string     // user-facing label (symlink name for SourceUserSource)
 
 	lower        string // lowercased "category name content" — search haystack
 	lowerNameCat string // lowercased "category name" — used for ranking signal

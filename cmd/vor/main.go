@@ -146,23 +146,41 @@ Options:
 		return
 	}
 
-	// Build registry from embedded + custom sheets + detail sheets
-	sheetSources := []fs.FS{}
+	// Build registry from embedded + custom sheets + detail sheets, with
+	// per-source provenance labels threaded through. Embedded vs custom
+	// vs user-symlinked-source must be distinguishable on the wire — see
+	// internal/registry SourceKind + the B1 design at
+	// unheaded:eval/coding-gate/probe-2026-05-02/B1-design-source-provenance.md.
+	sheetSources := []registry.SourceSpec{}
 	embedded, err := fs.Sub(vor.EmbeddedSheets, "sheets")
 	if err != nil {
 		die("embedded sheets: %v", err)
 	}
-	sheetSources = append(sheetSources, embedded)
+	sheetSources = append(sheetSources, registry.SourceSpec{
+		FS:   embedded,
+		Kind: registry.SourceEmbedded,
+	})
 
 	if customFS := custom.Load(); customFS != nil {
-		sheetSources = append(sheetSources, customFS)
+		sheetSources = append(sheetSources, registry.SourceSpec{
+			FS:   customFS,
+			Kind: registry.SourceUserCustom,
+			Path: custom.Dir(),
+		})
 	}
 
 	// Additional sources discovered via ~/.config/cs/sources/ symlinks.
 	// Anything users have symlinked there gets ingested by the same
 	// .md-only registry walker — no config file, no glob library.
 	if extras, err := sources.Load(); err == nil {
-		sheetSources = append(sheetSources, extras...)
+		for _, src := range extras {
+			sheetSources = append(sheetSources, registry.SourceSpec{
+				FS:    src.FS,
+				Kind:  registry.SourceUserSource,
+				Path:  src.Path,
+				Label: src.Label,
+			})
+		}
 	} else {
 		fmt.Fprintf(os.Stderr, "vor: sources.Load: %v\n", err)
 	}
@@ -174,7 +192,7 @@ Options:
 	}
 	detailSources = append(detailSources, detailFS)
 
-	reg, err := registry.NewWithDetails(sheetSources, detailSources)
+	reg, err := registry.NewWithSources(sheetSources, detailSources)
 	if err != nil {
 		die("load sheets: %v", err)
 	}
@@ -1111,15 +1129,29 @@ func doServe(reg *registry.Registry, bind, port string) {
 			}
 		}
 
-		jsonResp(w, map[string]any{
-			"name":        s.Name,
-			"category":    s.Category,
-			"title":       s.Title,
-			"description": s.Description,
-			"content":     s.Content,
-			"see_also":    s.SeeAlso,
-			"has_detail":  reg.HasDetail(s.Name),
-		})
+		// source_kind / source_path / source_label expose the B1 source-
+		// provenance fields so downstream consumers (zhen-rag, agent
+		// runtimes) can compute trust on the retrieval result without
+		// re-deriving from the URL. Embedded sheets default to
+		// source_kind="embedded" with empty path/label.
+		topicResp := map[string]any{
+			"name":         s.Name,
+			"category":     s.Category,
+			"title":        s.Title,
+			"description":  s.Description,
+			"content":      s.Content,
+			"see_also":     s.SeeAlso,
+			"has_detail":   reg.HasDetail(s.Name),
+			"source_kind":  s.SourceKind.String(),
+			"source_trust": s.SourceKind.Trust(),
+		}
+		if s.SourcePath != "" {
+			topicResp["source_path"] = s.SourcePath
+		}
+		if s.SourceLabel != "" {
+			topicResp["source_label"] = s.SourceLabel
+		}
+		jsonResp(w, topicResp)
 	}))
 
 	// GET /api/categories
@@ -1154,10 +1186,14 @@ func doServe(reg *registry.Registry, bind, port string) {
 		}
 		matches := reg.Search(q)
 		type matchResult struct {
-			Topic   string `json:"topic"`
-			Category string `json:"category"`
-			Section string `json:"section"`
-			Line    string `json:"line"`
+			Topic        string `json:"topic"`
+			Category     string `json:"category"`
+			Section      string `json:"section"`
+			Line         string `json:"line"`
+			SourceKind   string `json:"source_kind"`
+			SourceTrust  string `json:"source_trust"`
+			SourcePath   string `json:"source_path,omitempty"`
+			SourceLabel  string `json:"source_label,omitempty"`
 		}
 		var results []matchResult
 		seen := make(map[string]bool)
@@ -1168,10 +1204,14 @@ func doServe(reg *registry.Registry, bind, port string) {
 			}
 			seen[key] = true
 			results = append(results, matchResult{
-				Topic:    m.Sheet.Name,
-				Category: m.Sheet.Category,
-				Section:  m.Section,
-				Line:     m.Line,
+				Topic:       m.Sheet.Name,
+				Category:    m.Sheet.Category,
+				Section:     m.Section,
+				Line:        m.Line,
+				SourceKind:  m.Sheet.SourceKind.String(),
+				SourceTrust: m.Sheet.SourceKind.Trust(),
+				SourcePath:  m.Sheet.SourcePath,
+				SourceLabel: m.Sheet.SourceLabel,
 			})
 			if len(results) >= 50 {
 				break
