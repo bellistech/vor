@@ -1062,6 +1062,18 @@ func doServe(reg *registry.Registry, bind, port string) {
 		parts := strings.SplitN(path, "/", 2)
 		name := parts[0]
 
+		// Reject path-traversal and embedded separators before the
+		// fuzzy resolver runs — otherwise percent-encoded "..%2F" or
+		// "%2e%2e%2f" etc. flow into fuzzyFind and surface arbitrary
+		// topics by accident. See unheaded:eval/coding-gate/probe-
+		// 2026-05-02/A3-vor-fuzz.md F2.
+		if name == "" || name == "." || name == ".." ||
+			strings.Contains(name, "..") ||
+			strings.ContainsAny(name, "/\\\x00") {
+			http.Error(w, `{"error":"invalid topic name"}`, 400)
+			return
+		}
+
 		s := reg.Get(name)
 		if s == nil {
 			s = fuzzyFind(reg, name)
@@ -1126,6 +1138,16 @@ func doServe(reg *registry.Registry, bind, port string) {
 	// GET /api/search?q=<query>
 	mux.HandleFunc("/api/search", cors(func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
+		// Cap query length before any work — uncapped queries are a
+		// trivial DoS vector if vor is ever exposed beyond loopback.
+		// 4096 chars is generous (~3500 bytes of natural-language) and
+		// still tiny relative to BM25 cost. See unheaded:eval/coding-
+		// gate/probe-2026-05-02/A3-vor-fuzz.md F1.
+		const maxQueryLength = 4096
+		if len(q) > maxQueryLength {
+			http.Error(w, `{"error":"query too long"}`, 413)
+			return
+		}
 		if q == "" {
 			http.Error(w, `{"error":"missing q parameter"}`, 400)
 			return
