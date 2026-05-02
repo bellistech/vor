@@ -553,3 +553,103 @@ func TestDetailCount_NoCollisions(t *testing.T) {
 		t.Error("with no collisions, DetailCount and DetailUniqueCount should match")
 	}
 }
+
+// --- Source-kind tie-breaker tests ---
+
+// TestSourceKind_RankWeight verifies the trust-hierarchy ranking signal.
+func TestSourceKind_RankWeight(t *testing.T) {
+	cases := []struct {
+		k    SourceKind
+		want int
+	}{
+		{SourceEmbedded, 100},
+		{SourceUserCustom, 80},
+		{SourceUserSource, 50},
+	}
+	for _, c := range cases {
+		if got := c.k.RankWeight(); got != c.want {
+			t.Errorf("RankWeight(%v) = %d; want %d", c.k, got, c.want)
+		}
+	}
+	if SourceEmbedded.RankWeight() <= SourceUserCustom.RankWeight() {
+		t.Errorf("embedded should outrank user-custom")
+	}
+	if SourceUserCustom.RankWeight() <= SourceUserSource.RankWeight() {
+		t.Errorf("user-custom should outrank user-source")
+	}
+}
+
+// TestSearch_TieBreaker_PrefersEmbedded sets up two sheets with identical
+// content (so all relevance signals tie) but different SourceKinds, and
+// verifies search returns the embedded one first.
+func TestSearch_TieBreaker_PrefersEmbedded(t *testing.T) {
+	embeddedFS := fstest.MapFS{
+		"shared/foo.md": &fstest.MapFile{
+			Data: []byte("# Shared Foo\n\nThe quick brown widget jumps.\n"),
+		},
+	}
+	externalFS := fstest.MapFS{
+		"shared/foo.md": &fstest.MapFile{
+			Data: []byte("# Shared Foo\n\nThe quick brown widget jumps.\n"),
+		},
+	}
+	reg, err := NewWithSources([]SourceSpec{
+		// Order is reversed so external would win without the tie-breaker
+		// (later-source-overrides semantic).
+		{FS: externalFS, Kind: SourceUserSource, Path: "/tmp/external", Label: "external-foo"},
+		{FS: embeddedFS, Kind: SourceEmbedded},
+	}, nil)
+	if err != nil {
+		t.Fatalf("NewWithSources: %v", err)
+	}
+	matches := reg.Search("widget")
+	if len(matches) == 0 {
+		t.Fatalf("search returned no matches")
+	}
+	// Multiple sheets have the same name "foo" — the registry's lookup
+	// map keeps the LARGEST content, but Search returns ALL matching
+	// sheets. The first match should be the embedded one due to the
+	// tie-breaker.
+	first := matches[0].Sheet
+	if first.SourceKind != SourceEmbedded {
+		t.Errorf("first match SourceKind = %v; want SourceEmbedded", first.SourceKind)
+	}
+}
+
+// TestSearch_TieBreaker_DoesntDominate verifies the tie-breaker only
+// kicks in when other signals are equal — a higher-relevance external
+// hit should still rank above a lower-relevance embedded hit.
+func TestSearch_TieBreaker_DoesntDominate(t *testing.T) {
+	embeddedFS := fstest.MapFS{
+		// Embedded sheet does NOT contain "widget" in name/title, only in
+		// content — weak match.
+		"misc/general.md": &fstest.MapFile{
+			Data: []byte("# General Topics\n\nMisc info, including widget.\n"),
+		},
+	}
+	externalFS := fstest.MapFS{
+		// External sheet has "widget" in the topic NAME — strong match
+		// (whole-token name match outranks all other signals).
+		"projects/widget.md": &fstest.MapFile{
+			Data: []byte("# Widget\n\nDetailed widget info.\n"),
+		},
+	}
+	reg, err := NewWithSources([]SourceSpec{
+		{FS: embeddedFS, Kind: SourceEmbedded},
+		{FS: externalFS, Kind: SourceUserSource, Path: "/tmp/x", Label: "x"},
+	}, nil)
+	if err != nil {
+		t.Fatalf("NewWithSources: %v", err)
+	}
+	matches := reg.Search("widget")
+	if len(matches) == 0 {
+		t.Fatalf("no matches")
+	}
+	// External "widget" has whole-name match; embedded "general" does
+	// not. The whole-match signal (first comparator) dominates the
+	// SourceKind tie-breaker (last numeric comparator).
+	first := matches[0].Sheet
+	if first.SourceKind != SourceUserSource {
+		t.Errorf("first match SourceKind = %v; want SourceUserSource (whole-match should outweigh kind tie-breaker)", first.SourceKind)
+	}
+}

@@ -424,6 +424,15 @@ collect:
 		if len(hits[i].strict) != len(hits[j].strict) {
 			return len(hits[i].strict) > len(hits[j].strict)
 		}
+		// Source-kind tie-breaker: when all relevance signals are
+		// equal, prefer canonical (embedded) over user-custom over
+		// user-source. Stops a poisoned user-source topic from
+		// surfacing above an embedded canonical sheet at tied
+		// relevance. See unheaded:eval/coding-gate/probe-2026-05-02/
+		// B1-design-source-provenance.md "search ranking weights".
+		if wi, wj := hits[i].sheet.SourceKind.RankWeight(), hits[j].sheet.SourceKind.RankWeight(); wi != wj {
+			return wi > wj
+		}
 		return hits[i].sheet.Name < hits[j].sheet.Name
 	})
 
