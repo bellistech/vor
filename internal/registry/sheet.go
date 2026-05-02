@@ -57,6 +57,28 @@ func (k SourceKind) Trust() string {
 	}
 }
 
+// RankWeight returns the ranking-weight signal for a SourceKind. Used
+// by Search as a tie-breaker after all relevance signals (whole-match,
+// title-hits, name-tokens, content-length, strict-count) — when all
+// of those are equal between two hits, the kind with the higher
+// weight ranks first. Defaults reflect the trust hierarchy: embedded
+// canonical sheets > user-custom sheets > user-symlinked sources.
+//
+// Returning int (not float) so the comparator's existing integer
+// chain stays integer-valued — keeps sort stable across runs.
+func (k SourceKind) RankWeight() int {
+	switch k {
+	case SourceEmbedded:
+		return 100
+	case SourceUserCustom:
+		return 80
+	case SourceUserSource:
+		return 50
+	default:
+		return 0
+	}
+}
+
 // Sheet represents a parsed cheatsheet.
 type Sheet struct {
 	Name          string
