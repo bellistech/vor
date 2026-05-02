@@ -216,6 +216,30 @@ ls -la ~/.config/cs/sources/
 
 `cs` rebuilds its registry on every start, so changes (new symlinks, removed ones, edits to source markdown) are picked up at the next invocation. Dangling symlinks are silently skipped — you can safely `rm` a source's underlying directory and the next run still works.
 
+### Source trust (for agent runtimes)
+
+Each source has a trust label exposed in `/api/topics` and `/api/search` JSON responses (`source_kind` and `source_trust` fields):
+
+| Where | `source_kind` | `source_trust` |
+|---|---|---|
+| `go:embed` cheatsheets baked into the binary | `embedded` | `canonical` |
+| `~/.config/cs/sheets/` (your `cs --add` overlay) | `user-custom` | `local` |
+| `~/.config/cs/sources/<name>` (symlinked external) | `user-source` | `external` |
+
+External sources are treated as untrusted by default — agent runtimes that consume cs's API (e.g. `zhen-agent` in the unheaded project) refuse mutating tool calls grounded in external content unless the user confirms out-of-band.
+
+If you want a specific symlinked source treated as trusted (e.g., your own canonical repo, not a third-party content drop), list its name in `~/.config/cs/sources/.trusted`:
+
+```bash
+cat > ~/.config/cs/sources/.trusted <<EOF
+# repos I own and trust
+my-project
+my-notes
+EOF
+```
+
+Listed names load as `source_kind=user-custom`, `source_trust=local`. Same trust tier as `cs --add`-authored sheets. The `.trusted` file is plain text (one name per line, `#` for comments). Skipped during source enumeration so it doesn't accidentally appear as a topic source.
+
 ## Sheet format
 
 ```markdown
