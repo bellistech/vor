@@ -172,11 +172,23 @@ Options:
 	// Additional sources discovered via ~/.config/cs/sources/ symlinks.
 	// Anything users have symlinked there gets ingested by the same
 	// .md-only registry walker — no config file, no glob library.
+	//
+	// SourceKind selection: by default, user-symlinked sources tag as
+	// SourceUserSource (external trust — assumed potentially poisoned).
+	// Users can opt INTO local trust by adding the symlink name to
+	// ~/.config/cs/sources/.trusted (one name per line). Trusted
+	// sources tag as SourceUserCustom (local trust — same tier as
+	// ~/.config/cs/sheets/). Use this for your own repos that you
+	// control and want the agent to treat as authoritative.
 	if extras, err := sources.Load(); err == nil {
 		for _, src := range extras {
+			kind := registry.SourceUserSource
+			if src.Trusted {
+				kind = registry.SourceUserCustom
+			}
 			sheetSources = append(sheetSources, registry.SourceSpec{
 				FS:    src.FS,
-				Kind:  registry.SourceUserSource,
+				Kind:  kind,
 				Path:  src.Path,
 				Label: src.Label,
 			})
