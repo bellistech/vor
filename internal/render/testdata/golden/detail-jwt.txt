@@ -1,0 +1,346 @@
+# The Mathematics of JWT — Signature Schemes and Claims Verification Logic
+
+> *A JWT is a triple of Base64URL-encoded structures whose integrity rests on digital signature theory. Verification is a predicate logic conjunction over cryptographic validity and temporal claim bounds, while algorithm selection determines the trust model topology.*
+
+---
+
+## 1. Token Structure as Concatenated Encoding (Coding Theory)
+
+### Base64URL Encoding
+
+Each JWT segment uses Base64URL (RFC 4648 Section 5):
+
+
+  Base64URL: {0,1}^* → {A-Z, a-z, 0-9, -, _}^*
+
+
+Encoding expansion ratio:
+
+
+  r = |encoded|/|input| = 4/3 ≈ 1.333
+
+
+For a JWT with header h bytes, payload p bytes, and signature s bytes:
+
+
+  |JWT| = ⌈ 4h/3 ⌉ + 1 + ⌈ 4p/3 ⌉ + 1 + ⌈ 4s/3 ⌉
+
+
+### Typical JWT Sizes
+
+| Algorithm | Header | Payload (10 claims) | Signature | Total |
+|:---|:---:|:---:|:---:|:---:|
+| HS256 | 36 bytes | ~200 bytes | 43 bytes | ~370 chars |
+| RS256 | 50 bytes | ~200 bytes | 342 bytes | ~790 chars |
+| ES256 | 50 bytes | ~200 bytes | 86 bytes | ~450 chars |
+| EdDSA | 50 bytes | ~200 bytes | 86 bytes | ~450 chars |
+
+---
+
+## 2. HMAC Signature Scheme (Symmetric Cryptography)
+
+### HS256 Construction
+
+HMAC-SHA256 follows the construction from RFC 2104:
+
+
+  HMAC(K, m) = H((K ⊕ opad) ‖ H((K ⊕ ipad) ‖ m))
+
+
+Where:
+- K = secret key (padded to block size B = 64 bytes)
+- ipad = 0x36 repeated B times
+- opad = 0x5C repeated B times
+- H = SHA-256, m = `header.payload`
+
+### Security Properties
+
+**Unforgeability:** For an attacker making q verification queries:
+
+
+  Adv^{MAC}_{HMAC-SHA256}(t, q) ≤ q/2^{256} + ε_{PRF}(t)
+
+
+**Key length requirements:**
+
+
+  |K| ≥ 256  bits (to match hash output length)
+
+
+If |K| < 256 bits, brute force time:
+
+
+  T_{brute} = 2^{|K|}/R
+
+
+Where R is the verification rate. At R = 10^9/s and |K| = 128:
+
+
+  T = 2^{128}/10^9 ≈ 10^{29}  seconds
+
+
+---
+
+## 3. RSA Signature Scheme (Asymmetric Cryptography)
+
+### RS256 (RSASSA-PKCS1-v1_5)
+
+Signing with private key (n, d):
+
+
+  σ = m^d mod n
+
+
+Where m = EMSA-PKCS1-v1_5-ENCODE(H(header.payload), |n|)
+
+Verification with public key (n, e):
+
+
+  m' = σ^e mod n
+
+
+
+  valid \iff m' = EMSA-PKCS1-v1_5-ENCODE(H(header.payload), |n|)
+
+
+### RSA Key Size and Security
+
+| Key Size (bits) | Security Level (bits) | Status |
+|:---:|:---:|:---|
+| 1024 | ~80 | Broken (factorable) |
+| 2048 | ~112 | Minimum acceptable |
+| 3072 | ~128 | Recommended |
+| 4096 | ~140 | High security |
+
+Factoring difficulty (GNFS complexity):
+
+
+  T_{factor}(n) = exp((64/9)^{1/3} (ln n)^{1/3} (ln ln n)^{2/3})
+
+
+### Performance Comparison
+
+| Operation | RS256 (2048-bit) | ES256 (P-256) | EdDSA (Ed25519) |
+|:---|:---:|:---:|:---:|
+| Sign | ~1.5 ms | ~0.1 ms | ~0.05 ms |
+| Verify | ~0.05 ms | ~0.3 ms | ~0.1 ms |
+| Signature size | 256 bytes | 64 bytes | 64 bytes |
+| Key size (public) | 256 bytes | 64 bytes | 32 bytes |
+
+---
+
+## 4. ECDSA Signature Scheme (Elliptic Curve Cryptography)
+
+### ES256 on P-256
+
+The curve P-256 (secp256r1):
+
+
+  y^2 = x^3 - 3x + b (mod p)
+
+
+Where p = 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1.
+
+**Signing** with private key d:
+1. Choose random k ←R─ [1, n-1]
+2. Compute (x_1, y_1) = k · G
+3. r = x_1 mod n
+4. s = k^{-1}(H(m) + r · d) mod n
+5. Signature = (r, s)
+
+**Verification** with public key Q = d · G:
+1. w = s^{-1} mod n
+2. (x_1, y_1) = H(m) · w · G + r · w · Q
+3. Valid \iff r ≡ x_1 (mod n)
+
+### Nonce Criticality
+
+If nonce k is reused for two messages m_1, m_2:
+
+
+  s_1 = k^{-1}(H(m_1) + r · d) mod n
+
+
+  s_2 = k^{-1}(H(m_2) + r · d) mod n
+
+
+Then:
+
+
+  k = H(m_1) - H(m_2)/s_1 - s_2 mod n
+
+
+
+  d = s_1 · k - H(m_1)/r mod n
+
+
+The private key is recoverable from a single nonce reuse (as happened with Sony PlayStation 3 signing key).
+
+---
+
+## 5. Claims Verification as Predicate Logic (Formal Logic)
+
+### Verification Predicate
+
+JWT verification is a conjunction of predicates:
+
+
+  valid(T) = P_{sig}(T) ∧ P_{exp}(T) ∧ P_{nbf}(T) ∧ P_{iss}(T) ∧ P_{aud}(T) ∧ P_{alg}(T)
+
+
+Each predicate:
+
+
+  P_{sig}(T) \iff Verify(key, header.payload, signature)
+
+
+
+  P_{exp}(T) \iff t_{now} ≤ T.exp + ε_{skew}
+
+
+
+  P_{nbf}(T) \iff t_{now} ≥ T.nbf - ε_{skew}
+
+
+
+  P_{iss}(T) \iff T.iss ∈ I_{trusted}
+
+
+
+  P_{aud}(T) \iff T.aud ∩ A_{self} ≠ ∅
+
+
+
+  P_{alg}(T) \iff T.alg ∈ G_{allowed}
+
+
+### Clock Skew Tolerance
+
+With skew tolerance ε (typically 30-60 seconds):
+
+
+  valid window = [T.nbf - ε,   T.exp + ε]
+
+
+
+  window length = (T.exp - T.nbf) + 2ε
+
+
+For 15-minute tokens with 60s skew:
+
+
+  effective lifetime = 900 + 120 = 1020  seconds = 17  minutes
+
+
+---
+
+## 6. Algorithm Confusion Attack (Attack Theory)
+
+### The alg:none Attack
+
+Attacker modifies header:
+
+
+  header = {"alg": "none", "typ": "JWT"}
+
+
+If the verifier accepts `alg=none`:
+
+
+  P_{sig}(T) = true    ∀ T
+
+
+The verification degenerates to claim-only checking.
+
+### RSA/HMAC Confusion
+
+If server expects RS256 (asymmetric) but accepts HS256:
+
+1. Attacker obtains public key K_{pub} (often from JWKS)
+2. Creates token with `alg: HS256`
+3. Signs with HMAC(K_{pub}, header.payload)
+4. Server uses K_{pub} as HMAC secret (since alg says HS256)
+5. Verification succeeds
+
+Prevention: strict algorithm allowlisting per key:
+
+
+  key_to_alg: KeyID → {allowed algorithms}
+
+
+
+  P_{alg}(T) \iff T.alg ∈ key_to_alg(T.kid)
+
+
+---
+
+## 7. Revocation Without State (Distributed Systems)
+
+### The Stateless Revocation Problem
+
+JWTs are designed to be stateless, but revocation requires state. This is a fundamental tension:
+
+
+  stateless verification: O(1)  time,  O(0)  server state
+
+
+  revocation check: O(1)  time,  O(n)  server state
+
+
+### Probabilistic Revocation (Bloom Filters)
+
+A Bloom filter for revoked JTIs:
+
+
+  P(false positive) = (1 - e^{-kn/m})^k
+
+
+Where k = hash functions, n = revoked tokens, m = filter bits.
+
+For n = 10^4 revoked tokens, P_{fp} = 0.01:
+
+
+  m = -n ln P_{fp}/(ln 2)^2 ≈ 95,851  bits ≈ 12  KB
+
+
+
+  k = m/n ln 2 ≈ 7
+
+
+This allows O(1) revocation checks with 12 KB of state instead of storing all revoked JTIs.
+
+### Short-Lived Token Strategy
+
+Maximum damage window from a stolen token:
+
+
+  W = min(L, t_{detect})
+
+
+Where L = token lifetime and t_{detect} = time to detect theft.
+
+Expected loss: E[loss] = λ · W where λ = damage rate.
+
+Optimal lifetime minimizes E[total cost]:
+
+
+  L^* = √(C_{refresh}/λ)
+
+
+---
+
+## Prerequisites
+
+base64-encoding, hmac, rsa-cryptography, elliptic-curves, predicate-logic, bloom-filters
+
+## Complexity
+
+| Operation | Time | Space |
+|:---|:---|:---|
+| HS256 sign/verify | O(n) — n = payload size | O(1) — 32-byte digest |
+| RS256 sign | O(k^3) — k = key bits | O(k) — key storage |
+| RS256 verify | O(k^2) — exponent is small | O(k) |
+| ES256 sign | O(k^2) — scalar multiply | O(k) |
+| ES256 verify | O(k^2) — two point multiplies | O(k) |
+| Claims validation | O(c) — c = claim count | O(1) |
+| Bloom filter check | O(k) — k = hash functions | O(m) — m = filter bits |
