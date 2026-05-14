@@ -5,7 +5,7 @@ LDFLAGS := -s -w -X main.version=$(VERSION)
 INSTALL_DIR := /usr/local/bin
 GOMOBILE := $(HOME)/go/bin/gomobile
 
-.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint audit-see-also audit-see-also-strict audit-secrets audit-display audit-display-strict audit-display-sample fmt clean
+.PHONY: build install install-completions uninstall test test-cscore test-mobile fuzz-cscore mobile-ios mobile-clean lint audit-see-also audit-see-also-strict audit-secrets audit-presence audit-presence-strict audit-display audit-display-strict audit-display-sample fmt clean
 
 build:
 	go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY) ./cmd/$(BINARY)/
@@ -84,6 +84,7 @@ lint:
 	go vet ./...
 	@$(MAKE) -s audit-see-also
 	@$(MAKE) -s audit-secrets
+	@$(MAKE) -s audit-presence
 
 audit-see-also:
 	@scripts/audit-see-also.sh --allowlist=.ci/see-also-allowlist.txt
@@ -93,6 +94,12 @@ audit-see-also-strict:
 
 audit-secrets:
 	@scripts/audit-secrets.sh --quiet || (echo "✗ make audit-secrets failed — see output above" && exit 1)
+
+audit-presence:
+	@scripts/audit-presence.sh --categories=.ci/presence-categories.txt --allowlist=.ci/presence-allowlist.txt
+
+audit-presence-strict:
+	@scripts/audit-presence.sh --categories=.ci/presence-categories.txt
 
 audit-display: build
 	@scripts/audit-display.sh --bin ./$(BINARY) --allowlist=.ci/display-allowlist.txt

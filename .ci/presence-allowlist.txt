@@ -1,0 +1,29 @@
+# audit-presence.sh allowlist. One entry per line. Format: <check>|<path>
+#
+# Each entry is a pre-existing inconsistency grandfathered while the audit
+# is rolled out. Goal: drive the list toward empty over time by either
+# (a) creating the missing sheet, or (b) confirming the detail is
+# legitimately theory-only and intentionally has no peer sheet.
+#
+# Current state (seeded 2026-05-14, 17 entries):
+#  - 1 cs-theory page (theory-only by design; would need a category exemption)
+#  - 11 networking sheets that may have been renamed/relocated
+#  - 2 security, 1 auth, 1 system, 1 languages — needs case-by-case review
+
+orphan|detail/cs-theory/binary-numbering.md
+orphan|detail/security/sops.md
+orphan|detail/security/gopass.md
+orphan|detail/auth/oauth-oidc.md
+orphan|detail/networking/spanning-tree.md
+orphan|detail/networking/named-data-networking.md
+orphan|detail/networking/network-automation.md
+orphan|detail/networking/iot-protocols.md
+orphan|detail/networking/sdn.md
+orphan|detail/networking/anycast.md
+orphan|detail/networking/wifi.md
+orphan|detail/networking/queue-management.md
+orphan|detail/networking/spine-leaf.md
+orphan|detail/networking/osi-model.md
+orphan|detail/networking/http3-quic.md
+orphan|detail/languages/assembly.md
+orphan|detail/system/linux-kernel.md
