@@ -15,7 +15,7 @@ Establish the geometric foundations of lattices: what they are, how to measure t
 A **lattice** L ⊂ ℝ^n is a discrete additive subgroup. Given a basis B = {b_1, b_2, …, b_n} of linearly independent vectors in ℝ^n:
 
 
-  L(B) = \left{ Σ_{i=1}^{n} z_i b_i : z_i ∈ ℤ \right}
+  L(B) = { Σ_{i=1}^{n} z_i b_i : z_i ∈ ℤ }
 
 
 The **determinant** (or volume) of the lattice is det(L) = |det(B)|, which is invariant across all bases of L. Two bases B and B' generate the same lattice if and only if B' = UB for some unimodular matrix U ∈ ℤ^{n × n} with det(U) = ± 1.
@@ -215,7 +215,7 @@ Decryption succeeds with overwhelming probability.
 
 ### Why It Matters
 
-Regev proved that breaking Decision-LWE (and hence this scheme) is at least as hard as solving \widetilde{O}(n/α)-approximate versions of worst-case GapSVP and SIVP. This was the first public-key scheme with such a reduction and established LWE as the central hardness assumption in lattice cryptography.
+Regev proved that breaking Decision-LWE (and hence this scheme) is at least as hard as solving Õ(n/α)-approximate versions of worst-case GapSVP and SIVP. This was the first public-key scheme with such a reduction and established LWE as the central hardness assumption in lattice cryptography.
 
 ---
 
@@ -303,7 +303,7 @@ where a ←$─ R_q and e ← χ.
 **Number Theoretic Transform (NTT):** Since x^n + 1 splits completely modulo q when q ≡ 1 (mod 2n), multiplication in R_q can be performed in O(n log n) via NTT:
 
 1. Map a(x) ↦ â = (â_0, …, â_{n-1}) where â_j = a(ω^{2j+1}) for primitive 2n-th root of unity ω.
-2. Pointwise multiply: \widehat{a · b}_j = â_j · b̂_j.
+2. Pointwise multiply: a · b̂_j = â_j · b̂_j.
 3. Inverse NTT to recover the product.
 
 **Key size comparison:**
@@ -389,33 +389,33 @@ Construct a lattice-based digital signature scheme with small signatures, fast v
 
 ### The Formula
 
-**Ring:** R_q = ℤ_{8380417}[x]/(x^{256} + 1), dimensions (k, \ell) varying by security level.
+**Ring:** R_q = ℤ_{8380417}[x]/(x^{256} + 1), dimensions (k, ℓ) varying by security level.
 
 **Key Generation:**
-1. A ←$─ R_q^{k × \ell} (expanded from seed ρ)
-2. s_1 ← S_η^\ell, s_2 ← S_η^k (secret vectors with small coefficients)
+1. A ←$─ R_q^{k × ℓ} (expanded from seed ρ)
+2. s_1 ← S_η^ℓ, s_2 ← S_η^k (secret vectors with small coefficients)
 3. t = As_1 + s_2
 4. Split t = t_1 · 2^d + t_0 (power2round)
 5. pk = (ρ, t_1), sk = (ρ, K, tr, s_1, s_2, t_0)
 
 **Signing** (Fiat-Shamir with Aborts):
-1. y ← S_{γ_1 - 1}^\ell (masking vector)
+1. y ← S_{γ_1 - 1}^ℓ (masking vector)
 2. w = Ay
 3. w_1 = HighBits(w, 2γ_2)
-4. \tilde{c} = H(tr ‖ μ ‖ w_1) (challenge hash)
-5. c = SampleInBall(\tilde{c}) (sparse polynomial, weight τ)
+4. c̃ = H(tr ‖ μ ‖ w_1) (challenge hash)
+5. c = SampleInBall(c̃) (sparse polynomial, weight τ)
 6. z = y + cs_1
 7. **Check 1:** ‖z‖_∞ < γ_1 - β (reject if too large)
 8. **Check 2:** ‖LowBits(w - cs_2, 2γ_2)‖_∞ < γ_2 - β (reject if too large)
 9. If either check fails, restart from step 1 (abort and retry)
-10. Return σ = (\tilde{c}, z, h) where h encodes hint bits
+10. Return σ = (c̃, z, h) where h encodes hint bits
 
 **Verification:**
 1. w_1' = UseHint(h, Az - ct_1 · 2^d, 2γ_2)
-2. Check \tilde{c} = H(tr ‖ μ ‖ w_1')
+2. Check c̃ = H(tr ‖ μ ‖ w_1')
 3. Check ‖z‖_∞ < γ_1 - β
 
-The **rejection sampling** (abort) step is critical: without it, the distribution of z = y + cs_1 would depend on s_1, leaking the secret key over multiple signatures. With rejection, z is distributed as S_{γ_1 - 1}^\ell regardless of s_1.
+The **rejection sampling** (abort) step is critical: without it, the distribution of z = y + cs_1 would depend on s_1, leaking the secret key over multiple signatures. With rejection, z is distributed as S_{γ_1 - 1}^ℓ regardless of s_1.
 
 Expected number of iterations before acceptance: approximately 4-7 depending on parameter set.
 

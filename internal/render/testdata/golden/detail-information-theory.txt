@@ -320,10 +320,10 @@ Connect entropy to practical compression algorithms and their theoretical limits
 The LZ78/LZW family achieves the entropy rate for stationary ergodic sources asymptotically:
 
 
-  \lim_{n → ∞} L_{LZ}(X_1^n)/n = H_∞(X)    a.s.
+  lim_{n → ∞} L_{LZ}(X_1^n)/n = H_∞(X)    a.s.
 
 
-where H_∞(X) is the entropy rate \lim_{n → ∞} H(X_1, …, X_n)/n.
+where H_∞(X) is the entropy rate lim_{n → ∞} H(X_1, …, X_n)/n.
 
 ### Practical Compression Performance
 
@@ -368,7 +368,7 @@ I(X;Y) = H(X) + H(Y) - H(X,Y) = 1 + 1 - 1.811 = 0.189 bits
 
 ### Verification
 
-H(Y|X) = H(3/8, 1/8 \mid X=0) · P(X=0) + H(1/8, 3/8 \mid X=1) · P(X=1)
+H(Y|X) = H(3/8, 1/8 | X=0) · P(X=0) + H(1/8, 3/8 | X=1) · P(X=1)
 = 2 · 1/2 · h(3/4) = h(3/4) = 0.811 bits. Consistent.
 
 ---

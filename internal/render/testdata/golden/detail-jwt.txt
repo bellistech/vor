@@ -100,7 +100,7 @@ Verification with public key (n, e):
 
 
 
-  valid \iff m' = EMSA-PKCS1-v1_5-ENCODE(H(header.payload), |n|)
+  valid ⟺ m' = EMSA-PKCS1-v1_5-ENCODE(H(header.payload), |n|)
 
 
 ### RSA Key Size and Security
@@ -151,7 +151,7 @@ Where p = 2^{256} - 2^{224} + 2^{192} + 2^{96} - 1.
 **Verification** with public key Q = d · G:
 1. w = s^{-1} mod n
 2. (x_1, y_1) = H(m) · w · G + r · w · Q
-3. Valid \iff r ≡ x_1 (mod n)
+3. Valid ⟺ r ≡ x_1 (mod n)
 
 ### Nonce Criticality
 
@@ -191,27 +191,27 @@ JWT verification is a conjunction of predicates:
 Each predicate:
 
 
-  P_{sig}(T) \iff Verify(key, header.payload, signature)
+  P_{sig}(T) ⟺ Verify(key, header.payload, signature)
 
 
 
-  P_{exp}(T) \iff t_{now} ≤ T.exp + ε_{skew}
+  P_{exp}(T) ⟺ t_{now} ≤ T.exp + ε_{skew}
 
 
 
-  P_{nbf}(T) \iff t_{now} ≥ T.nbf - ε_{skew}
+  P_{nbf}(T) ⟺ t_{now} ≥ T.nbf - ε_{skew}
 
 
 
-  P_{iss}(T) \iff T.iss ∈ I_{trusted}
+  P_{iss}(T) ⟺ T.iss ∈ I_{trusted}
 
 
 
-  P_{aud}(T) \iff T.aud ∩ A_{self} ≠ ∅
+  P_{aud}(T) ⟺ T.aud ∩ A_{self} ≠ ∅
 
 
 
-  P_{alg}(T) \iff T.alg ∈ G_{allowed}
+  P_{alg}(T) ⟺ T.alg ∈ G_{allowed}
 
 
 ### Clock Skew Tolerance
@@ -269,7 +269,7 @@ Prevention: strict algorithm allowlisting per key:
 
 
 
-  P_{alg}(T) \iff T.alg ∈ key_to_alg(T.kid)
+  P_{alg}(T) ⟺ T.alg ∈ key_to_alg(T.kid)
 
 
 ---

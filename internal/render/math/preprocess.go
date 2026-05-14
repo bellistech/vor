@@ -92,15 +92,18 @@ var (
 	mathcalRE = regexp.MustCompile(`\\mathcal\{([^{}]*)\}`)
 	mathrmRE  = regexp.MustCompile(`\\mathrm\{([^{}]*)\}`)
 	mathitRE  = regexp.MustCompile(`\\mathit\{([^{}]*)\}`)
-	hatRE     = regexp.MustCompile(`\\hat\{([^{}]*)\}`)
-	overRE    = regexp.MustCompile(`\\overline\{([^{}]*)\}`)
-	pmodRE    = regexp.MustCompile(`\s*\\pmod\{([^{}]*)\}`)
-	xrightRE  = regexp.MustCompile(`\\xrightarrow\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
-	xleftRE   = regexp.MustCompile(`\\xleftarrow\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
-	fracRE    = regexp.MustCompile(`\\frac\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
-	sqrtRE    = regexp.MustCompile(`\\sqrt\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
-	leftRE    = regexp.MustCompile(`\\left([(\[{|.])`)
-	rightRE   = regexp.MustCompile(`\\right([)\]}|.])`)
+	hatRE        = regexp.MustCompile(`\\hat\{([^{}]*)\}`)
+	tildeRE      = regexp.MustCompile(`\\tilde\{([^{}]*)\}`)
+	widehatRE    = regexp.MustCompile(`\\widehat\{([^{}]*)\}`)
+	widetildeRE  = regexp.MustCompile(`\\widetilde\{([^{}]*)\}`)
+	overRE       = regexp.MustCompile(`\\overline\{([^{}]*)\}`)
+	pmodRE       = regexp.MustCompile(`\s*\\pmod\{([^{}]*)\}`)
+	xrightRE     = regexp.MustCompile(`\\xrightarrow\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	xleftRE      = regexp.MustCompile(`\\xleftarrow\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	fracRE       = regexp.MustCompile(`\\frac\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	sqrtRE       = regexp.MustCompile(`\\sqrt\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	leftRE       = regexp.MustCompile(`\\left\\?([(\[{|.])`)
+	rightRE      = regexp.MustCompile(`\\right\\?([)\]}|.])`)
 
 	// Single-pass replacement for simple `\cmd` commands. The regex matches
 	// either a letter-only command (\bmod, \cdots) or a one-char command
@@ -162,6 +165,20 @@ var latexCmd = map[string]string{
 	// Logic
 	"therefore": "∴", "because": "∵",
 	"models": "⊨", "vdash": "⊢",
+	"iff": "⟺", "implies": "⟹", "impliedby": "⟸",
+	"mid": "|", "nmid": "∤", "parallel": "∥", "perp": "⊥",
+	"divides": "∣", "ndivides": "∤",
+	// Sizing modifiers — stripped; the delimiter they precede stays
+	"big": "", "Big": "", "bigg": "", "Bigg": "",
+	"bigl": "", "Bigl": "", "biggl": "", "Biggl": "",
+	"bigr": "", "Bigr": "", "biggr": "", "Biggr": "",
+	"bigm": "", "Bigm": "", "biggm": "", "Biggm": "",
+	// Misc letters / symbols
+	"ell": "ℓ", "hbar": "ℏ", "imath": "ı", "jmath": "ȷ",
+	"aleph": "ℵ", "beth": "ℶ", "gimel": "ℷ", "daleth": "ℸ",
+	"angle": "∠", "triangle": "△", "square": "□",
+	"prime": "′",
+	"lim": "lim", "liminf": "lim inf", "limsup": "lim sup",
 	// Spacing
 	"quad": "  ", "qquad": "    ",
 	",": " ", ";": " ", ":": " ", "!": "",
@@ -267,6 +284,9 @@ func substitute(s string) string {
 	s = mathrmRE.ReplaceAllString(s, "$1")
 	s = mathitRE.ReplaceAllString(s, "$1")
 	s = hatRE.ReplaceAllString(s, "$1̂")
+	s = tildeRE.ReplaceAllString(s, "$1̃")
+	s = widehatRE.ReplaceAllString(s, "$1̂")
+	s = widetildeRE.ReplaceAllString(s, "$1̃")
 	s = overRE.ReplaceAllString(s, "$1̄")
 	s = pmodRE.ReplaceAllString(s, " (mod $1)")
 	s = xrightRE.ReplaceAllString(s, "─$1→")
