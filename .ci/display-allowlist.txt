@@ -1,0 +1,23 @@
+# audit-display.sh allowlist. One entry per line. Format: kind|name
+#
+# Use sparingly. Each entry here is a confirmed false-positive or a known
+# limitation of the V1 LaTeX preprocessor (single-line $$...$$ only).
+#
+# Confirmed multi-line \begin{cases}…\end{cases} blocks — fix when the
+# preprocessor gains multi-line support (Tier 1.5 #22 V2):
+#   detail|ansible
+#   detail|avro
+#   detail|dagger
+#   detail|github-actions
+#   detail|gitlab-ci
+#   detail|jenkins
+#   detail|aws-cli
+#   detail|gcloud
+#   detail|iam
+#
+# Source-level typos (single $ instead of $$, swapped delimiters) — fix by
+# editing source then remove the allowlist entry:
+#   detail|aws-cli   (line 234: `$C_{total}...$$`)
+#   detail|bash      (line 109: `$Always...$$`)
+#
+# (Allowlist intentionally empty until source review confirms each entry.)
