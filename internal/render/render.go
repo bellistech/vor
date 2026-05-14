@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strings"
 
+	"github.com/bellistech/vor/internal/render/math"
 	"github.com/charmbracelet/glamour"
 	"golang.org/x/term"
 )
@@ -36,6 +37,8 @@ func TermHeight() int {
 
 // Render renders markdown for terminal output.
 func Render(content string) (string, error) {
+	content = math.Preprocess(content)
+
 	if !IsTTY() || os.Getenv("NO_COLOR") != "" {
 		return content, nil
 	}

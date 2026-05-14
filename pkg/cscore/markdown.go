@@ -4,6 +4,7 @@ import (
 	"bytes"
 
 	chromaHTML "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/bellistech/vor/internal/render/math"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
@@ -15,6 +16,7 @@ func RenderMarkdownToHTML(md string) string {
 	if err := validateMarkdown(md); err != nil {
 		return errorJSON(err)
 	}
+	md = math.Preprocess(md)
 
 	gm := goldmark.New(
 		goldmark.WithExtensions(
