@@ -158,7 +158,7 @@ Options:
 		sheetSources = append(sheetSources, customFS)
 	}
 
-	// Additional sources discovered via ~/.config/cs/sources/ symlinks.
+	// Additional sources discovered via ~/.config/vor/sources/ symlinks.
 	// Anything users have symlinked there gets ingested by the same
 	// .md-only registry walker — no config file, no glob library.
 	if extras, err := sources.Load(); err == nil {
@@ -182,7 +182,7 @@ Options:
 	if *add != "" {
 		// Optional category as the next positional arg:
 		//   vor --add ./my-sheet.md networking
-		// Without a category, the file lands in ~/.config/cs/sheets/uncategorized/
+		// Without a category, the file lands in ~/.config/vor/sheets/uncategorized/
 		// and the user is nudged toward existing custom categories on success.
 		// --force allows overwriting an existing custom sheet at the destination.
 		category := ""
@@ -1279,7 +1279,7 @@ func doServe(reg *registry.Registry, bind, port string) {
 	}))
 
 	// GET /api/stackoverflow?q=<query> — bonus opt-in. Server-side reads
-	// STACK_OVERFLOW_API_KEY from env or ~/.config/cs/secrets.env. If no
+	// STACK_OVERFLOW_API_KEY from env or ~/.config/vor/secrets.env. If no
 	// key is configured, returns 503 Service Unavailable so callers can
 	// surface a friendly setup nudge without conflating with auth failure.
 	mux.HandleFunc("/api/stackoverflow", cors(func(w http.ResponseWriter, r *http.Request) {
@@ -1817,7 +1817,7 @@ func die(format string, args ...any) {
 // doStackOverflow runs the optional, opt-in Stack Overflow live search. The
 // offline encyclopedia (the heart of vör) does not invoke this path. It is
 // gated on STACK_OVERFLOW_API_KEY being configured (env or
-// ~/.config/cs/secrets.env). Without a key, prints friendly onboarding text
+// ~/.config/vor/secrets.env). Without a key, prints friendly onboarding text
 // and exits with status 1.
 func doStackOverflow(query string) {
 	q := strings.TrimSpace(query)
@@ -1888,10 +1888,10 @@ To enable:
   3. Copy the 'Key' value from the resulting page.
   4. Save it locally (outside any git repo):
 
-       mkdir -p ~/.config/cs
-       touch ~/.config/cs/secrets.env
-       chmod 600 ~/.config/cs/secrets.env
-       $EDITOR ~/.config/cs/secrets.env
+       mkdir -p ~/.config/vor
+       touch ~/.config/vor/secrets.env
+       chmod 600 ~/.config/vor/secrets.env
+       $EDITOR ~/.config/vor/secrets.env
        # Add: STACK_OVERFLOW_API_KEY=<the-key-you-copied>
 
      OR, for a one-shot test, export it for the current shell only:
@@ -1904,12 +1904,12 @@ To enable:
        vor -so "lvm cannot extend volume"
 
 Quota: 10,000 requests/day with a key (300 anonymous). Each query costs 1.
-Cache: 24h on disk at ~/.cache/cs/stackoverflow/ — repeat queries are free.
+Cache: 24h on disk at ~/.cache/vor/stackoverflow/ — repeat queries are free.
 Privacy: the key never appears in error output, the cache file, or logs
          (verified by tests in internal/stackoverflow). It only travels in
          the outbound HTTPS query string to api.stackexchange.com.
 Rotate:  delete or edit the app at https://stackapps.com/apps any time.
-Clear cache: rm -rf ~/.cache/cs/stackoverflow/
+Clear cache: rm -rf ~/.cache/vor/stackoverflow/
 
 This whole feature is invisible without a configured key. Default vor stays
 fully offline.
@@ -1979,7 +1979,7 @@ func openAPIDoc(version string) map[string]any {
 			"/api/stats":                 path("GET", "Per-category statistics", nil, "Stats object"),
 			"/api/bookmarks":             path("GET", "List bookmarks", nil, "Array of bookmarked topic names"),
 			"/api/bookmarks/{name}":      path("POST", "Toggle bookmark on/off", []map[string]any{pathParam("name", "topic slug")}, "Updated bookmark state"),
-			"/api/stackoverflow":         path("GET", "Bonus opt-in: live Stack Overflow lookup. Requires STACK_OVERFLOW_API_KEY (env or ~/.config/cs/secrets.env). 503 if unconfigured.", []map[string]any{queryParam("q", "search query")}, "Stack Exchange Result"),
+			"/api/stackoverflow":         path("GET", "Bonus opt-in: live Stack Overflow lookup. Requires STACK_OVERFLOW_API_KEY (env or ~/.config/vor/secrets.env). 503 if unconfigured.", []map[string]any{queryParam("q", "search query")}, "Stack Exchange Result"),
 		},
 	}
 }

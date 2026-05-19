@@ -33,7 +33,7 @@ type Model struct {
 	filter    textinput.Model
 	filtering bool
 
-	// filter history (persisted to ~/.cache/cs/tui-history)
+	// filter history (persisted to ~/.cache/vor/tui-history)
 	// up/down arrows recall when the filter input is focused.
 	history    []string
 	historyIdx int // -1 = at the live (un-recalled) input
@@ -183,7 +183,7 @@ func New(reg *registry.Registry) Model {
 	}
 }
 
-// Run launches the TUI. Loads the user theme from ~/.config/cs/theme.json
+// Run launches the TUI. Loads the user theme from ~/.config/vor/theme.json
 // before initialization so styles reflect the configured palette. Failures
 // to parse the theme file fall back to AmberThrone silently (errors are
 // non-fatal).

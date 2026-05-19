@@ -1,11 +1,11 @@
 // Package sources discovers additional cheatsheet/markdown sources by
-// walking ~/.config/cs/sources/. Anything in that directory that resolves
+// walking ~/.config/vor/sources/. Anything in that directory that resolves
 // (directly or via symlink) to a directory becomes one os.DirFS the
 // registry can ingest.
 //
 // Convention: users symlink any project they want indexed, e.g.
 //
-//     ln -s /home/govan/tmp/unheaded ~/.config/cs/sources/unheaded
+//     ln -s /home/govan/tmp/unheaded ~/.config/vor/sources/unheaded
 //
 // The existing registry walker filters for `.md` files, so non-markdown
 // content under symlinked targets is implicitly ignored.
@@ -37,10 +37,10 @@ func Dir() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".config", "cs", "sources")
+	return filepath.Join(home, ".config", "vor", "sources")
 }
 
-// Load enumerates ~/.config/cs/sources/ and returns one fs.FS per entry
+// Load enumerates ~/.config/vor/sources/ and returns one fs.FS per entry
 // that resolves to a directory. Entries that are files, dangling symlinks,
 // or otherwise inaccessible are silently skipped — additional sources
 // are opt-in and a malformed entry must not break startup.

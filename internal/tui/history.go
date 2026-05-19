@@ -17,7 +17,7 @@ func historyFile() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".cache", "cs", "tui-history")
+	return filepath.Join(home, ".cache", "vor", "tui-history")
 }
 
 // historyFileOverride lets tests redirect the path. Empty = use default.

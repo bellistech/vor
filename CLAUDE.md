@@ -34,12 +34,12 @@ make fmt            # gofmt -s -w .
 - `sheets.go` — root-level `go:embed sheets/*/*.md` + `go:embed detail/*/*.md`
 - `internal/registry/` — Sheet struct (with SeeAlso, Prerequisites, Complexity fields), parsing, search, filtering, fuzzy match, Related(), SeeAlsoCoverage()
 - `internal/render/` — glamour terminal rendering, TTY detection, pager, PlainOutput for piping
-- `internal/custom/` — user overlay sheets from `~/.config/cs/sheets/`
+- `internal/custom/` — user overlay sheets from `~/.config/vor/sheets/`
 - `internal/calc/` — expression calculator (arithmetic, hex/oct/bin, bitwise ops, unit-aware: KB/MB/GB/Gbps/ms)
 - `internal/subnet/` — CIDR subnet calculator (IPv4 + IPv6)
-- `internal/bookmarks/` — bookmark management (`~/.config/cs/bookmarks.json`)
+- `internal/bookmarks/` — bookmark management (`~/.config/vor/bookmarks.json`)
 - `internal/verify/` — math verification for detail pages (parses expressions, evaluates via calc)
-- `internal/secrets/` — opt-in credential loader (env-or-file at `~/.config/cs/secrets.env`, mode-0600 warn, redaction helper) for bonus features only; default offline path never touches it
+- `internal/secrets/` — opt-in credential loader (env-or-file at `~/.config/vor/secrets.env`, mode-0600 warn, redaction helper) for bonus features only; default offline path never touches it
 - `internal/stackoverflow/` — optional Stack Exchange API client + 24h disk cache for the `-so` / `--stack-overflow` bonus flag; gated on `STACK_OVERFLOW_API_KEY`; default `vor` invocation never invokes this package
 - `internal/tui/` — interactive TUI (bubbletea + bubbles, category browser, fuzzy filter, content viewer)
 - `cmd/cs/main.go` — CLI entry point, stdlib `flag`, REST API server

@@ -106,8 +106,8 @@ cs -i                         # full-screen interactive browser
 
 Keys: `j`/`k` navigate, `enter` open, `/` filter, `d` detail page, `esc` back, `q` quit, `?` full help overlay.
 
-Inside `/` filter: `↑`/`↓` recall persisted history (`~/.cache/cs/tui-history`, max 50 entries).
-Theme palette is configurable via `~/.config/cs/theme.json` (8 hex colors, all optional).
+Inside `/` filter: `↑`/`↓` recall persisted history (`~/.cache/vor/tui-history`, max 50 entries).
+Theme palette is configurable via `~/.config/vor/theme.json` (8 hex colors, all optional).
 See `cs interactive-tui-config` for the full setup walkthrough.
 
 ### REST API
@@ -157,7 +157,7 @@ vor stack-overflow-cli        # the dedicated setup sheet (offline)
 vor -so "lvm cannot extend"   # live search (only after a key is configured)
 ```
 
-Without `STACK_OVERFLOW_API_KEY` set (env or `~/.config/cs/secrets.env`, mode 0600), the flag prints onboarding text and exits 1. With a key, results are rendered through the same glamour pipeline as every other `vor` command and cached on disk for 24h. The key never appears in error output, log lines, or the cache file — verified by `make audit-secrets`. See `vor stack-overflow-cli` for the full walkthrough including key generation.
+Without `STACK_OVERFLOW_API_KEY` set (env or `~/.config/vor/secrets.env`, mode 0600), the flag prints onboarding text and exits 1. With a key, results are rendered through the same glamour pipeline as every other `vor` command and cached on disk for 24h. The key never appears in error output, log lines, or the cache file — verified by `make audit-secrets`. See `vor stack-overflow-cli` for the full walkthrough including key generation.
 
 ### iOS bindings (gomobile)
 
@@ -187,7 +187,7 @@ Every sheet includes `## See Also` cross-references and `## References` with off
 
 ## Custom sheets
 
-Custom sheets live in `~/.config/cs/sheets/<category>/<topic>.md` and override embedded ones.
+Custom sheets live in `~/.config/vor/sheets/<category>/<topic>.md` and override embedded ones.
 
 ```bash
 cs --add ~/my-cheatsheet.md   # prompts for category
@@ -196,22 +196,22 @@ cs --edit docker              # copies embedded → custom for editing
 
 ## Additional sources
 
-Index any project's markdown alongside the embedded cheatsheets by symlinking it into `~/.config/cs/sources/`. No config file, no glob rules — anything you symlink gets walked, and the existing `.md`-only filter handles the rest.
+Index any project's markdown alongside the embedded cheatsheets by symlinking it into `~/.config/vor/sources/`. No config file, no glob rules — anything you symlink gets walked, and the existing `.md`-only filter handles the rest.
 
 ```bash
-mkdir -p ~/.config/cs/sources
+mkdir -p ~/.config/vor/sources
 
 # Add a project — index all its markdown
-ln -s ~/work/some-project ~/.config/cs/sources/some-project
+ln -s ~/work/some-project ~/.config/vor/sources/some-project
 
 # Add another
-ln -s ~/code/notes ~/.config/cs/sources/notes
+ln -s ~/code/notes ~/.config/vor/sources/notes
 
 # Remove a source
-rm ~/.config/cs/sources/some-project
+rm ~/.config/vor/sources/some-project
 
 # See what's hooked up
-ls -la ~/.config/cs/sources/
+ls -la ~/.config/vor/sources/
 ```
 
 `cs` rebuilds its registry on every start, so changes (new symlinks, removed ones, edits to source markdown) are picked up at the next invocation. Dangling symlinks are silently skipped — you can safely `rm` a source's underlying directory and the next run still works.

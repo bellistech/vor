@@ -14,7 +14,7 @@ func init() {
 	if err != nil {
 		return
 	}
-	bookmarkFile = filepath.Join(home, ".config", "cs", "bookmarks.json")
+	bookmarkFile = filepath.Join(home, ".config", "vor", "bookmarks.json")
 }
 
 // SetBookmarkFile overrides the default bookmark file path.

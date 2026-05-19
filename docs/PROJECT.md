@@ -49,8 +49,8 @@ cs (root module)
 │   ├── tui/                     # Interactive TUI (bubbletea + bubbles + lipgloss)
 │   ├── calc/                    # Expression calculator (arithmetic, hex/oct/bin, units)
 │   ├── subnet/                  # CIDR subnet calculator (IPv4 + IPv6)
-│   ├── custom/                  # User overlay sheets from ~/.config/cs/sheets/
-│   ├── bookmarks/               # Bookmark management (~/.config/cs/bookmarks.json)
+│   ├── custom/                  # User overlay sheets from ~/.config/vor/sheets/
+│   ├── bookmarks/               # Bookmark management (~/.config/vor/bookmarks.json)
 │   └── verify/                  # Math verification for detail pages
 ├── sheets/                      # 685 embedded cheatsheets
 │   ├── networking/ (135)

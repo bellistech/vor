@@ -40,7 +40,7 @@ func TestDir_Default(t *testing.T) {
 		// HOME unavailable — accept empty per documented behavior.
 		return
 	}
-	want := ".config" + string(filepath.Separator) + "cs" + string(filepath.Separator) + "sources"
+	want := ".config" + string(filepath.Separator) + "vor" + string(filepath.Separator) + "sources"
 	if !strings.HasSuffix(got, want) {
 		t.Errorf("Dir() = %q; want suffix %q", got, want)
 	}

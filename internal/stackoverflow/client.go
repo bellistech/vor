@@ -1,6 +1,6 @@
 // Package stackoverflow is the optional bonus client for Stack Exchange's
 // public Search API. It is only invoked when a user has explicitly configured
-// a STACK_OVERFLOW_API_KEY (env or ~/.config/cs/secrets.env). The default
+// a STACK_OVERFLOW_API_KEY (env or ~/.config/vor/secrets.env). The default
 // vör experience — the offline encyclopedia — does not touch this package.
 //
 // Design:

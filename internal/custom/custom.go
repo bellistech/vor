@@ -16,7 +16,7 @@ func Dir() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".config", "cs", "sheets")
+	return filepath.Join(home, ".config", "vor", "sheets")
 }
 
 // Load returns an os.DirFS for custom sheets, or nil if the dir doesn't exist.

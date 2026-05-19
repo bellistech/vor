@@ -26,7 +26,7 @@ func withTempHome(t *testing.T) string {
 func TestDir(t *testing.T) {
 	home := withTempHome(t)
 	got := Dir()
-	want := filepath.Join(home, ".config", "cs", "sheets")
+	want := filepath.Join(home, ".config", "vor", "sheets")
 	if got != want {
 		t.Errorf("Dir() = %q, want %q", got, want)
 	}
@@ -45,8 +45,8 @@ func TestDir_NoHome(t *testing.T) {
 	// On platforms where the implementation has a fallback this may still
 	// resolve. We accept either an empty string (the documented "cannot
 	// determine home" branch) OR a non-empty fallback.
-	if got != "" && !strings.Contains(got, ".config/cs/sheets") {
-		t.Errorf("Dir() = %q, expected empty or .config/cs/sheets path", got)
+	if got != "" && !strings.Contains(got, ".config/vor/sheets") {
+		t.Errorf("Dir() = %q, expected empty or .config/vor/sheets path", got)
 	}
 }
 
@@ -59,7 +59,7 @@ func TestLoad_NoDir(t *testing.T) {
 
 func TestLoad_DirExists(t *testing.T) {
 	home := withTempHome(t)
-	dir := filepath.Join(home, ".config", "cs", "sheets")
+	dir := filepath.Join(home, ".config", "vor", "sheets")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func TestLoad_DirExists(t *testing.T) {
 func TestLoad_PathIsFile(t *testing.T) {
 	// If the path exists but is a file (not a dir), Load should return nil.
 	home := withTempHome(t)
-	parent := filepath.Join(home, ".config", "cs")
+	parent := filepath.Join(home, ".config", "vor")
 	if err := os.MkdirAll(parent, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func TestAdd_HappyPath(t *testing.T) {
 		t.Fatalf("Add: %v", err)
 	}
 
-	dest := filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "input.md")
+	dest := filepath.Join(home, ".config", "vor", "sheets", "uncategorized", "input.md")
 	got, err := os.ReadFile(dest)
 	if err != nil {
 		t.Fatalf("read dest: %v", err)
@@ -130,7 +130,7 @@ func TestAddTo_ExplicitCategory(t *testing.T) {
 	if err := AddTo(src, "networking"); err != nil {
 		t.Fatalf("AddTo: %v", err)
 	}
-	dest := filepath.Join(home, ".config", "cs", "sheets", "networking", "bgp-tweaks.md")
+	dest := filepath.Join(home, ".config", "vor", "sheets", "networking", "bgp-tweaks.md")
 	if _, err := os.Stat(dest); err != nil {
 		t.Errorf("expected file at %s, got %v", dest, err)
 	}
@@ -160,7 +160,7 @@ func TestAddTo_DowncasesMixedCase(t *testing.T) {
 	if err := AddTo(src, "Networking"); err != nil {
 		t.Fatalf("AddTo(Networking) should silently downcase, got: %v", err)
 	}
-	dest := filepath.Join(home, ".config", "cs", "sheets", "networking", "x.md")
+	dest := filepath.Join(home, ".config", "vor", "sheets", "networking", "x.md")
 	if _, err := os.Stat(dest); err != nil {
 		t.Errorf("expected %s to exist (downcased), got %v", dest, err)
 	}
@@ -189,7 +189,7 @@ func TestAddTo_RefusesOverwrite(t *testing.T) {
 	}
 
 	// Confirm v1 is preserved
-	got, _ := os.ReadFile(filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "dup.md"))
+	got, _ := os.ReadFile(filepath.Join(home, ".config", "vor", "sheets", "uncategorized", "dup.md"))
 	if !strings.Contains(string(got), "v1") {
 		t.Errorf("original was overwritten; got: %s", got)
 	}
@@ -215,7 +215,7 @@ func TestAddTo_OverwriteWithFlag(t *testing.T) {
 	if err := Add(src); err != nil {
 		t.Fatalf("expected overwrite to succeed with flag; got %v", err)
 	}
-	got, _ := os.ReadFile(filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "ow.md"))
+	got, _ := os.ReadFile(filepath.Join(home, ".config", "vor", "sheets", "uncategorized", "ow.md"))
 	if !strings.Contains(string(got), "v2") {
 		t.Errorf("expected v2 after overwrite; got: %s", got)
 	}
@@ -274,7 +274,7 @@ func TestAdd_AppendsMdExtension(t *testing.T) {
 	if err := Add(src); err != nil {
 		t.Fatalf("Add: %v", err)
 	}
-	dest := filepath.Join(home, ".config", "cs", "sheets", "uncategorized", "noext.md")
+	dest := filepath.Join(home, ".config", "vor", "sheets", "uncategorized", "noext.md")
 	if _, err := os.Stat(dest); err != nil {
 		t.Errorf("expected %s to exist with .md appended: %v", dest, err)
 	}
@@ -302,7 +302,7 @@ func TestEdit_NewSheetTemplate(t *testing.T) {
 		t.Fatalf("Edit: %v", err)
 	}
 
-	dest := filepath.Join(home, ".config", "cs", "sheets",
+	dest := filepath.Join(home, ".config", "vor", "sheets",
 		"uncategorized", "brand-new-topic.md")
 	data, err := os.ReadFile(dest)
 	if err != nil {
@@ -331,7 +331,7 @@ func TestEdit_CopyFromEmbedded(t *testing.T) {
 		t.Fatalf("Edit: %v", err)
 	}
 
-	dest := filepath.Join(home, ".config", "cs", "sheets", "storage", "lvm.md")
+	dest := filepath.Join(home, ".config", "vor", "sheets", "storage", "lvm.md")
 	data, err := os.ReadFile(dest)
 	if err != nil {
 		t.Fatalf("read copied custom: %v", err)
@@ -346,7 +346,7 @@ func TestEdit_ExistingCustomFileFound(t *testing.T) {
 	t.Setenv("EDITOR", "true")
 
 	// Pre-create a custom file so the walk finds it before the embedded path.
-	customDir := filepath.Join(home, ".config", "cs", "sheets", "shell")
+	customDir := filepath.Join(home, ".config", "vor", "sheets", "shell")
 	if err := os.MkdirAll(customDir, 0o755); err != nil {
 		t.Fatal(err)
 	}
@@ -402,7 +402,7 @@ func TestEdit_DefaultEditorVi(t *testing.T) {
 	if err := Edit("editor-default-test", emptyFS); err != nil {
 		t.Fatalf("Edit: %v", err)
 	}
-	expected := filepath.Join(home, ".config", "cs", "sheets",
+	expected := filepath.Join(home, ".config", "vor", "sheets",
 		"uncategorized", "editor-default-test.md")
 	if _, err := os.Stat(expected); err != nil {
 		t.Errorf("expected file at %s: %v", expected, err)

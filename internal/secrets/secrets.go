@@ -1,5 +1,5 @@
 // Package secrets loads opt-in API credentials from either an environment
-// variable (preferred) or a KEY=VALUE-format dotfile at ~/.config/cs/secrets.env
+// variable (preferred) or a KEY=VALUE-format dotfile at ~/.config/vor/secrets.env
 // (mode 0600 expected). It exists to support optional bonus features such as
 // the Stack Overflow live-lookup flag — the offline-encyclopedia core of vör
 // continues to work without any of this package being touched.
@@ -34,7 +34,7 @@ func init() {
 	if err != nil {
 		return
 	}
-	secretsFile = filepath.Join(home, ".config", "cs", "secrets.env")
+	secretsFile = filepath.Join(home, ".config", "vor", "secrets.env")
 }
 
 // SetFile overrides the secrets file path. Intended for tests.

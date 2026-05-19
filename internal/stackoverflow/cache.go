@@ -18,7 +18,7 @@ func init() {
 	if err != nil {
 		return
 	}
-	cacheDir = filepath.Join(home, ".cache", "cs", "stackoverflow")
+	cacheDir = filepath.Join(home, ".cache", "vor", "stackoverflow")
 }
 
 // SetCacheDir overrides the cache directory. Test-only.

@@ -14,7 +14,7 @@ import (
 // `#` prefix. Empty fields fall back to the corresponding Amber Throne default
 // at apply-time, so a partial theme file still produces a usable TUI.
 //
-// Persisted as JSON at ~/.config/cs/theme.json. Tests can override the path
+// Persisted as JSON at ~/.config/vor/theme.json. Tests can override the path
 // via SetThemeFile().
 type Theme struct {
 	Name     string `json:"name,omitempty"` // human-readable label, ignored by code
@@ -56,7 +56,7 @@ func ThemeFile() string {
 	if err != nil {
 		return ""
 	}
-	return filepath.Join(home, ".config", "cs", "theme.json")
+	return filepath.Join(home, ".config", "vor", "theme.json")
 }
 
 // hexColorRE matches a strict 6-digit hex color (#RRGGBB). Looser forms
@@ -75,7 +75,7 @@ func validateHex(field, s string) error {
 	return nil
 }
 
-// LoadTheme reads ~/.config/cs/theme.json and validates each color. On any
+// LoadTheme reads ~/.config/vor/theme.json and validates each color. On any
 // error (file missing, bad JSON, invalid color) returns the AmberThrone
 // default. Returns the loaded-or-default theme along with a non-nil error
 // only when the file existed but was malformed (caller may log it).
