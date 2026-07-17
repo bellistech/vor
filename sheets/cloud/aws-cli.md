@@ -345,6 +345,7 @@ aws ec2 describe-instances --output table
 - azure-cli
 - github-actions
 - docker
+- aws-saa-c03 (SAA-C03 exam guide — anchor for the aws/ architecture sheets)
 
 ## References
 

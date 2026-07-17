@@ -324,6 +324,7 @@ aws lambda update-function-configuration \
 - EventBridge (event bus for routing events to Lambda)
 - DynamoDB (serverless database, common Lambda backend)
 - SAM / CDK (infrastructure-as-code for serverless)
+- aws-decoupling / aws-compute (SAA-C03 serverless architecture and sizing)
 
 ## References
 

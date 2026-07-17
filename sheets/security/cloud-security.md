@@ -670,7 +670,7 @@ aws macie2 create-classification-job \
 
 ## See Also
 
-- endpoint-security, security-operations, terraform, aws-cli, gcloud, azure-cli
+- endpoint-security, security-operations, terraform, aws-cli, gcloud, azure-cli, aws-iam, aws-network-security, aws-data-protection
 
 ## References
 
