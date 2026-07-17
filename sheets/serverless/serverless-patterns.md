@@ -342,6 +342,7 @@ aws lambda create-event-source-mapping \
 - EventBridge (event routing and filtering)
 - DynamoDB (serverless NoSQL database)
 - SQS / SNS (message queuing and pub/sub)
+- aws-decoupling (SAA-C03 decoupling and event-driven architecture sheet)
 
 ## References
 

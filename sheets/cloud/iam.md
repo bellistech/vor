@@ -301,7 +301,7 @@ gcloud recommender recommendations list \
 
 ## See Also
 
-aws-cli, gcloud, azure-cli, vpc, sealed-secrets, sops
+aws-cli, gcloud, azure-cli, vpc, sealed-secrets, sops, aws-iam, aws-saa-c03
 
 ## References
 
