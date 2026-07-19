@@ -109,6 +109,14 @@ func TestGet(t *testing.T) {
 	}
 }
 
+func TestParseSheetBlockquoteDescription(t *testing.T) {
+	raw := "# Title\n\n> One-liner written as a blockquote.\n\n## First Section\n\ncontent\n"
+	s := ParseSheet("bq", "test", raw)
+	if s.Description != "One-liner written as a blockquote." {
+		t.Errorf("Description = %q, want blockquote marker stripped", s.Description)
+	}
+}
+
 func TestGetUnknown(t *testing.T) {
 	reg, _ := New(testFS())
 	if s := reg.Get("nonexistent"); s != nil {

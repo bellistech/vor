@@ -551,32 +551,67 @@ func doSearch(reg *registry.Registry, terms []string) {
 		die("no results for: %s", label)
 	}
 
-	// Deduplicate by sheet+section
-	type key struct{ sheet, section string }
-	seen := make(map[key]bool)
-	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("# Search: %s\n\n", label))
-
-	count := 0
+	// Group matches by sheet (Search returns them ranked, one sheet's
+	// matches contiguous) and cap lines per sheet so a single large sheet
+	// can't crowd every other match out of the listing.
+	const (
+		maxSheets        = 15
+		maxLinesPerSheet = 3
+	)
+	type group struct {
+		sheet *registry.Sheet
+		lines []registry.Match // deduped by section, capped at maxLinesPerSheet
+		total int              // deduped match count, uncapped
+	}
+	var groups []*group
+	byName := make(map[string]*group)
+	seen := make(map[string]bool) // sheet+section dedupe
 	for _, m := range matches {
-		k := key{m.Sheet.Name, m.Section}
+		g := byName[m.Sheet.Name]
+		if g == nil {
+			g = &group{sheet: m.Sheet}
+			byName[m.Sheet.Name] = g
+			groups = append(groups, g)
+		}
+		k := m.Sheet.Name + "\x00" + m.Section
 		if seen[k] {
 			continue
 		}
 		seen[k] = true
-		count++
-
-		sec := m.Section
-		if sec == "" {
-			sec = "(top)"
+		g.total++
+		if len(g.lines) < maxLinesPerSheet {
+			g.lines = append(g.lines, m)
 		}
-		sb.WriteString(fmt.Sprintf("  **%s/%s** :: %s\n", m.Sheet.Category, m.Sheet.Name, sec))
-		sb.WriteString(fmt.Sprintf("    %s\n\n", m.Line))
+	}
 
-		if count >= 25 {
-			sb.WriteString(fmt.Sprintf("  ... and more. Use 'cs %s' to see full sheet.\n", matches[0].Sheet.Name))
-			break
+	prog := progName()
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("# Search: %s — %d matching sheets\n\n", label, len(groups)))
+
+	shown := groups
+	if len(shown) > maxSheets {
+		shown = shown[:maxSheets]
+	}
+	for _, g := range shown {
+		desc := g.sheet.Description
+		if len(desc) > 100 {
+			desc = desc[:97] + "..."
 		}
+		sb.WriteString(fmt.Sprintf("  **%s/%s** — %s\n", g.sheet.Category, g.sheet.Name, desc))
+		for _, m := range g.lines {
+			sec := m.Section
+			if sec == "" {
+				sec = "(top)"
+			}
+			sb.WriteString(fmt.Sprintf("    %s :: %s\n", sec, m.Line))
+		}
+		if g.total > len(g.lines) {
+			sb.WriteString(fmt.Sprintf("    ... %d more matches — '%s %s' opens the sheet\n", g.total-len(g.lines), prog, g.sheet.Name))
+		}
+		sb.WriteString("\n")
+	}
+	if len(groups) > maxSheets {
+		sb.WriteString(fmt.Sprintf("  ... %d more matching sheets. Add terms to narrow the search.\n", len(groups)-maxSheets))
 	}
 	render.Output(sb.String())
 }

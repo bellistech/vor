@@ -56,8 +56,13 @@ func ParseSheet(name, category, raw string) *Sheet {
 		if foundTitle && !foundFirstSection {
 			if strings.HasPrefix(line, "## ") {
 				foundFirstSection = true
-			} else if strings.TrimSpace(line) != "" {
-				descLines = append(descLines, strings.TrimSpace(line))
+			} else if t := strings.TrimSpace(line); t != "" {
+				// One-liner descriptions are often written as blockquotes;
+				// strip the marker so it doesn't leak into list/search output.
+				t = strings.TrimSpace(strings.TrimPrefix(t, ">"))
+				if t != "" {
+					descLines = append(descLines, t)
+				}
 			}
 		}
 		if foundFirstSection {
