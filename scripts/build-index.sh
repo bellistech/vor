@@ -1,6 +1,6 @@
 #!/bin/bash
 # Build a simple top-level index of all sheets, by category, with each sheet's title
-cd /Users/govan/tmp/projects/cheat_sheet
+cd "$(dirname "$0")/.."
 {
   echo "# cs — Sheet Index"
   echo ""
