@@ -29,31 +29,31 @@ echo 'vor --completions fish | source'  >> ~/.config/fish/config.fish
 ## Usage
 
 ```bash
-cs                        # list all topics by category
-cs lvm                    # show LVM cheatsheet
-cs storage                # list sheets in a category
-cs lvm extend             # show only the "extend" section
-cs -s lvextend            # search across all sheets
-cs -l                     # list with descriptions
-cs -i                     # interactive TUI
-cs --add mysheet.md       # custom cheatsheet
-cs --edit lvm             # override sheet in $EDITOR
-cs --random               # random cheatsheet
-cs --count                # per-category statistics + bar chart
-cs -so help               # Stack Overflow lookup — bonus opt-in (see below)
+vor                        # list all topics by category
+vor lvm                    # show LVM cheatsheet
+vor storage                # list sheets in a category
+vor lvm extend             # show only the "extend" section
+vor -s lvextend            # search across all sheets
+vor -l                     # list with descriptions
+vor -i                     # interactive TUI
+vor --add mysheet.md       # custom cheatsheet
+vor --edit lvm             # override sheet in $EDITOR
+vor --random               # random cheatsheet
+vor --count                # per-category statistics + bar chart
+vor -so help               # Stack Overflow lookup — bonus opt-in (see below)
 ```
 
-Fuzzy match: `cs kube` → kubernetes. `cs lv` → lvm.
+Fuzzy match: `vor kube` → kubernetes. `vor lv` → lvm.
 
 ### Deep dive
 
 ```bash
-cs -d bgp                 # peering formula, convergence, dampening decay
-cs -d tcp                 # window math, congestion control, RTT estimation
-cs -d postgresql          # query planner cost model, B-tree splits, MVCC
-cs -d kubernetes          # scheduler scoring, Raft consensus, HPA formula
-cs -d tls                 # handshake state machine, ECDHE math, cipher suites
-cs -d bgp --prereqs       # prerequisites for a detail page
+vor -d bgp                 # peering formula, convergence, dampening decay
+vor -d tcp                 # window math, congestion control, RTT estimation
+vor -d postgresql          # query planner cost model, B-tree splits, MVCC
+vor -d kubernetes          # scheduler scoring, Raft consensus, HPA formula
+vor -d tls                 # handshake state machine, ECDHE math, cipher suites
+vor -d bgp --prereqs       # prerequisites for a detail page
 ```
 
 737 detail pages — formulas, worked examples, complexity analysis, engineering tradeoffs.
@@ -61,60 +61,60 @@ cs -d bgp --prereqs       # prerequisites for a detail page
 ### Knowledge graph
 
 ```bash
-cs --related bgp          # ospf, is-is, mpls, tcp, subnetting
-cs --related docker       # podman, kubernetes, containerd
-cs compare docker podman  # feature comparison table
-cs compare ext4 xfs       # filesystem comparison
+vor --related bgp          # ospf, is-is, mpls, tcp, subnetting
+vor --related docker       # podman, kubernetes, containerd
+vor compare docker podman  # feature comparison table
+vor compare ext4 xfs       # filesystem comparison
 ```
 
 ### Learning paths
 
 ```bash
-cs learn networking       # prerequisite-ordered topic list
-cs learn databases        # sql → postgresql → redis progression
-cs --prereqs bgp          # show prerequisites for a deep-dive page
-cs ramp-up                # 55 ELI5 ramp-up sheets — one per topic
+vor learn networking       # prerequisite-ordered topic list
+vor learn databases        # sql → postgresql → redis progression
+vor --prereqs bgp          # show prerequisites for a deep-dive page
+vor ramp-up                # 55 ELI5 ramp-up sheets — one per topic
 ```
 
-The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`cs fundamentals <topic>` / `cs -d <topic>`) is one command away.
+The `ramp-up` category is narrative-shaped — one comprehensive ELI5-voiced sheet per topic. Vocabulary tables defining every term, ASCII diagrams, paste-and-runnable shell with literal expected output, broken-then-fixed confusion pairs. Designed for absolute beginners; once a sheet feels easy, the dense reference (`vor fundamentals <topic>` / `vor -d <topic>`) is one command away.
 
 Current ramp-up topics (55): **linux-kernel**, **bgp**, **tcp**, **udp**, **ip**, **icmp**, **tls**, **dns**, **websocket**, **http3-quic**, **ebpf**, **assembly**, **binary-numbering**, **oauth-oidc**, **saml**, **docker**, **kubernetes**, **github-actions**, **ansible**, **terraform**, **postgres**, **git**, **bash**, **python**, **prometheus**, **ssh**, **vim**, **regex**, **systemd**, **wireshark**, **redis**, **vault**, **make**, **grafana**, **opentelemetry**, **nginx**, **rust**, **go**, **mysql**, **iptables**, **aws-cli**, **helm**, **graphql**, **grpc**, **mongodb**, **osi-model**, **wifi**, **sdn**, **spine-leaf**, **spanning-tree**, **anycast**, **queue-management**, **iot-protocols**, **named-data-networking**, **network-automation**.
 
 ### Built-in tools
 
 ```bash
-cs calc "2**10"               # 1024
-cs calc "0xff * 2"            # 510
-cs calc "1<<16"               # 65536
-cs calc "10GB / 1500bytes"    # unit-aware: 6,666,666 packets
-cs calc "10Gbps / 8"          # 1.25 Gbps
-cs calc help                  # full calculator manual
+vor calc "2**10"               # 1024
+vor calc "0xff * 2"            # 510
+vor calc "1<<16"               # 65536
+vor calc "10GB / 1500bytes"    # unit-aware: 6,666,666 packets
+vor calc "10Gbps / 8"          # 1.25 Gbps
+vor calc help                  # full calculator manual
 
-cs subnet 10.0.0.0/24         # network, broadcast, host range, mask
-cs subnet 172.16.0.0/20       # usable hosts, wildcard, binary mask
-cs subnet help                # full subnet calculator manual
+vor subnet 10.0.0.0/24         # network, broadcast, host range, mask
+vor subnet 172.16.0.0/20       # usable hosts, wildcard, binary mask
+vor subnet help                # full subnet calculator manual
 
-cs verify bgp                 # check worked examples against the calculator
-cs verify                     # verify all detail pages (CI-friendly, exit 1 on fail)
+vor verify bgp                 # check worked examples against the calculator
+vor verify                     # verify all detail pages (CI-friendly, exit 1 on fail)
 ```
 
 ### Interactive TUI
 
 ```bash
-cs -i                         # full-screen interactive browser
+vor -i                         # full-screen interactive browser
 ```
 
 Keys: `j`/`k` navigate, `enter` open, `/` filter, `d` detail page, `esc` back, `q` quit, `?` full help overlay.
 
 Inside `/` filter: `↑`/`↓` recall persisted history (`~/.cache/vor/tui-history`, max 50 entries).
 Theme palette is configurable via `~/.config/vor/theme.json` (8 hex colors, all optional).
-See `cs interactive-tui-config` for the full setup walkthrough.
+See `vor interactive-tui-config` for the full setup walkthrough.
 
 ### REST API
 
 ```bash
-cs serve                      # 127.0.0.1:9876
-cs serve 8080                 # custom port
+vor serve                      # 127.0.0.1:9876
+vor serve 8080                 # custom port
 ```
 
 | Method | Endpoint | Returns |
@@ -137,14 +137,14 @@ cs serve 8080                 # custom port
 ### Export, bookmarks, self-update
 
 ```bash
-cs lvm --format markdown      # raw markdown (pipe to pbcopy, wiki, etc.)
-cs lvm --format json          # structured JSON
-cs bgp --format json | jq .   # pipe to jq
+vor lvm --format markdown      # raw markdown (pipe to pbcopy, wiki, etc.)
+vor lvm --format json          # structured JSON
+vor bgp --format json | jq .   # pipe to jq
 
-cs --star lvm                 # toggle bookmark
-cs --starred                  # list bookmarks
+vor --star lvm                 # toggle bookmark
+vor --starred                  # list bookmarks
 
-cs --update                   # check GitHub releases and update
+vor --update                   # check GitHub releases and update
 ```
 
 ### Stack Overflow lookup (optional bonus, opt-in)
@@ -171,18 +171,18 @@ Used by the React Native `CsApp/` project for iOS distribution.
 
 ## Categories
 
-65 categories. Run `cs --count` for the live breakdown with sheet counts and a per-category bar chart. Starting points:
+65 categories. Run `vor --count` for the live breakdown with sheet counts and a per-category bar chart. Starting points:
 
 | Goal | Entry point |
 |------|-------------|
-| Total beginner — kernel ELI5       | `cs ramp-up linux-kernel-eli5` |
-| Network engineer (CCNP/CCIE)       | `cs networking` |
-| AWS architect (SAA-C03)            | `cs aws-saa-c03`, `cs aws` |
-| Security / pentesting              | `cs security`, `cs offensive` |
-| Platform / SRE                     | `cs orchestration kubernetes` |
-| Linux internals                    | `cs fundamentals linux-kernel-internals` |
-| Language reference                 | `cs languages` |
-| Database internals                 | `cs databases` |
+| Total beginner — kernel ELI5       | `vor ramp-up linux-kernel-eli5` |
+| Network engineer (CCNP/CCIE)       | `vor networking` |
+| AWS architect (SAA-C03)            | `vor aws-saa-c03`, `vor aws` |
+| Security / pentesting              | `vor security`, `vor offensive` |
+| Platform / SRE                     | `vor orchestration kubernetes` |
+| Linux internals                    | `vor fundamentals linux-kernel-internals` |
+| Language reference                 | `vor languages` |
+| Database internals                 | `vor databases` |
 
 Every sheet includes `## See Also` cross-references and `## References` with official docs, RFCs, man pages, vendor guides.
 
@@ -191,8 +191,8 @@ Every sheet includes `## See Also` cross-references and `## References` with off
 Custom sheets live in `~/.config/vor/sheets/<category>/<topic>.md` and override embedded ones.
 
 ```bash
-cs --add ~/my-cheatsheet.md   # prompts for category
-cs --edit docker              # copies embedded → custom for editing
+vor --add ~/my-cheatsheet.md   # prompts for category
+vor --edit docker              # copies embedded → custom for editing
 ```
 
 ## Additional sources
@@ -215,7 +215,7 @@ rm ~/.config/vor/sources/some-project
 ls -la ~/.config/vor/sources/
 ```
 
-`cs` rebuilds its registry on every start, so changes (new symlinks, removed ones, edits to source markdown) are picked up at the next invocation. Dangling symlinks are silently skipped — you can safely `rm` a source's underlying directory and the next run still works.
+`vor` rebuilds its registry on every start, so changes (new symlinks, removed ones, edits to source markdown) are picked up at the next invocation. Dangling symlinks are silently skipped — you can safely `rm` a source's underlying directory and the next run still works.
 
 ## Sheet format
 
@@ -266,3 +266,5 @@ Requires Go 1.24+.
 ## License
 
 GPL-3.0-or-later. See [LICENSE](LICENSE).
+
+
