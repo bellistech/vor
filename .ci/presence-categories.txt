@@ -6,6 +6,7 @@ ai-ml
 api
 archives
 auth
+aws
 backup
 big-data
 build-systems
@@ -51,6 +52,7 @@ queuing
 ramp-up
 secrets
 security
+security-plus
 serverless
 service-mesh
 shell
