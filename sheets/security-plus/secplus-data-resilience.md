@@ -225,9 +225,9 @@
 
 | Site type | What's in place | Time to operational (RTO ballpark) | Relative cost | Data currency |
 |---|---|---|---|---|
-| Hot site | Full duplicate: power, HVAC, hardware, software, near-real-time data replication | Minutes–hours | $$$$ (highest) | Seconds–minutes behind |
-| Warm site | Power, connectivity, some/most hardware; data restored from backups | Hours–days | $$$ (middle) | As fresh as last backup shipment |
-| Cold site | Building, power, HVAC only — NO hardware, NO data | Days–weeks | $ (lowest) | None on site |
+| Hot site | Full duplicate: power, HVAC, hardware, software, near-real-time data replication | Minutes–hours | Highest | Seconds–minutes behind |
+| Warm site | Power, connectivity, some/most hardware; data restored from backups | Hours–days | Moderate | As fresh as last backup shipment |
+| Cold site | Building, power, HVAC only — NO hardware, NO data | Days–weeks | Lowest | None on site |
 | Geographic dispersion | Sites far enough apart that one disaster cannot hit both | n/a | n/a | n/a |
 
 ```
