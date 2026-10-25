@@ -76,7 +76,7 @@ func NewWithSources(sheetSources []SourceSpec, detailSources []fs.FS) (*Registry
 			category := filepath.Dir(cleaned)
 			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
 			sheet := ParseSheet(name, category, string(data))
-			r.details[name] = sheet
+			r.details[strings.ToLower(name)] = sheet
 			r.detailFiles++ // counts all files even if name-deduped in the map
 			return nil
 		})
@@ -178,9 +178,12 @@ func newWithSources(sources []SourceSpec) (*Registry, error) {
 		r.all = append(r.all, s)
 		r.byCategory[s.Category] = append(r.byCategory[s.Category], s)
 		catSet[s.Category] = true
-		existing, ok := r.sheets[s.Name]
+		// Keyed lower-case: Get lower-cases its query, and names keep
+		// their case (Service-Wotan, WOTAN_TOPICS, ADR-005-...).
+		key := strings.ToLower(s.Name)
+		existing, ok := r.sheets[key]
 		if !ok || len(s.Content) > len(existing.Content) {
-			r.sheets[s.Name] = s
+			r.sheets[key] = s
 		}
 	}
 

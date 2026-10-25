@@ -1694,12 +1694,12 @@ func fuzzyFind(reg *registry.Registry, name string) *registry.Sheet {
 	lower := strings.ToLower(name)
 
 	for _, sheet := range reg.List() {
-		if strings.HasPrefix(sheet.Name, lower) {
+		if strings.HasPrefix(strings.ToLower(sheet.Name), lower) {
 			return sheet
 		}
 	}
 	for _, sheet := range reg.List() {
-		if strings.Contains(sheet.Name, lower) {
+		if strings.Contains(strings.ToLower(sheet.Name), lower) {
 			return sheet
 		}
 	}
@@ -1707,9 +1707,10 @@ func fuzzyFind(reg *registry.Registry, name string) *registry.Sheet {
 	var best *registry.Sheet
 	bestDist := len(name) + 1
 	for _, sheet := range reg.List() {
-		d := levenshtein(lower, sheet.Name)
-		if len(sheet.Name) > len(lower) {
-			dp := levenshtein(lower, sheet.Name[:len(lower)])
+		sname := strings.ToLower(sheet.Name)
+		d := levenshtein(lower, sname)
+		if len(sname) > len(lower) {
+			dp := levenshtein(lower, sname[:len(lower)])
 			if dp < d {
 				d = dp
 			}

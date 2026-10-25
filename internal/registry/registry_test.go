@@ -116,6 +116,31 @@ func TestGetUnknown(t *testing.T) {
 	}
 }
 
+// Mixed-case names (wiki pages, ADRs, SCREAMING_CASE protocol docs) must be
+// found exactly. Get used to lowercase the query but not the map key, so
+// every such lookup missed and the server's fuzzy resolver returned another
+// sheet: /api/topics/WOTAN_TOPICS served Wotan-Topic-Signing.
+func TestGetMixedCase(t *testing.T) {
+	reg, err := New(fstest.MapFS{
+		"protocol/WOTAN_TOPICS.md":    {Data: []byte("# Wotan Topic Pub/Sub\n")},
+		"wiki/Wotan-Topic-Signing.md": {Data: []byte("# Wotan Topic Signing\n")},
+		"wiki/Service-Wotan.md":       {Data: []byte("# Wotan\n")},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, q := range []string{"WOTAN_TOPICS", "wotan_topics", "Service-Wotan", "service-wotan", "Wotan-Topic-Signing"} {
+		s := reg.Get(q)
+		if s == nil {
+			t.Errorf("Get(%q) = nil", q)
+			continue
+		}
+		if !strings.EqualFold(s.Name, q) {
+			t.Errorf("Get(%q) = %q", q, s.Name)
+		}
+	}
+}
+
 func TestCategories(t *testing.T) {
 	reg, _ := New(testFS())
 	cats := reg.Categories()
