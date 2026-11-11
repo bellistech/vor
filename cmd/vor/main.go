@@ -1071,6 +1071,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 			Description string   `json:"description"`
 			HasDetail   bool     `json:"has_detail"`
 			SeeAlso     []string `json:"see_also,omitempty"`
+			SourceKind  string   `json:"source_kind"`
+			SourceTrust string   `json:"source_trust"`
 		}
 		var topics []topicSummary
 		for _, s := range reg.List() {
@@ -1081,6 +1083,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 				Description: s.Description,
 				HasDetail:   reg.HasDetail(s.Name),
 				SeeAlso:     s.SeeAlso,
+				SourceKind:  s.SourceKind.String(),
+				SourceTrust: s.SourceKind.Trust(),
 			})
 		}
 		jsonResp(w, topics)
@@ -1196,25 +1200,25 @@ func doServe(reg *registry.Registry, bind, port string) {
 			http.Error(w, `{"error":"missing q parameter"}`, 400)
 			return
 		}
-		matches := reg.Search(q)
+		limit, perTopic, err := searchLimits(r.URL.Query())
+		if err != nil {
+			w.WriteHeader(400)
+			jsonResp(w, map[string]string{"error": err.Error()})
+			return
+		}
+		matches := limitMatches(reg.Search(q), r.URL.Query().Get("category"), limit, perTopic)
 		type matchResult struct {
-			Topic        string `json:"topic"`
-			Category     string `json:"category"`
-			Section      string `json:"section"`
-			Line         string `json:"line"`
-			SourceKind   string `json:"source_kind"`
-			SourceTrust  string `json:"source_trust"`
-			SourcePath   string `json:"source_path,omitempty"`
-			SourceLabel  string `json:"source_label,omitempty"`
+			Topic       string `json:"topic"`
+			Category    string `json:"category"`
+			Section     string `json:"section"`
+			Line        string `json:"line"`
+			SourceKind  string `json:"source_kind"`
+			SourceTrust string `json:"source_trust"`
+			SourcePath  string `json:"source_path,omitempty"`
+			SourceLabel string `json:"source_label,omitempty"`
 		}
 		var results []matchResult
-		seen := make(map[string]bool)
 		for _, m := range matches {
-			key := m.Sheet.Name + "|" + m.Section
-			if seen[key] {
-				continue
-			}
-			seen[key] = true
 			results = append(results, matchResult{
 				Topic:       m.Sheet.Name,
 				Category:    m.Sheet.Category,
@@ -1225,9 +1229,6 @@ func doServe(reg *registry.Registry, bind, port string) {
 				SourcePath:  m.Sheet.SourcePath,
 				SourceLabel: m.Sheet.SourceLabel,
 			})
-			if len(results) >= 50 {
-				break
-			}
 		}
 		jsonResp(w, results)
 	}))
@@ -1294,14 +1295,14 @@ func doServe(reg *registry.Registry, bind, port string) {
 			return
 		}
 		jsonResp(w, map[string]any{
-			"cidr":        info.CIDR,
-			"network":     info.Network.String(),
-			"prefix":      info.Prefix,
-			"first_host":  info.FirstHost.String(),
-			"last_host":   info.LastHost.String(),
-			"total_hosts": info.TotalHosts.String(),
+			"cidr":         info.CIDR,
+			"network":      info.Network.String(),
+			"prefix":       info.Prefix,
+			"first_host":   info.FirstHost.String(),
+			"last_host":    info.LastHost.String(),
+			"total_hosts":  info.TotalHosts.String(),
 			"usable_hosts": info.UsableHosts.String(),
-			"is_ipv6":     info.IsIPv6,
+			"is_ipv6":      info.IsIPv6,
 		})
 	}))
 
@@ -1325,12 +1326,12 @@ func doServe(reg *registry.Registry, bind, port string) {
 			totalLines += strings.Count(s.Content, "\n")
 		}
 		jsonResp(w, map[string]any{
-			"sheets":       len(sheets),
-			"details":      reg.DetailCount(),
-			"categories":   len(reg.Categories()),
-			"total_lines":  totalLines,
-			"see_also":     reg.SeeAlsoCoverage(),
-			"bookmarks":    len(bookmarks.List()),
+			"sheets":      len(sheets),
+			"details":     reg.DetailCount(),
+			"categories":  len(reg.Categories()),
+			"total_lines": totalLines,
+			"see_also":    reg.SeeAlsoCoverage(),
+			"bookmarks":   len(bookmarks.List()),
 		})
 	}))
 
@@ -1402,7 +1403,7 @@ func doServe(reg *registry.Registry, bind, port string) {
 	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
 	fmt.Println("  GET  /api/topics/:name/related— get related topics")
 	fmt.Println("  GET  /api/categories          — list categories")
-	fmt.Println("  GET  /api/search?q=           — search sheets")
+	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category=)")
 	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
 	fmt.Println("  POST /api/calc                — evaluate expression")
 	fmt.Println("  POST /api/subnet              — subnet calculator")
@@ -2046,7 +2047,7 @@ func openAPIDoc(version string) map[string]any {
 			"/api/topics/{name}/detail":  path("GET", "Get the deep-dive detail page if one exists", []map[string]any{pathParam("name", "topic slug")}, "Detail page content"),
 			"/api/topics/{name}/related": path("GET", "Get cross-referenced related topics", []map[string]any{pathParam("name", "topic slug")}, "Array of related topic summaries"),
 			"/api/categories":            path("GET", "List categories", nil, "Array of category names"),
-			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query")}, "Array of search hits"),
+			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query"), queryParam("limit", "most lines returned, 1-500, default 50"), queryParam("per_topic", "most lines from any one topic, 1-50, default no cap"), queryParam("category", "only topics in exactly this category")}, "Array of search hits"),
 			"/api/compare":               path("GET", "Compare two topics", []map[string]any{queryParam("a", "first topic"), queryParam("b", "second topic")}, "Comparison structure"),
 			"/api/calc":                  path("POST", "Evaluate calculator expression", nil, "Calculator result"),
 			"/api/subnet":                path("POST", "Run subnet calculator", nil, "Subnet calculation result"),

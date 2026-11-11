@@ -124,7 +124,7 @@ cs serve 8080                 # custom port
 | GET    | `/api/topics/:name/detail` | detail page |
 | GET    | `/api/topics/:name/related` | related topics |
 | GET    | `/api/categories` | category list |
-| GET    | `/api/search?q=<query>` | full-text search |
+| GET    | `/api/search?q=<query>` | full-text search; `&limit=` lines (1-500, default 50), `&per_topic=` most lines from one topic (1-50, default no cap), `&category=` only that exact category |
 | GET    | `/api/compare?a=<X>&b=<Y>` | compare two topics |
 | POST   | `/api/calc` | evaluate expression |
 | POST   | `/api/subnet` | subnet calculator |
