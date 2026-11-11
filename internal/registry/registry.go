@@ -19,11 +19,44 @@ type Registry struct {
 	categories   []string
 }
 
+// SourceSpec ties an fs.FS to its provenance metadata. Used by callers
+// that need per-source trust labelling (e.g. cmd/vor/main.go threading
+// embedded vs user-custom vs user-source through the registry).
+//
+// Callers that don't care about provenance can use the legacy
+// New(sources ...fs.FS) / NewWithDetails([]fs.FS, []fs.FS) entry points;
+// those default every sheet to SourceEmbedded.
+type SourceSpec struct {
+	FS    fs.FS
+	Kind  SourceKind
+	Path  string // resolved filesystem path; "" for SourceEmbedded
+	Label string // user-facing label (e.g., symlink name); "" for SourceEmbedded
+}
+
 // New creates a Registry from one or more fs.FS sources.
 // Later sources override earlier ones (custom overrides embedded).
+// All sheets are tagged SourceEmbedded — for provenance-aware loading
+// use NewWithSources.
+//
 // NewWithDetails creates a Registry with both sheets and detail sources.
+// Sheets are tagged SourceEmbedded by default; for provenance-aware
+// loading use NewWithSources.
 func NewWithDetails(sheetSources []fs.FS, detailSources []fs.FS) (*Registry, error) {
-	r, err := New(sheetSources...)
+	specs := make([]SourceSpec, len(sheetSources))
+	for i, fsys := range sheetSources {
+		specs[i] = SourceSpec{FS: fsys, Kind: SourceEmbedded}
+	}
+	return NewWithSources(specs, detailSources)
+}
+
+// NewWithSources creates a Registry from labelled sheet sources +
+// unlabelled detail sources. Each sheet inherits SourceKind/Path/Label
+// from its parent SourceSpec. Sheets loaded from later specs override
+// earlier ones at the (category, name) granularity (so user-custom can
+// shadow embedded, etc.) — but the override carries the OVERRIDING
+// source's provenance, not the original's.
+func NewWithSources(sheetSources []SourceSpec, detailSources []fs.FS) (*Registry, error) {
+	r, err := newWithSources(sheetSources)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +76,7 @@ func NewWithDetails(sheetSources []fs.FS, detailSources []fs.FS) (*Registry, err
 			category := filepath.Dir(cleaned)
 			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
 			sheet := ParseSheet(name, category, string(data))
-			r.details[name] = sheet
+			r.details[strings.ToLower(name)] = sheet
 			r.detailFiles++ // counts all files even if name-deduped in the map
 			return nil
 		})
@@ -81,6 +114,18 @@ func (r *Registry) DetailUniqueCount() int {
 }
 
 func New(sources ...fs.FS) (*Registry, error) {
+	specs := make([]SourceSpec, len(sources))
+	for i, fsys := range sources {
+		specs[i] = SourceSpec{FS: fsys, Kind: SourceEmbedded}
+	}
+	return newWithSources(specs)
+}
+
+// newWithSources is the internal constructor that all public entry
+// points (New, NewWithDetails, NewWithSources) funnel through. Callers
+// supply labelled SourceSpec slices; each parsed sheet inherits the
+// spec's provenance.
+func newWithSources(sources []SourceSpec) (*Registry, error) {
 	r := &Registry{
 		sheets:     make(map[string]*Sheet),
 		details:    make(map[string]*Sheet),
@@ -92,8 +137,9 @@ func New(sources ...fs.FS) (*Registry, error) {
 	// cs-theory/distributed-systems). Custom-source overrides still apply
 	// at the (category, name) granularity.
 	byKey := make(map[string]*Sheet)
-	for _, fsys := range sources {
-		err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+	for _, spec := range sources {
+		spec := spec // capture for closure
+		err := fs.WalkDir(spec.FS, ".", func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
@@ -101,7 +147,7 @@ func New(sources ...fs.FS) (*Registry, error) {
 				return nil
 			}
 
-			data, err := fs.ReadFile(fsys, path)
+			data, err := fs.ReadFile(spec.FS, path)
 			if err != nil {
 				return fmt.Errorf("read %s: %w", path, err)
 			}
@@ -112,6 +158,9 @@ func New(sources ...fs.FS) (*Registry, error) {
 			name := strings.TrimSuffix(filepath.Base(cleaned), ".md")
 
 			sheet := ParseSheet(name, category, string(data))
+			sheet.SourceKind = spec.Kind
+			sheet.SourcePath = spec.Path
+			sheet.SourceLabel = spec.Label
 			byKey[category+"/"+name] = sheet
 			return nil
 		})
@@ -129,9 +178,12 @@ func New(sources ...fs.FS) (*Registry, error) {
 		r.all = append(r.all, s)
 		r.byCategory[s.Category] = append(r.byCategory[s.Category], s)
 		catSet[s.Category] = true
-		existing, ok := r.sheets[s.Name]
+		// Keyed lower-case: Get lower-cases its query, and names keep
+		// their case (Service-Wotan, WOTAN_TOPICS, ADR-005-...).
+		key := strings.ToLower(s.Name)
+		existing, ok := r.sheets[key]
 		if !ok || len(s.Content) > len(existing.Content) {
-			r.sheets[s.Name] = s
+			r.sheets[key] = s
 		}
 	}
 
@@ -374,6 +426,15 @@ collect:
 		}
 		if len(hits[i].strict) != len(hits[j].strict) {
 			return len(hits[i].strict) > len(hits[j].strict)
+		}
+		// Source-kind tie-breaker: when all relevance signals are
+		// equal, prefer canonical (embedded) over user-custom over
+		// user-source. Stops a poisoned user-source topic from
+		// surfacing above an embedded canonical sheet at tied
+		// relevance. See unheaded:eval/coding-gate/probe-2026-05-02/
+		// B1-design-source-provenance.md "search ranking weights".
+		if wi, wj := hits[i].sheet.SourceKind.RankWeight(), hits[j].sheet.SourceKind.RankWeight(); wi != wj {
+			return wi > wj
 		}
 		return hits[i].sheet.Name < hits[j].sheet.Name
 	})

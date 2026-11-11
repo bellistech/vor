@@ -146,23 +146,53 @@ Options:
 		return
 	}
 
-	// Build registry from embedded + custom sheets + detail sheets
-	sheetSources := []fs.FS{}
+	// Build registry from embedded + custom sheets + detail sheets, with
+	// per-source provenance labels threaded through. Embedded vs custom
+	// vs user-symlinked-source must be distinguishable on the wire — see
+	// internal/registry SourceKind + the B1 design at
+	// unheaded:eval/coding-gate/probe-2026-05-02/B1-design-source-provenance.md.
+	sheetSources := []registry.SourceSpec{}
 	embedded, err := fs.Sub(vor.EmbeddedSheets, "sheets")
 	if err != nil {
 		die("embedded sheets: %v", err)
 	}
-	sheetSources = append(sheetSources, embedded)
+	sheetSources = append(sheetSources, registry.SourceSpec{
+		FS:   embedded,
+		Kind: registry.SourceEmbedded,
+	})
 
 	if customFS := custom.Load(); customFS != nil {
-		sheetSources = append(sheetSources, customFS)
+		sheetSources = append(sheetSources, registry.SourceSpec{
+			FS:   customFS,
+			Kind: registry.SourceUserCustom,
+			Path: custom.Dir(),
+		})
 	}
 
 	// Additional sources discovered via ~/.config/vor/sources/ symlinks.
 	// Anything users have symlinked there gets ingested by the same
 	// .md-only registry walker — no config file, no glob library.
+	//
+	// SourceKind selection: by default, user-symlinked sources tag as
+	// SourceUserSource (external trust — assumed potentially poisoned).
+	// Users can opt INTO local trust by adding the symlink name to
+	// ~/.config/vor/sources/.trusted (one name per line). Trusted
+	// sources tag as SourceUserCustom (local trust — same tier as
+	// ~/.config/vor/sheets/). Use this for your own repos that you
+	// control and want the agent to treat as authoritative.
 	if extras, err := sources.Load(); err == nil {
-		sheetSources = append(sheetSources, extras...)
+		for _, src := range extras {
+			kind := registry.SourceUserSource
+			if src.Trusted {
+				kind = registry.SourceUserCustom
+			}
+			sheetSources = append(sheetSources, registry.SourceSpec{
+				FS:    src.FS,
+				Kind:  kind,
+				Path:  src.Path,
+				Label: src.Label,
+			})
+		}
 	} else {
 		fmt.Fprintf(os.Stderr, "vor: sources.Load: %v\n", err)
 	}
@@ -174,7 +204,7 @@ Options:
 	}
 	detailSources = append(detailSources, detailFS)
 
-	reg, err := registry.NewWithDetails(sheetSources, detailSources)
+	reg, err := registry.NewWithSources(sheetSources, detailSources)
 	if err != nil {
 		die("load sheets: %v", err)
 	}
@@ -1076,6 +1106,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 			Description string   `json:"description"`
 			HasDetail   bool     `json:"has_detail"`
 			SeeAlso     []string `json:"see_also,omitempty"`
+			SourceKind  string   `json:"source_kind"`
+			SourceTrust string   `json:"source_trust"`
 		}
 		var topics []topicSummary
 		for _, s := range reg.List() {
@@ -1086,6 +1118,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 				Description: s.Description,
 				HasDetail:   reg.HasDetail(s.Name),
 				SeeAlso:     s.SeeAlso,
+				SourceKind:  s.SourceKind.String(),
+				SourceTrust: s.SourceKind.Trust(),
 			})
 		}
 		jsonResp(w, topics)
@@ -1096,6 +1130,18 @@ func doServe(reg *registry.Registry, bind, port string) {
 		path := strings.TrimPrefix(r.URL.Path, "/api/topics/")
 		parts := strings.SplitN(path, "/", 2)
 		name := parts[0]
+
+		// Reject path-traversal and embedded separators before the
+		// fuzzy resolver runs — otherwise percent-encoded "..%2F" or
+		// "%2e%2e%2f" etc. flow into fuzzyFind and surface arbitrary
+		// topics by accident. See unheaded:eval/coding-gate/probe-
+		// 2026-05-02/A3-vor-fuzz.md F2.
+		if name == "" || name == "." || name == ".." ||
+			strings.Contains(name, "..") ||
+			strings.ContainsAny(name, "/\\\x00") {
+			http.Error(w, `{"error":"invalid topic name"}`, 400)
+			return
+		}
 
 		s := reg.Get(name)
 		if s == nil {
@@ -1134,15 +1180,29 @@ func doServe(reg *registry.Registry, bind, port string) {
 			}
 		}
 
-		jsonResp(w, map[string]any{
-			"name":        s.Name,
-			"category":    s.Category,
-			"title":       s.Title,
-			"description": s.Description,
-			"content":     s.Content,
-			"see_also":    s.SeeAlso,
-			"has_detail":  reg.HasDetail(s.Name),
-		})
+		// source_kind / source_path / source_label expose the B1 source-
+		// provenance fields so downstream consumers (zhen-rag, agent
+		// runtimes) can compute trust on the retrieval result without
+		// re-deriving from the URL. Embedded sheets default to
+		// source_kind="embedded" with empty path/label.
+		topicResp := map[string]any{
+			"name":         s.Name,
+			"category":     s.Category,
+			"title":        s.Title,
+			"description":  s.Description,
+			"content":      s.Content,
+			"see_also":     s.SeeAlso,
+			"has_detail":   reg.HasDetail(s.Name),
+			"source_kind":  s.SourceKind.String(),
+			"source_trust": s.SourceKind.Trust(),
+		}
+		if s.SourcePath != "" {
+			topicResp["source_path"] = s.SourcePath
+		}
+		if s.SourceLabel != "" {
+			topicResp["source_label"] = s.SourceLabel
+		}
+		jsonResp(w, topicResp)
 	}))
 
 	// GET /api/categories
@@ -1161,34 +1221,49 @@ func doServe(reg *registry.Registry, bind, port string) {
 	// GET /api/search?q=<query>
 	mux.HandleFunc("/api/search", cors(func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query().Get("q")
+		// Cap query length before any work — uncapped queries are a
+		// trivial DoS vector if vor is ever exposed beyond loopback.
+		// 4096 chars is generous (~3500 bytes of natural-language) and
+		// still tiny relative to BM25 cost. See unheaded:eval/coding-
+		// gate/probe-2026-05-02/A3-vor-fuzz.md F1.
+		const maxQueryLength = 4096
+		if len(q) > maxQueryLength {
+			http.Error(w, `{"error":"query too long"}`, 413)
+			return
+		}
 		if q == "" {
 			http.Error(w, `{"error":"missing q parameter"}`, 400)
 			return
 		}
-		matches := reg.Search(q)
+		limit, perTopic, err := searchLimits(r.URL.Query())
+		if err != nil {
+			w.WriteHeader(400)
+			jsonResp(w, map[string]string{"error": err.Error()})
+			return
+		}
+		matches := limitMatches(reg.Search(q), r.URL.Query().Get("category"), limit, perTopic)
 		type matchResult struct {
-			Topic   string `json:"topic"`
-			Category string `json:"category"`
-			Section string `json:"section"`
-			Line    string `json:"line"`
+			Topic       string `json:"topic"`
+			Category    string `json:"category"`
+			Section     string `json:"section"`
+			Line        string `json:"line"`
+			SourceKind  string `json:"source_kind"`
+			SourceTrust string `json:"source_trust"`
+			SourcePath  string `json:"source_path,omitempty"`
+			SourceLabel string `json:"source_label,omitempty"`
 		}
 		var results []matchResult
-		seen := make(map[string]bool)
 		for _, m := range matches {
-			key := m.Sheet.Name + "|" + m.Section
-			if seen[key] {
-				continue
-			}
-			seen[key] = true
 			results = append(results, matchResult{
-				Topic:    m.Sheet.Name,
-				Category: m.Sheet.Category,
-				Section:  m.Section,
-				Line:     m.Line,
+				Topic:       m.Sheet.Name,
+				Category:    m.Sheet.Category,
+				Section:     m.Section,
+				Line:        m.Line,
+				SourceKind:  m.Sheet.SourceKind.String(),
+				SourceTrust: m.Sheet.SourceKind.Trust(),
+				SourcePath:  m.Sheet.SourcePath,
+				SourceLabel: m.Sheet.SourceLabel,
 			})
-			if len(results) >= 50 {
-				break
-			}
 		}
 		jsonResp(w, results)
 	}))
@@ -1255,14 +1330,14 @@ func doServe(reg *registry.Registry, bind, port string) {
 			return
 		}
 		jsonResp(w, map[string]any{
-			"cidr":        info.CIDR,
-			"network":     info.Network.String(),
-			"prefix":      info.Prefix,
-			"first_host":  info.FirstHost.String(),
-			"last_host":   info.LastHost.String(),
-			"total_hosts": info.TotalHosts.String(),
+			"cidr":         info.CIDR,
+			"network":      info.Network.String(),
+			"prefix":       info.Prefix,
+			"first_host":   info.FirstHost.String(),
+			"last_host":    info.LastHost.String(),
+			"total_hosts":  info.TotalHosts.String(),
 			"usable_hosts": info.UsableHosts.String(),
-			"is_ipv6":     info.IsIPv6,
+			"is_ipv6":      info.IsIPv6,
 		})
 	}))
 
@@ -1286,12 +1361,12 @@ func doServe(reg *registry.Registry, bind, port string) {
 			totalLines += strings.Count(s.Content, "\n")
 		}
 		jsonResp(w, map[string]any{
-			"sheets":       len(sheets),
-			"details":      reg.DetailCount(),
-			"categories":   len(reg.Categories()),
-			"total_lines":  totalLines,
-			"see_also":     reg.SeeAlsoCoverage(),
-			"bookmarks":    len(bookmarks.List()),
+			"sheets":      len(sheets),
+			"details":     reg.DetailCount(),
+			"categories":  len(reg.Categories()),
+			"total_lines": totalLines,
+			"see_also":    reg.SeeAlsoCoverage(),
+			"bookmarks":   len(bookmarks.List()),
 		})
 	}))
 
@@ -1363,7 +1438,7 @@ func doServe(reg *registry.Registry, bind, port string) {
 	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
 	fmt.Println("  GET  /api/topics/:name/related— get related topics")
 	fmt.Println("  GET  /api/categories          — list categories")
-	fmt.Println("  GET  /api/search?q=           — search sheets")
+	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category=)")
 	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
 	fmt.Println("  POST /api/calc                — evaluate expression")
 	fmt.Println("  POST /api/subnet              — subnet calculator")
@@ -1655,12 +1730,12 @@ func fuzzyFind(reg *registry.Registry, name string) *registry.Sheet {
 	lower := strings.ToLower(name)
 
 	for _, sheet := range reg.List() {
-		if strings.HasPrefix(sheet.Name, lower) {
+		if strings.HasPrefix(strings.ToLower(sheet.Name), lower) {
 			return sheet
 		}
 	}
 	for _, sheet := range reg.List() {
-		if strings.Contains(sheet.Name, lower) {
+		if strings.Contains(strings.ToLower(sheet.Name), lower) {
 			return sheet
 		}
 	}
@@ -1668,9 +1743,10 @@ func fuzzyFind(reg *registry.Registry, name string) *registry.Sheet {
 	var best *registry.Sheet
 	bestDist := len(name) + 1
 	for _, sheet := range reg.List() {
-		d := levenshtein(lower, sheet.Name)
-		if len(sheet.Name) > len(lower) {
-			dp := levenshtein(lower, sheet.Name[:len(lower)])
+		sname := strings.ToLower(sheet.Name)
+		d := levenshtein(lower, sname)
+		if len(sname) > len(lower) {
+			dp := levenshtein(lower, sname[:len(lower)])
 			if dp < d {
 				d = dp
 			}
@@ -2006,7 +2082,7 @@ func openAPIDoc(version string) map[string]any {
 			"/api/topics/{name}/detail":  path("GET", "Get the deep-dive detail page if one exists", []map[string]any{pathParam("name", "topic slug")}, "Detail page content"),
 			"/api/topics/{name}/related": path("GET", "Get cross-referenced related topics", []map[string]any{pathParam("name", "topic slug")}, "Array of related topic summaries"),
 			"/api/categories":            path("GET", "List categories", nil, "Array of category names"),
-			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query")}, "Array of search hits"),
+			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query"), queryParam("limit", "most lines returned, 1-500, default 50"), queryParam("per_topic", "most lines from any one topic, 1-50, default no cap"), queryParam("category", "only topics in exactly this category")}, "Array of search hits"),
 			"/api/compare":               path("GET", "Compare two topics", []map[string]any{queryParam("a", "first topic"), queryParam("b", "second topic")}, "Comparison structure"),
 			"/api/calc":                  path("POST", "Evaluate calculator expression", nil, "Calculator result"),
 			"/api/subnet":                path("POST", "Run subnet calculator", nil, "Subnet calculation result"),
