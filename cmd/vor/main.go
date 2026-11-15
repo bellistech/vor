@@ -1068,7 +1068,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 	fmt.Println("  POST /api/bookmarks/:name     — toggle bookmark")
 	fmt.Println("  GET  /api/stackoverflow?q=    — Stack Overflow lookup (bonus, opt-in)")
 	fmt.Println()
-	if err := http.ListenAndServe(addr, mux); err != nil {
+	fmt.Println("access log: one JSON line per request on stderr (ADR-147 decision 23 in the unheaded repository)")
+	if err := http.ListenAndServe(addr, accessLog(mux, os.Stderr, time.Now)); err != nil {
 		die("serve: %v", err)
 	}
 }
