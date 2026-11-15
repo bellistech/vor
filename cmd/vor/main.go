@@ -1045,6 +1045,37 @@ func doInteractive(reg *registry.Registry) {
 
 // doServe starts a REST API server
 func doServe(reg *registry.Registry, bind, port string) {
+	mux := newMux(reg)
+
+	addr := bind + ":" + port
+	fmt.Printf("\033[1;32mcs serve\033[0m listening on %s\n", addr)
+	fmt.Println("Endpoints:")
+	fmt.Println("  GET  /api/version             — build identification")
+	fmt.Println("  GET  /api/health              — liveness probe")
+	fmt.Println("  GET  /api/openapi             — OpenAPI 3.0 endpoint hint")
+	fmt.Println("  GET  /api/topics              — list all topics")
+	fmt.Println("  GET  /api/topics/:name        — get sheet")
+	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
+	fmt.Println("  GET  /api/topics/:name/related— get related topics")
+	fmt.Println("  GET  /api/categories          — list categories")
+	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category=)")
+	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
+	fmt.Println("  POST /api/calc                — evaluate expression")
+	fmt.Println("  POST /api/subnet              — subnet calculator")
+	fmt.Println("  GET  /api/verify/:name        — verify detail math")
+	fmt.Println("  GET  /api/stats               — statistics")
+	fmt.Println("  GET  /api/bookmarks           — list bookmarks")
+	fmt.Println("  POST /api/bookmarks/:name     — toggle bookmark")
+	fmt.Println("  GET  /api/stackoverflow?q=    — Stack Overflow lookup (bonus, opt-in)")
+	fmt.Println()
+	if err := http.ListenAndServe(addr, mux); err != nil {
+		die("serve: %v", err)
+	}
+}
+
+// newMux builds the REST API's routes over reg. It is separate from
+// doServe so tests can drive the handlers with httptest.
+func newMux(reg *registry.Registry) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// CORS middleware
@@ -1427,30 +1458,7 @@ func doServe(reg *registry.Registry, bind, port string) {
 		jsonResp(w, res)
 	}))
 
-	addr := bind + ":" + port
-	fmt.Printf("\033[1;32mcs serve\033[0m listening on %s\n", addr)
-	fmt.Println("Endpoints:")
-	fmt.Println("  GET  /api/version             — build identification")
-	fmt.Println("  GET  /api/health              — liveness probe")
-	fmt.Println("  GET  /api/openapi             — OpenAPI 3.0 endpoint hint")
-	fmt.Println("  GET  /api/topics              — list all topics")
-	fmt.Println("  GET  /api/topics/:name        — get sheet")
-	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
-	fmt.Println("  GET  /api/topics/:name/related— get related topics")
-	fmt.Println("  GET  /api/categories          — list categories")
-	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category=)")
-	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
-	fmt.Println("  POST /api/calc                — evaluate expression")
-	fmt.Println("  POST /api/subnet              — subnet calculator")
-	fmt.Println("  GET  /api/verify/:name        — verify detail math")
-	fmt.Println("  GET  /api/stats               — statistics")
-	fmt.Println("  GET  /api/bookmarks           — list bookmarks")
-	fmt.Println("  POST /api/bookmarks/:name     — toggle bookmark")
-	fmt.Println("  GET  /api/stackoverflow?q=    — Stack Overflow lookup (bonus, opt-in)")
-	fmt.Println()
-	if err := http.ListenAndServe(addr, mux); err != nil {
-		die("serve: %v", err)
-	}
+	return mux
 }
 
 func isHelp(args []string) bool {
