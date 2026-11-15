@@ -1054,11 +1054,11 @@ func doServe(reg *registry.Registry, bind, port string) {
 	fmt.Println("  GET  /api/health              — liveness probe")
 	fmt.Println("  GET  /api/openapi             — OpenAPI 3.0 endpoint hint")
 	fmt.Println("  GET  /api/topics              — list all topics")
-	fmt.Println("  GET  /api/topics/:name        — get sheet")
+	fmt.Println("  GET  /api/topics/:name        — get sheet, exact name (?category=)")
 	fmt.Println("  GET  /api/topics/:name/detail — get detail page")
 	fmt.Println("  GET  /api/topics/:name/related— get related topics")
 	fmt.Println("  GET  /api/categories          — list categories")
-	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category=)")
+	fmt.Println("  GET  /api/search?q=           — search sheets (&limit= &per_topic= &category= &match=word)")
 	fmt.Println("  GET  /api/compare?a=&b=       — compare topics")
 	fmt.Println("  POST /api/calc                — evaluate expression")
 	fmt.Println("  POST /api/subnet              — subnet calculator")
@@ -1292,7 +1292,19 @@ func newMux(reg *registry.Registry) *http.ServeMux {
 			jsonResp(w, map[string]string{"error": err.Error()})
 			return
 		}
-		matches := limitMatches(reg.Search(q), r.URL.Query().Get("category"), limit, perTopic)
+		words, err := searchMatch(r.URL.Query())
+		if err != nil {
+			w.WriteHeader(400)
+			jsonResp(w, map[string]string{"error": err.Error()})
+			return
+		}
+		var found []registry.Match
+		if words {
+			found = reg.SearchWords(q)
+		} else {
+			found = reg.Search(q)
+		}
+		matches := limitMatches(found, r.URL.Query().Get("category"), limit, perTopic)
 		type matchResult struct {
 			Topic       string `json:"topic"`
 			Category    string `json:"category"`
@@ -2106,11 +2118,11 @@ func openAPIDoc(version string) map[string]any {
 			"/api/health":                path("GET", "Liveness probe", nil, "JSON {status, sheets, categories, details}"),
 			"/api/openapi":               path("GET", "This document", nil, "OpenAPI 3.0 hint"),
 			"/api/topics":                path("GET", "List all topics", nil, "Array of topic summaries"),
-			"/api/topics/{name}":         path("GET", "Get a single sheet", []map[string]any{pathParam("name", "topic slug")}, "Sheet content as JSON"),
+			"/api/topics/{name}":         path("GET", "Get a single sheet by its exact name (any case); 404 if there is none", []map[string]any{pathParam("name", "topic slug"), queryParam("category", "the sheet of that name in exactly this category")}, "Sheet content as JSON"),
 			"/api/topics/{name}/detail":  path("GET", "Get the deep-dive detail page if one exists", []map[string]any{pathParam("name", "topic slug")}, "Detail page content"),
 			"/api/topics/{name}/related": path("GET", "Get cross-referenced related topics", []map[string]any{pathParam("name", "topic slug")}, "Array of related topic summaries"),
 			"/api/categories":            path("GET", "List categories", nil, "Array of category names"),
-			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query"), queryParam("limit", "most lines returned, 1-500, default 50"), queryParam("per_topic", "most lines from any one topic, 1-50, default no cap"), queryParam("category", "only topics in exactly this category")}, "Array of search hits"),
+			"/api/search":                path("GET", "Full-text search", []map[string]any{queryParam("q", "search query"), queryParam("limit", "most lines returned, 1-500, default 50"), queryParam("per_topic", "most lines from any one topic, 1-50, default no cap"), queryParam("category", "only topics in exactly this category"), queryParam("match", "substring (default) or word: a term must start a word")}, "Array of search hits"),
 			"/api/compare":               path("GET", "Compare two topics", []map[string]any{queryParam("a", "first topic"), queryParam("b", "second topic")}, "Comparison structure"),
 			"/api/calc":                  path("POST", "Evaluate calculator expression", nil, "Calculator result"),
 			"/api/subnet":                path("POST", "Run subnet calculator", nil, "Subnet calculation result"),

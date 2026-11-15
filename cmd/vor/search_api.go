@@ -13,7 +13,10 @@ import (
 // fill the whole answer: a sheet with a matching line in 60 sections takes
 // all 50 slots and the next topic never shows. With category set, only
 // topics in exactly that category are searched, so a small category is not
-// crowded out by a large one.
+// crowded out by a large one. With match=word a term counts only where
+// it starts a word ("ccna" no longer matches KRB5CCNAME); the default
+// stays substring matching, so callers that rank on substrings do not
+// change answers.
 const (
 	defaultSearchLimit = 50
 	maxSearchLimit     = 500
@@ -33,6 +36,26 @@ func searchLimits(q url.Values) (limit, perTopic int, err error) {
 		return 0, 0, err
 	}
 	return limit, perTopic, nil
+}
+
+// searchMatch reads match from a /api/search query. Absent or
+// "substring": a term matches anywhere (false). "word": a term must
+// start a word (true). Anything else, or the parameter given twice, is
+// refused: a caller that asks for word matching and mistypes it must
+// not get substring answers silently.
+func searchMatch(q url.Values) (words bool, err error) {
+	if !q.Has("match") {
+		return false, nil
+	}
+	if v := q["match"]; len(v) == 1 {
+		switch v[0] {
+		case "substring":
+			return false, nil
+		case "word":
+			return true, nil
+		}
+	}
+	return false, fmt.Errorf("match must be substring or word, given once")
 }
 
 func intParam(q url.Values, name string, def, lo, hi int) (int, error) {

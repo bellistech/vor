@@ -1,8 +1,13 @@
 package main
 
 import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
+	"testing/fstest"
 
 	"github.com/bellistech/vor/internal/registry"
 )
@@ -99,5 +104,116 @@ func TestLimitMatches(t *testing.T) {
 	// limit still applies.
 	if got := limitMatches(ms, "", 3, 2); len(got) != 3 {
 		t.Fatalf("limit 3: %d lines", len(got))
+	}
+}
+
+func searchTopics(t *testing.T, mux *http.ServeMux, query string) (int, []string, string) {
+	t.Helper()
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/search?"+query, nil))
+	var rows []struct {
+		Topic    string `json:"topic"`
+		Category string `json:"category"`
+	}
+	_ = json.Unmarshal(rec.Body.Bytes(), &rows)
+	var topics []string
+	for _, r := range rows {
+		topics = append(topics, r.Category+"/"+r.Topic)
+	}
+	return rec.Code, topics, rec.Body.String()
+}
+
+func TestSearchAPIMatch(t *testing.T) {
+	reg, err := registry.New(fstest.MapFS{
+		"auth/kerberos.md":  {Data: []byte("# Kerberos\n\n## Environment\n\nexport KRB5CCNAME=/tmp/krb5cc_0\n")},
+		"certs/ccna.md":     {Data: []byte("# CCNA\n\n## Topics\n\nThe ccna covers switching.\n\n## Labs\n\nccna lab one\n\n## Exam\n\nccna exam day\n")},
+		"net/ccna-notes.md": {Data: []byte("# Notes\n\n## Scope\n\nccna scope\n")},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	mux := newMux(reg)
+
+	has := func(topics []string, want string) bool {
+		for _, x := range topics {
+			if x == want {
+				return true
+			}
+		}
+		return false
+	}
+
+	// No match parameter and match=substring are the same search.
+	for _, q := range []string{"q=ccna", "q=ccna&match=substring"} {
+		code, topics, body := searchTopics(t, mux, q)
+		if code != 200 || !has(topics, "auth/kerberos") || !has(topics, "certs/ccna") {
+			t.Errorf("%s = %d %v, want kerberos and ccna (%s)", q, code, topics, short(body))
+		}
+	}
+
+	// match=word drops the sheet that has the term only inside a word.
+	code, topics, body := searchTopics(t, mux, "q=ccna&match=word")
+	if code != 200 || has(topics, "auth/kerberos") || !has(topics, "certs/ccna") || !has(topics, "net/ccna-notes") {
+		t.Errorf("match=word = %d %v, want ccna sheets without kerberos (%s)", code, topics, short(body))
+	}
+
+	// It combines with category, limit and per_topic.
+	code, topics, body = searchTopics(t, mux, "q=ccna&match=word&category=certs")
+	if code != 200 || len(topics) == 0 {
+		t.Errorf("match=word&category=certs = %d %v (%s)", code, topics, short(body))
+	}
+	for _, x := range topics {
+		if x != "certs/ccna" {
+			t.Errorf("match=word&category=certs returned %s", x)
+		}
+	}
+	code, topics, _ = searchTopics(t, mux, "q=ccna&match=word&category=auth")
+	if code != 200 || len(topics) != 0 {
+		t.Errorf("match=word&category=auth = %d %v, want no rows", code, topics)
+	}
+	code, topics, _ = searchTopics(t, mux, "q=ccna&match=word&limit=1")
+	if code != 200 || len(topics) != 1 {
+		t.Errorf("match=word&limit=1 = %d %v, want one row", code, topics)
+	}
+	code, topics, _ = searchTopics(t, mux, "q=ccna&match=word&per_topic=1")
+	if code != 200 || len(topics) != 2 {
+		t.Errorf("match=word&per_topic=1 = %d %v, want one row for each of two topics", code, topics)
+	}
+
+	// Anything else is refused with a JSON error.
+	for _, q := range []string{"q=ccna&match=other", "q=ccna&match=WORD", "q=ccna&match=", "q=ccna&match=word&match=substring"} {
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/search?"+q, nil))
+		var e map[string]string
+		_ = json.Unmarshal(rec.Body.Bytes(), &e)
+		if rec.Code != 400 || !strings.Contains(e["error"], "match") {
+			t.Errorf("%s = %d %q, want 400 with an error naming match", q, rec.Code, short(rec.Body.String()))
+		}
+	}
+}
+
+func TestSearchMatchParam(t *testing.T) {
+	cases := []struct {
+		query string
+		words bool
+		ok    bool
+	}{
+		{"q=x", false, true},
+		{"q=x&match=substring", false, true},
+		{"q=x&match=word", true, true},
+		{"q=x&match=", false, false},
+		{"q=x&match=words", false, false},
+		{"q=x&match=Word", false, false},
+		{"q=x&match=word&match=word", false, false},
+	}
+	for _, c := range cases {
+		v, err := url.ParseQuery(c.query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		words, err := searchMatch(v)
+		if (err == nil) != c.ok || words != c.words {
+			t.Errorf("%s: got %v, %v; want words %v ok %v", c.query, words, err, c.words, c.ok)
+		}
 	}
 }

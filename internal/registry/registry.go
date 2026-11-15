@@ -283,6 +283,48 @@ func tokenize(s string) []string {
 // strict-AND lines are returned when any exist; otherwise lines containing
 // any term are returned as a fallback.
 func (r *Registry) Search(queries ...string) []Match {
+	return r.search(strings.Contains, queries...)
+}
+
+// SearchWords is Search with one difference: a term counts only where
+// it starts a word. "ccna" then matches "the CCNA exam" and not
+// "KRB5CCNAME". The tail of the word is free, so "wotan" matches
+// "wotan's" and "Wotan-Memory". Ranking and line selection are the
+// same as Search.
+func (r *Registry) SearchWords(queries ...string) []Match {
+	return r.search(startsWord, queries...)
+}
+
+// startsWord reports whether term occurs in hay at the start of a word:
+// at the start of hay, or after a byte that is not an ASCII letter or
+// digit. Space, punctuation ("-", "'", "/", "_", ".") and line breaks
+// are all boundaries. hay and term are lower-case already. An empty
+// term never matches.
+func startsWord(hay, term string) bool {
+	if term == "" {
+		return false
+	}
+	for from := 0; from <= len(hay)-len(term); {
+		i := strings.Index(hay[from:], term)
+		if i < 0 {
+			return false
+		}
+		i += from
+		if i == 0 || !isWordByte(hay[i-1]) {
+			return true
+		}
+		from = i + 1
+	}
+	return false
+}
+
+func isWordByte(b byte) bool {
+	return b >= 'a' && b <= 'z' || b >= 'A' && b <= 'Z' || b >= '0' && b <= '9'
+}
+
+// search is the body of Search and SearchWords. has reports whether a
+// lower-cased haystack holds a term.
+func (r *Registry) search(has func(hay, term string) bool, queries ...string) []Match {
 	var terms []string
 	seen := make(map[string]bool)
 collect:
@@ -312,7 +354,7 @@ collect:
 
 	containsAll := func(s string, ts []string) bool {
 		for _, t := range ts {
-			if !strings.Contains(s, t) {
+			if !has(s, t) {
 				return false
 			}
 		}
@@ -320,7 +362,7 @@ collect:
 	}
 	containsAny := func(s string, ts []string) bool {
 		for _, t := range ts {
-			if strings.Contains(s, t) {
+			if has(s, t) {
 				return true
 			}
 		}
@@ -379,7 +421,7 @@ collect:
 			titleLower := strings.ToLower(sec.Title)
 			h := 0
 			for _, t := range titleHitTerms {
-				if strings.Contains(titleLower, t) {
+				if has(titleLower, t) {
 					h++
 				}
 			}

@@ -120,11 +120,11 @@ vor serve 8080                 # custom port
 | Method | Endpoint | Returns |
 |--------|----------|---------|
 | GET    | `/api/topics` | all topics |
-| GET    | `/api/topics/:name` | sheet content (JSON) |
-| GET    | `/api/topics/:name/detail` | detail page |
-| GET    | `/api/topics/:name/related` | related topics |
+| GET    | `/api/topics/:name` | sheet content (JSON); the name is exact (any case) or the answer is 404; `?category=` picks the sheet of that name in that exact category |
+| GET    | `/api/topics/:name/detail` | detail page; exact name or 404 |
+| GET    | `/api/topics/:name/related` | related topics; exact name or 404 |
 | GET    | `/api/categories` | category list |
-| GET    | `/api/search?q=<query>` | full-text search; `&limit=` lines (1-500, default 50), `&per_topic=` most lines from one topic (1-50, default no cap), `&category=` only that exact category |
+| GET    | `/api/search?q=<query>` | full-text search; `&limit=` lines (1-500, default 50), `&per_topic=` most lines from one topic (1-50, default no cap), `&category=` only that exact category, `&match=word` a term must start a word (default `substring`) |
 | GET    | `/api/compare?a=<X>&b=<Y>` | compare two topics |
 | POST   | `/api/calc` | evaluate expression |
 | POST   | `/api/subnet` | subnet calculator |
