@@ -1073,6 +1073,16 @@ func doServe(reg *registry.Registry, bind, port string) {
 	}
 }
 
+// maxCategoryLength bounds ?category= on /api/topics/<name>.
+const maxCategoryLength = 256
+
+// plainSegment reports whether s is safe to use as one name: not ".",
+// no "..", no path separator and no NUL. The empty string passes; the
+// caller decides whether empty is allowed.
+func plainSegment(s string) bool {
+	return s != "." && !strings.Contains(s, "..") && !strings.ContainsAny(s, "/\\\x00")
+}
+
 // newMux builds the REST API's routes over reg. It is separate from
 // doServe so tests can drive the handlers with httptest.
 func newMux(reg *registry.Registry) *http.ServeMux {
@@ -1163,20 +1173,30 @@ func newMux(reg *registry.Registry) *http.ServeMux {
 		name := parts[0]
 
 		// Reject path-traversal and embedded separators before the
-		// fuzzy resolver runs — otherwise percent-encoded "..%2F" or
-		// "%2e%2e%2f" etc. flow into fuzzyFind and surface arbitrary
-		// topics by accident. See unheaded:eval/coding-gate/probe-
-		// 2026-05-02/A3-vor-fuzz.md F2.
-		if name == "" || name == "." || name == ".." ||
-			strings.Contains(name, "..") ||
-			strings.ContainsAny(name, "/\\\x00") {
+		// lookup. See unheaded:eval/coding-gate/probe-2026-05-02/
+		// A3-vor-fuzz.md F2.
+		if name == "" || !plainSegment(name) {
 			http.Error(w, `{"error":"invalid topic name"}`, 400)
 			return
 		}
+		// ?category=<c> picks the sheet of that name in that category.
+		// Some names live in two categories (auth/saml, security/saml)
+		// and the bare name can return only one of them.
+		category := r.URL.Query().Get("category")
+		if len(category) > maxCategoryLength || (category != "" && !plainSegment(category)) {
+			http.Error(w, `{"error":"invalid category"}`, 400)
+			return
+		}
 
-		s := reg.Get(name)
-		if s == nil {
-			s = fuzzyFind(reg, name)
+		// The API answers exact names only (2026-11-12, S-WIKI-VOR); the
+		// CLI keeps fuzzy matching for typing. A caller that is given
+		// another topic than it asked for cannot tell, so an unknown
+		// name is 404.
+		var s *registry.Sheet
+		if category != "" {
+			s = reg.GetIn(category, name)
+		} else {
+			s = reg.Get(name)
 		}
 		if s == nil {
 			http.Error(w, `{"error":"not found"}`, 404)

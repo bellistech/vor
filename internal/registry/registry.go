@@ -211,6 +211,22 @@ func (r *Registry) Get(name string) *Sheet {
 	return r.sheets[strings.ToLower(name)]
 }
 
+// GetIn returns the sheet of that name in that category, or nil. The
+// category is exact and required; the name matches in any case. Get
+// can return only one sheet per name, so a name shared by two
+// categories (auth/saml and security/saml) needs GetIn to reach both.
+func (r *Registry) GetIn(category, name string) *Sheet {
+	if category == "" || name == "" {
+		return nil
+	}
+	for _, s := range r.byCategory[category] {
+		if strings.EqualFold(s.Name, name) {
+			return s
+		}
+	}
+	return nil
+}
+
 // List returns all sheets sorted by name.
 func (r *Registry) List() []*Sheet {
 	return r.all
