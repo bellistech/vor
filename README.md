@@ -119,6 +119,9 @@ vor serve 8080                 # custom port
 
 | Method | Endpoint | Returns |
 |--------|----------|---------|
+| GET    | `/health` | liveness: `{status, sheets, categories, details}`, 200; GET and HEAD only |
+| GET    | `/api/health` | the same answer as `/health` |
+| GET    | `/api/version` | build identification |
 | GET    | `/api/topics` | all topics |
 | GET    | `/api/topics/:name` | sheet content (JSON); the name is exact (any case) or the answer is 404; `?category=` picks the sheet of that name in that exact category |
 | GET    | `/api/topics/:name/detail` | detail page; exact name or 404 |

@@ -1051,7 +1051,7 @@ func doServe(reg *registry.Registry, bind, port string) {
 	fmt.Printf("\033[1;32mcs serve\033[0m listening on %s\n", addr)
 	fmt.Println("Endpoints:")
 	fmt.Println("  GET  /api/version             — build identification")
-	fmt.Println("  GET  /api/health              — liveness probe")
+	fmt.Println("  GET  /health                  — liveness probe (also /api/health)")
 	fmt.Println("  GET  /api/openapi             — OpenAPI 3.0 endpoint hint")
 	fmt.Println("  GET  /api/topics              — list all topics")
 	fmt.Println("  GET  /api/topics/:name        — get sheet, exact name (?category=)")
@@ -1123,14 +1123,28 @@ func newMux(reg *registry.Registry) *http.ServeMux {
 	// GET /api/health — liveness probe; cheap counters only, no work.
 	// Returns 200 with sheet counts if the registry loaded; useful for
 	// container orchestrators (k8s livenessProbe, docker HEALTHCHECK, etc).
-	mux.HandleFunc("/api/health", cors(func(w http.ResponseWriter, r *http.Request) {
+	health := func(w http.ResponseWriter, r *http.Request) {
 		jsonResp(w, map[string]any{
 			"status":     "ok",
 			"sheets":     len(reg.List()),
 			"categories": len(reg.Categories()),
 			"details":    reg.DetailCount(),
 		})
-	}))
+	}
+	mux.HandleFunc("/api/health", cors(health))
+
+	// GET /health — the same answer at the path a platform health sweep
+	// probes (Unheaded's service-health-sweep counts only a 200 from
+	// /health). GET and HEAD only; nothing below it is served.
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			w.Header().Set("Allow", "GET, HEAD")
+			http.Error(w, `{"error":"method not allowed"}`, http.StatusMethodNotAllowed)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		health(w, r)
+	})
 
 	// GET /api/openapi — minimal OpenAPI 3.0 hint listing the endpoints.
 	// Not a complete spec; just enough to let api-explorer tools discover.
@@ -2116,6 +2130,7 @@ func openAPIDoc(version string) map[string]any {
 		"paths": map[string]any{
 			"/api/version":               path("GET", "Build identification", nil, "JSON {binary, version, goos, goarch, go_version}"),
 			"/api/health":                path("GET", "Liveness probe", nil, "JSON {status, sheets, categories, details}"),
+			"/health":                    path("GET", "Liveness probe, the same answer as /api/health", nil, "JSON {status, sheets, categories, details}"),
 			"/api/openapi":               path("GET", "This document", nil, "OpenAPI 3.0 hint"),
 			"/api/topics":                path("GET", "List all topics", nil, "Array of topic summaries"),
 			"/api/topics/{name}":         path("GET", "Get a single sheet by its exact name (any case); 404 if there is none", []map[string]any{pathParam("name", "topic slug"), queryParam("category", "the sheet of that name in exactly this category")}, "Sheet content as JSON"),
