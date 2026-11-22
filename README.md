@@ -123,7 +123,7 @@ vor serve 8080                 # custom port
 | GET    | `/api/health` | the same answer as `/health` |
 | GET    | `/api/version` | build identification |
 | GET    | `/api/topics` | all topics |
-| GET    | `/api/topics/:name` | sheet content (JSON); the name is exact (any case) or the answer is 404; `?category=` picks the sheet of that name in that exact category |
+| GET    | `/api/topics/:name` | sheet content (JSON); the name is exact (any case) or the answer is 404; `?category=` picks the sheet of that name in that exact category; a directory source's category is its directory (`docs/adr`), segments joined by `/`, each without `..`, `\` or NUL and not `.`; an empty segment, a leading or trailing `/`, or more than 256 bytes is 400; the top of a source (`.`) is read by name alone |
 | GET    | `/api/topics/:name/detail` | detail page; exact name or 404 |
 | GET    | `/api/topics/:name/related` | related topics; exact name or 404 |
 | GET    | `/api/categories` | category list |

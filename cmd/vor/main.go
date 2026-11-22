@@ -1073,7 +1073,8 @@ func doServe(reg *registry.Registry, bind, port string) {
 	}
 }
 
-// maxCategoryLength bounds ?category= on /api/topics/<name>.
+// maxCategoryLength bounds ?category= on /api/topics/<name>, all its
+// segments and slashes together.
 const maxCategoryLength = 256
 
 // plainSegment reports whether s is safe to use as one name: not ".",
@@ -1081,6 +1082,26 @@ const maxCategoryLength = 256
 // caller decides whether empty is allowed.
 func plainSegment(s string) bool {
 	return s != "." && !strings.Contains(s, "..") && !strings.ContainsAny(s, "/\\\x00")
+}
+
+// validCategory reports whether s may be asked for as ?category=. A file
+// of a directory vor was pointed at has its directory as its category
+// ("docs/adr"), so a category is one or more segments joined by "/", each
+// non-empty and a plainSegment: no "." or ".." segment, no "..", no
+// backslash, no NUL, no leading, trailing or doubled slash, and at most
+// maxCategoryLength bytes in all. The category is a map key in the
+// registry, never a file path; the rule keeps it from looking like one.
+// The top of a source (category ".") is not valid: read it by name alone.
+func validCategory(s string) bool {
+	if s == "" || len(s) > maxCategoryLength {
+		return false
+	}
+	for _, seg := range strings.Split(s, "/") {
+		if seg == "" || !plainSegment(seg) {
+			return false
+		}
+	}
+	return true
 }
 
 // newMux builds the REST API's routes over reg. It is separate from
@@ -1195,9 +1216,10 @@ func newMux(reg *registry.Registry) *http.ServeMux {
 		}
 		// ?category=<c> picks the sheet of that name in that category.
 		// Some names live in two categories (auth/saml, security/saml)
-		// and the bare name can return only one of them.
+		// and the bare name can return only one of them. A category may
+		// be a directory ("docs/adr"); validCategory says which are asked.
 		category := r.URL.Query().Get("category")
-		if len(category) > maxCategoryLength || (category != "" && !plainSegment(category)) {
+		if category != "" && !validCategory(category) {
 			http.Error(w, `{"error":"invalid category"}`, 400)
 			return
 		}
@@ -2133,7 +2155,7 @@ func openAPIDoc(version string) map[string]any {
 			"/health":                    path("GET", "Liveness probe, the same answer as /api/health", nil, "JSON {status, sheets, categories, details}"),
 			"/api/openapi":               path("GET", "This document", nil, "OpenAPI 3.0 hint"),
 			"/api/topics":                path("GET", "List all topics", nil, "Array of topic summaries"),
-			"/api/topics/{name}":         path("GET", "Get a single sheet by its exact name (any case); 404 if there is none", []map[string]any{pathParam("name", "topic slug"), queryParam("category", "the sheet of that name in exactly this category")}, "Sheet content as JSON"),
+			"/api/topics/{name}":         path("GET", "Get a single sheet by its exact name (any case); 404 if there is none", []map[string]any{pathParam("name", "topic slug"), queryParam("category", "the sheet of that name in exactly this category; a directory is segments joined by / (no empty, . or .. segment, no leading or trailing /, at most 256 bytes), else 400")}, "Sheet content as JSON"),
 			"/api/topics/{name}/detail":  path("GET", "Get the deep-dive detail page if one exists", []map[string]any{pathParam("name", "topic slug")}, "Detail page content"),
 			"/api/topics/{name}/related": path("GET", "Get cross-referenced related topics", []map[string]any{pathParam("name", "topic slug")}, "Array of related topic summaries"),
 			"/api/categories":            path("GET", "List categories", nil, "Array of category names"),
